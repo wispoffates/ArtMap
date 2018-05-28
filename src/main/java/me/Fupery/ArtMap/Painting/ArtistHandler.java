@@ -1,19 +1,28 @@
 package me.Fupery.ArtMap.Painting;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.IO.Database.Map;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
-import static me.Fupery.ArtMap.Painting.Brush.BrushAction;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.IO.TitleFilter;
+import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract.InteractType;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
+import me.Fupery.ArtMap.Painting.Brush.BrushAction;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+import net.wesjd.anvilgui.AnvilGUI;
 
 public class ArtistHandler {
 
@@ -36,7 +45,32 @@ public class ArtistHandler {
                 ArtistPacket.PacketLook packetLook = (ArtistPacket.PacketLook) packet;
                 session.updatePosition(packetLook.getYaw(), packetLook.getPitch());
                 return true;
+				// Handle Save brush
+			} else if (type == PacketType.INTERACT && ArtMaterial
+					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
+				// handle click with paint brush in main hand causes save
+				if (sender.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(sender)) {
+					new AnvilGUI(ArtMap.instance(), sender, "Title?", (player, title) -> {
+						TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
+						if (!filter.check(title)) {
+							player.sendMessage(Lang.BAD_TITLE.get());
+							return null;
+						}
+						Easel easel = session.getEasel();
+						ArtMap.getScheduler().SYNC.run(() -> {
+							easel.playEffect(EaselEffect.SAVE_ARTWORK);
+							ArtMap.getArtistHandler().removePlayer(player);
 
+							MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
+							ArtMap.getArtDatabase().saveArtwork(art1);
+
+							easel.setItem(new ItemStack(Material.AIR));
+							ItemUtils.giveItem(player, art1.getMapItem());
+							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+						});
+						return null;
+					});
+				}
             } else if (type == PacketType.INTERACT) {
                 InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
                 session.paint(sender.getItemInHand(), (click == InteractType.ATTACK)

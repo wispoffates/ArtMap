@@ -1,19 +1,20 @@
 package me.Fupery.ArtMap.IO.Database;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.map.MapView;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.MapId;
 import me.Fupery.ArtMap.Utils.Reflection;
-import org.bukkit.Bukkit;
-import org.bukkit.map.MapView;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.UUID;
 
 public final class Database {
     private final String DATABASE_ACCESS_ERROR = "Error accessing database, try using /artmap reload.";
@@ -81,6 +82,15 @@ public final class Database {
             ArtMap.getScheduler().SYNC.run(() -> art.getMap().setMap(new byte[Map.Size.MAX.value]));
             return true;
         } else return false;
+    }
+
+	public boolean renameArtwork(MapArt art, String title) {
+		art.setTitle(title);
+		if (artworks.renameArtwork(art, title)) {
+			art.getMap().setMap(art.getMap().readData(), true);
+			return true;
+		}
+		return false;
     }
 
     public boolean containsArtwork(MapArt artwork, boolean ignoreMapId) {

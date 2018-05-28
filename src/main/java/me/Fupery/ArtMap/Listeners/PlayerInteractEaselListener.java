@@ -1,12 +1,6 @@
 package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselEffect;
-import me.Fupery.ArtMap.Easel.EaselEvent;
-import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
-import me.Fupery.ArtMap.Easel.EaselPart;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -15,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -23,6 +18,18 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.Easel.EaselEvent;
+import me.Fupery.ArtMap.Easel.EaselEvent.ClickType;
+import me.Fupery.ArtMap.Easel.EaselPart;
+import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
+import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 
 class PlayerInteractEaselListener implements RegisteredListener {
 
@@ -60,6 +67,21 @@ class PlayerInteractEaselListener implements RegisteredListener {
         }
     }
 
+	@EventHandler
+	public void onRickClick(PlayerInteractEvent e) {
+		Player p = e.getPlayer();
+		Action a = e.getAction();
+		if ((e.getItem() != null) && a == Action.RIGHT_CLICK_AIR
+				&& (ArtMaterial.getCraftItemType(e.getItem()) == ArtMaterial.PAINT_BRUSH)) {
+			ArtMap.getScheduler().SYNC.run(() -> {
+				PlayerOpenMenuEvent event = new PlayerOpenMenuEvent(p);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+				MenuHandler menuHandler = ArtMap.getMenuHandler();
+				menuHandler.openMenu((p), menuHandler.MENU.HELP.get((p)));
+			});
+		}
+	}
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
@@ -96,7 +118,6 @@ class PlayerInteractEaselListener implements RegisteredListener {
             easel.playEffect(EaselEffect.USE_DENIED);
             return;
         }
-
         if (!checkIsPainting(player, event)) new EaselEvent(easel, click, player).callEvent();
     }
 
@@ -106,7 +127,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private boolean checkIsPainting(Player player, Cancellable event) {
-        if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
+		if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }

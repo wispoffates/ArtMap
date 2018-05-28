@@ -1,12 +1,14 @@
 package me.Fupery.ArtMap.Preview;
 
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
+
+import me.Fupery.ArtMap.IO.MapArt;
 
 public class ArtPreview extends TimedPreview {
 

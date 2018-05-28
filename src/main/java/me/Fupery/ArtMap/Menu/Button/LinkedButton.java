@@ -1,11 +1,13 @@
 package me.Fupery.ArtMap.Menu.Button;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Menu.Event.MenuFactory;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.Event.MenuFactory;
 
 public class LinkedButton extends Button {
     private final MenuFactory linkedMenu;

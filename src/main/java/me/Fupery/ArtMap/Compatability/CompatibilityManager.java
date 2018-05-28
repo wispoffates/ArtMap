@@ -1,14 +1,15 @@
 package me.Fupery.ArtMap.Compatability;
 
-import me.Fupery.ArtMap.Easel.EaselEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
+import me.Fupery.ArtMap.Easel.EaselEvent;
 
 public class CompatibilityManager implements RegionHandler {
     private List<RegionHandler> regionHandlers;
@@ -17,13 +18,13 @@ public class CompatibilityManager implements RegionHandler {
     public CompatibilityManager(JavaPlugin plugin) {
         regionHandlers = new ArrayList<>();
         loadRegionHandler(WorldGuardCompat.class);
-        loadRegionHandler(FactionsCompat.class);
+		// loadRegionHandler(FactionsCompat.class);
         loadRegionHandler(GriefPreventionCompat.class);
-        loadRegionHandler(RedProtectCompat.class);
-        loadRegionHandler(LandlordCompat.class);
-        loadRegionHandler(ASkyBlockCompat.class);
-        loadRegionHandler(PlotSquaredCompat.class);
-        loadRegionHandler(ResidenceCompat.class);
+		// loadRegionHandler(RedProtectCompat.class);
+		// loadRegionHandler(LandlordCompat.class);
+		// loadRegionHandler(ASkyBlockCompat.class);
+		// loadRegionHandler(PlotSquaredCompat.class);
+		// loadRegionHandler(ResidenceCompat.class);
         reflectionHandler = loadReflectionHandler();
         if (!(reflectionHandler instanceof VanillaReflectionHandler))
             plugin.getLogger().info(String.format("%s reflection handler enabled.",

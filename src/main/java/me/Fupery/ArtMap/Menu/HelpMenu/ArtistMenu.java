@@ -1,12 +1,8 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
-import me.Fupery.ArtMap.Menu.API.ListMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import java.util.Collections;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,8 +11,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Collections;
-import java.util.UUID;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Menu.API.ChildMenu;
+import me.Fupery.ArtMap.Menu.API.ListMenu;
+import me.Fupery.ArtMap.Menu.Button.Button;
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public class ArtistMenu extends ListMenu implements ChildMenu {
 
@@ -82,7 +84,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
         public void onClick(Player player, ClickType clickType) {
             SoundCompat.UI_BUTTON_CLICK.play(player);
             ArtMap.getMenuHandler().openMenu(player,
-                    new ArtworkMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
+                    new ArtistArtworksMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
         }
     }
 }

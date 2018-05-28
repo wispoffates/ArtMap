@@ -1,16 +1,17 @@
 package me.Fupery.ArtMap.IO;
 
-import me.Fupery.ArtMap.IO.Database.Map;
-import me.Fupery.ArtMap.Recipe.ArtItem;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 
 public class MapArt {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -88,6 +89,10 @@ public class MapArt {
     public MapArt updateMapId(short newID) {
         return new MapArt(newID, title, artist, date);
     }
+
+	public MapArt setTitle(String title) {
+		return new MapArt(this.id, title, this.artist, this.date);
+	}
 
     public Map getMap() {
         return new Map(id);

@@ -1,5 +1,14 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
@@ -11,14 +20,6 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
 
 public class RecipeMenu extends BasicMenu implements ChildMenu {
 
@@ -37,6 +38,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
                 new RecipeButton(ArtMaterial.PAINT_BUCKET),
+				new RecipeButton(ArtMaterial.PAINT_BRUSH),
                 new CloseButton()
         };
     }

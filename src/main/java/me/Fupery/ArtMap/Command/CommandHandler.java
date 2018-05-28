@@ -1,12 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.ItemUtils;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -25,11 +26,11 @@ public class CommandHandler implements CommandExecutor {
         commands = new HashMap<>();
         //Commands go here - note that they are run on an async thread
 
-        commands.put("save", new CommandSave());
+		// commands.put("save", new CommandSave());
 
-        commands.put("delete", new CommandDelete());
+		// commands.put("delete", new CommandDelete());
 
-        commands.put("preview", new CommandPreview());
+		// commands.put("preview", new CommandPreview());
 
         commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas|artwork:<title>> [amount]", true) {
             @Override

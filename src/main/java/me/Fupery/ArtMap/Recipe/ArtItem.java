@@ -1,11 +1,16 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.DyeType;
-import me.Fupery.ArtMap.Colour.Palette;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Utils.ItemUtils;
+import static me.Fupery.ArtMap.Config.Lang.RECIPE_ARTWORK_ARTIST;
+import static me.Fupery.ArtMap.Config.Lang.RECIPE_PAINTBUCKET_NAME;
+import static me.Fupery.ArtMap.Config.Lang.Array.RECIPE_PAINTBUCKET;
+import static org.bukkit.ChatColor.DARK_GREEN;
+import static org.bukkit.ChatColor.GOLD;
+import static org.bukkit.ChatColor.ITALIC;
+import static org.bukkit.ChatColor.YELLOW;
+
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -13,13 +18,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
-
-import static me.Fupery.ArtMap.Config.Lang.Array.RECIPE_PAINTBUCKET;
-import static me.Fupery.ArtMap.Config.Lang.RECIPE_ARTWORK_ARTIST;
-import static me.Fupery.ArtMap.Config.Lang.RECIPE_PAINTBUCKET_NAME;
-import static org.bukkit.ChatColor.*;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Colour.DyeType;
+import me.Fupery.ArtMap.Colour.Palette;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 
 public class ArtItem {
 
@@ -30,6 +34,8 @@ public class ArtItem {
     public static final String KIT_KEY = "§8[ArtKit]";
     public static final String PREVIEW_KEY = "§b§oPreview Artwork";
     public static final String COPY_KEY = "§b§oArtwork Copy";
+	public static final String PAINT_BRUSH = "§b§oPaint Brush";
+
     private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getArtKit());
 
     public static ItemStack[] getArtKit() {

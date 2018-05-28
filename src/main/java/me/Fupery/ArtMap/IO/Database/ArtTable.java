@@ -1,14 +1,14 @@
 package me.Fupery.ArtMap.IO.Database;
 
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.IO.MapArt;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.IO.MapArt;
 
 public final class ArtTable extends SQLiteTable {
 
@@ -25,11 +25,13 @@ public final class ArtTable extends SQLiteTable {
     public MapArt getArtwork(String title) {
         return new QueuedQuery<MapArt>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
 
-            protected MapArt read(ResultSet set) throws SQLException {
+            @Override
+			protected MapArt read(ResultSet set) throws SQLException {
                 return (set.next()) ? readArtwork(set) : null;
             }
         }.execute("SELECT * FROM " + TABLE + " WHERE title=?;");
@@ -39,11 +41,13 @@ public final class ArtTable extends SQLiteTable {
     public MapArt getArtwork(short mapData) {
         return new QueuedQuery<MapArt>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapData);
             }
 
-            protected MapArt read(ResultSet set) throws SQLException {
+            @Override
+			protected MapArt read(ResultSet set) throws SQLException {
                 return (set.next()) ? readArtwork(set) : null;
             }
         }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
@@ -61,12 +65,14 @@ public final class ArtTable extends SQLiteTable {
     public boolean containsArtwork(MapArt art, boolean ignoreMapID) {
         return new QueuedQuery<Boolean>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());
             }
 
 
-            protected Boolean read(ResultSet set) throws SQLException {
+            @Override
+			protected Boolean read(ResultSet set) throws SQLException {
                 return set.next();
             }
         }.execute("SELECT title FROM " + TABLE + " WHERE title=?;")
@@ -77,11 +83,13 @@ public final class ArtTable extends SQLiteTable {
     public boolean containsMapID(short mapID) {
         return new QueuedQuery<Boolean>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapID);
             }
 
-            protected Boolean read(ResultSet set) throws SQLException {
+            @Override
+			protected Boolean read(ResultSet set) throws SQLException {
                 return set.next();
             }
         }.execute("SELECT id FROM " + TABLE + " WHERE id=?;");
@@ -91,16 +99,29 @@ public final class ArtTable extends SQLiteTable {
     public boolean deleteArtwork(String title) {
         return new QueuedStatement() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
         }.execute("DELETE FROM " + TABLE + " WHERE title=?;");
     }
 
+	public boolean renameArtwork(MapArt art, String nTitle) {
+		return new QueuedStatement() {
+
+			@Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
+				statement.setString(1, nTitle);
+				statement.setInt(2, art.getMapId());
+			}
+		}.execute("UPDATE " + TABLE + " SET title=? WHERE id=?;");
+	}
+
     public boolean deleteArtwork(short mapId) {
         return new QueuedStatement() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
         }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
@@ -110,11 +131,13 @@ public final class ArtTable extends SQLiteTable {
     public MapArt[] listMapArt(UUID artist) {
         return new QueuedQuery<MapArt[]>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, artist.toString());
             }
 
-            protected MapArt[] read(ResultSet results) throws SQLException {
+            @Override
+			protected MapArt[] read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
                     artworks.add(readArtwork(results));
@@ -128,11 +151,13 @@ public final class ArtTable extends SQLiteTable {
     public UUID[] listArtists(UUID player) {
         return new QueuedQuery<UUID[]>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, player.toString());
             }
 
-            protected UUID[] read(ResultSet results) throws SQLException {
+            @Override
+			protected UUID[] read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
                 artists.add(0, player);
                 try {
@@ -150,7 +175,8 @@ public final class ArtTable extends SQLiteTable {
     public void updateMapID(MapArt art) {
         new QueuedStatement() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, art.getMapId());
                 statement.setString(2, art.getTitle());
             }
@@ -159,7 +185,8 @@ public final class ArtTable extends SQLiteTable {
 
     public void addArtwork(MapArt art) {
         new QueuedStatement() {
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());
                 statement.setInt(2, art.getMapId());
                 statement.setString(3, art.getArtist().toString());

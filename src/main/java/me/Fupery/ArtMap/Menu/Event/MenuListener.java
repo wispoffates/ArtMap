@@ -2,7 +2,7 @@ package me.Fupery.ArtMap.Menu.Event;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
-import me.Fupery.ArtMap.Menu.HelpMenu.ArtworkMenu;
+import me.Fupery.ArtMap.Menu.HelpMenu.ArtistArtworksMenu;
 import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -117,7 +117,7 @@ public class MenuListener implements Listener {
         if (handler.isTrackingPlayer(event.getEntity())) {
             fireMenuEvent(new MenuCloseEvent(event.getEntity(), MenuCloseReason.DEATH));
             for (ItemStack item : event.getDrops()) {
-                if (ArtworkMenu.isPreviewItem(item)) item.setType(Material.AIR);
+                if (ArtistArtworksMenu.isPreviewItem(item)) item.setType(Material.AIR);
             }
         }
     }

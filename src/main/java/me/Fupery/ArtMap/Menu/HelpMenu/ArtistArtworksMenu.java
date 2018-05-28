@@ -1,18 +1,8 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
-import me.Fupery.ArtMap.Menu.API.ListMenu;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import me.Fupery.ArtMap.Preview.ArtPreview;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.VersionHandler;
-import me.Fupery.InventoryMenu.Utils.SoundCompat;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,15 +12,26 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-import java.util.UUID;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
-public class ArtworkMenu extends ListMenu implements ChildMenu {
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Menu.API.ChildMenu;
+import me.Fupery.ArtMap.Menu.API.ListMenu;
+import me.Fupery.ArtMap.Menu.Button.Button;
+import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
+import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.Utils.VersionHandler;
+
+public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     private final UUID artist;
     private ArtistMenu parent;
     private boolean adminViewing;
 
-    public ArtworkMenu(ArtistMenu parent, UUID artist, boolean adminViewing, int page) {
+    public ArtistArtworksMenu(ArtistMenu parent, UUID artist, boolean adminViewing, int page) {
         super(processTitle(artist), page);
         this.parent = parent;
         this.adminViewing = adminViewing;
@@ -87,9 +88,9 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
     private class PreviewButton extends Button {
 
         private final MapArt artwork;
-        private final ArtworkMenu artworkMenu;
+        private final ArtistArtworksMenu artworkMenu;
 
-        private PreviewButton(ArtworkMenu menu, MapArt artwork, boolean adminButton) {
+        private PreviewButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
             super(Material.MAP);
             ItemMeta meta = artwork.getMapItem().getItemMeta();
             List<String> lore = meta.getLore();
@@ -105,37 +106,8 @@ public class ArtworkMenu extends ListMenu implements ChildMenu {
         public void onClick(Player player, ClickType clickType) {
 
             if (clickType == ClickType.LEFT) {
-                if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-
-                    ItemStack offHand = player.getInventory().getItemInOffHand();
-                    if (offHand.getType() == Material.AIR || isPreviewItem(offHand)) {
-                        SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                        ItemStack preview = artwork.getMapItem();
-                        ItemMeta meta = preview.getItemMeta();
-                        List<String> lore = getItemMeta().getLore();
-                        lore.set(0, ArtItem.PREVIEW_KEY);
-                        meta.setLore(lore);
-                        preview.setItemMeta(meta);
-                        ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SPECIAL);
-                        player.getInventory().setItemInOffHand(preview);
-                        ArtMap.getMenuHandler().openMenu(player, this.artworkMenu);
-                    } else {
-                        Lang.EMPTY_HAND_PREVIEW.send(player);
-                    }
-                } else {
-                    ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
-
-                    ArtMap.getScheduler().SYNC.run(() -> {
-                        ArtMap.getPreviewManager().endPreview(player);
-                        SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                        if (player.getItemInHand().getType() != Material.AIR) {
-                            Lang.EMPTY_HAND_PREVIEW.send(player);
-                            return;
-                        }
-                        ArtMap.getPreviewManager().startPreview(player, new ArtPreview(artwork));
-                    });
-
-                }
+				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SWITCH);
+				ArtMap.getMenuHandler().openMenu(player, new ArtPieceMenu(this.artworkMenu, this.artwork, false));
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);

@@ -36,3 +36,10 @@ CANVAS:
     - "lel"
     - "epe"
     - "lel"
+
+PAINT_BRUSH:
+  MATERIALS:
+    s: STICK
+    r: RABBIT_HIDE
+    
+  
