@@ -1,13 +1,5 @@
 package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Compatability.CompatibilityManager;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Easel.Easel;
-import me.Fupery.ArtMap.Easel.EaselEffect;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.LocationHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -20,6 +12,15 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Compatability.CompatibilityManager;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.LocationHelper;
 
 class PlayerInteractListener implements RegisteredListener {
 
@@ -49,6 +50,15 @@ class PlayerInteractListener implements RegisteredListener {
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
         if (ArtMap.getPreviewManager().endPreview(event.getPlayer())) event.setCancelled(true);
+
+		// Don't place paint brushes in the world
+		if (ArtMaterial.getCraftItemType(event.getItem()) == ArtMaterial.PAINT_BRUSH) {
+			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(Lang.PAINTBRUSH_GROUND.get());
+				return;
+			}
+		}
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
                 || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
