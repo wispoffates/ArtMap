@@ -1,12 +1,13 @@
 package me.Fupery.ArtMap.Listeners;
 
+import org.bukkit.Location;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.world.ChunkUnloadEvent;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselMap;
 import me.Fupery.ArtMap.Utils.ChunkLocation;
-import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.world.ChunkUnloadEvent;
 
 class ChunkUnloadListener implements RegisteredListener {
 
@@ -18,7 +19,7 @@ class ChunkUnloadListener implements RegisteredListener {
             ArtMap.getScheduler().ASYNC.run(() -> {
                 for (Location location : easels.keySet()) {
                     Easel easel = easels.get(location);
-                    if (easel.getChunk().equals(chunk)) {
+					if (easel != null && easel.getChunk() != null && easel.getChunk().equals(chunk)) {
                         easels.remove(location);
                     }
                 }
