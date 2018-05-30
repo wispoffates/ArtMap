@@ -35,7 +35,9 @@ import org.bukkit.inventory.ItemStack;
 import me.Fupery.ArtMap.Config.Lang;
 
 public class BasicPalette implements Palette {
-	public final ArtDye VOID = new BasicDye(DYE_VOID.get(), 0, ChatColor.DARK_GREEN, Material.EYE_OF_ENDER),
+	public final ArtDye
+
+	VOID = new BasicDye(DYE_VOID.get(), 0, ChatColor.DARK_GREEN, Material.EYE_OF_ENDER),
 			GRASS = new BasicDye(DYE_GRASS.get(), 1, ChatColor.DARK_GREEN, Material.SEEDS),
 			CREAM = new BasicDye(DYE_CREAM.get(), 2, ChatColor.GOLD, Material.PUMPKIN_SEEDS),
 			LIGHT_GRAY = new BasicDye(Lang.DYE_LIGHT_GRAY.get(), 3, ChatColor.GRAY, Material.WEB), // new
@@ -94,7 +96,7 @@ public class BasicPalette implements Palette {
 			GREEN_TERRACOTTA = new BasicDye(Lang.DYE_GREEN_TERRACOTTA.get(), 49, ChatColor.GREEN,
 					Material.POISONOUS_POTATO), // new
 			RED_TERRACOTTA = new BasicDye(Lang.DYE_RED_TERRACOTTA.get(), 50, ChatColor.RED, Material.APPLE), // new
-			BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.BLACK, Materia, 1), // new
+			BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.BLACK, Material.COAL, 1), // new
 
 			// Shading Dyes
 			COAL = new ShadingDye(DYE_COAL.get(), true, ChatColor.DARK_GRAY, Material.COAL),
