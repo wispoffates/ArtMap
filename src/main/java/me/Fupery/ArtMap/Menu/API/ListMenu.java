@@ -92,7 +92,7 @@ public abstract class ListMenu extends CacheableMenu {
         boolean forward;
 
         private PageButton(boolean forward) {
-            super(forward ? Material.EMERALD : Material.BARRIER, forward ? "§a§l➡" : "§c§l⬅");
+			super(forward ? Material.MAGENTA_GLAZED_TERRACOTTA : Material.BARRIER, forward ? "§a§l➡" : "§c§l⬅");
             this.forward = forward;
         }
 

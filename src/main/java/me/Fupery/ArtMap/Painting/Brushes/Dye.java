@@ -1,13 +1,14 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import java.util.ArrayList;
+
+import org.bukkit.inventory.ItemStack;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
 
 public class Dye extends Brush {
     private ArrayList<CachedPixel> dirtyPixels;

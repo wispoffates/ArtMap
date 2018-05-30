@@ -4,10 +4,15 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
+import org.bukkit.map.MapView.Scale;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Fupery.ArtMap.ArtMap;
@@ -32,6 +37,34 @@ public class CommandHandler implements CommandExecutor {
 
 		// commands.put("preview", new CommandPreview());
 
+        /*
+		commands.put("pallete", new AsyncCommand("artmap.admin", "/artmap pallete", true) {
+			@Override
+			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+				MapView mapView = Bukkit.getServer().createMap(Bukkit.getWorld("world"));
+				mapView.getRenderers().clear();
+				mapView.setScale(Scale.CLOSEST);
+				mapView.addRenderer(new MapRenderer() {
+					@Override
+					public void render(MapView view, MapCanvas canvas, Player player) {
+						for (int y = 0; y < 128; y++) {
+							for (int x = 0; x < 128; x++) {
+								if (x < 64) {
+									canvas.setPixel(x, y, (byte) (y));
+								} else {
+									canvas.setPixel(x, y, (byte) (y + 128));
+								}
+							}
+						}
+					}
+				});
+				ItemStack map = new ItemStack(Material.MAP, 1);
+				map.setDurability(mapView.getId());
+				((Player) sender).getInventory().setItemInMainHand(map);
+			}
+		});
+		*/
+		
         commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas|artwork:<title>> [amount]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {

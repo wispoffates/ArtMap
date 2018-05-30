@@ -1,10 +1,14 @@
 package me.Fupery.ArtMap.Colour;
 
-import me.Fupery.ArtMap.Painting.Pixel;
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Painting.Pixel;
 
 public abstract class ArtDye {
     private final String name;
@@ -16,6 +20,10 @@ public abstract class ArtDye {
      * Durability value of -1 indicates that items of any durability will be accepted
      */
     protected ArtDye(String name, ChatColor chatColor, Material material, int durability) {
+		if (name == null) {
+			ArtMap.instance().getLogger().log(Level.SEVERE,
+					"Dye with material: " + material + " does not have a name set!");
+		}
         this.name = name;
         this.chatColour = chatColor;
         this.material = material;

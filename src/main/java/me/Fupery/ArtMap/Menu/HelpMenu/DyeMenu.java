@@ -1,41 +1,34 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Material;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Menu.API.BasicMenu;
-import me.Fupery.ArtMap.Menu.API.ChildMenu;
+import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.CloseButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
-import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 
-public class DyeMenu extends BasicMenu implements ChildMenu {
+public class DyeMenu extends ListMenu {
 
     public DyeMenu() {
-        super(Lang.MENU_DYES.get(), InventoryType.CHEST);
+		super("Dyes for Painting", 0);
     }
 
     @Override
-    public Button[] getButtons() {
-        Button[] buttons = new Button[27];
+	protected Button[] getListItems() {
+		List<Button> buttons = new ArrayList<>();
         ArtDye[] dyes = ArtMap.getDyePalette().getDyes(DyeType.DYE);
-        buttons[0] = new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get());
-        buttons[26] = new CloseButton();
+		buttons.add(new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get()));
+		// buttons[53] = new CloseButton();
 
-        for (int i = 1; i < 26; i++) {
-            ArtDye dye = dyes[i - 1];
-            buttons[i] = new StaticButton(dye.toItem());
+		for (ArtDye dye : dyes) {
+			buttons.add(new StaticButton(dye.toItem()));
         }
-        return buttons;
-    }
-
-    @Override
-    public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+		return buttons.toArray(new Button[0]);
     }
 }

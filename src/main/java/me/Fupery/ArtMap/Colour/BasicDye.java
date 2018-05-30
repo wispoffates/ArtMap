@@ -1,8 +1,9 @@
 package me.Fupery.ArtMap.Colour;
 
-import me.Fupery.ArtMap.Painting.Pixel;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+
+import me.Fupery.ArtMap.Painting.Pixel;
 
 public class BasicDye extends ArtDye {
 
@@ -21,8 +22,16 @@ public class BasicDye extends ArtDye {
         this(name, colour, chatColour, material, -1);
     }
 
+	/**
+	 * Return the byte color representation of this dye. ColorID * 4 + 1 Multiply by
+	 * 4 as each Minecraft color space is 4 wide. Add 1 to place it on the second
+	 * lightest color in the space as Minecraft color space is 3,2,1,4 brightness
+	 * for some reason.
+	 * 
+	 * @return The Minecraft byte color representation.
+	 */
     public byte getColour() {
-        return colour;
+        return (byte) ((this.colour*4)+1);
     }
 
     @Override

@@ -1,8 +1,9 @@
 package me.Fupery.ArtMap.Colour;
 
-import me.Fupery.ArtMap.Painting.Pixel;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+
+import me.Fupery.ArtMap.Painting.Pixel;
 
 public class ShadingDye extends ArtDye {
 
@@ -19,42 +20,34 @@ public class ShadingDye extends ArtDye {
     }
 
     @Override
-    public byte getDyeColour(byte currentPixelColour) {
-        if (currentPixelColour < 4) {
-            return currentPixelColour;
-        }
-        byte shade = currentPixelColour;
-        byte shift;
-
-        while (shade >= 4) {
-            shade -= 4;
-        }
+	public byte getDyeColour(final byte currentPixelColour) {
+		int current = (currentPixelColour & 0xFF); // convert back to int representation from signed byte
+		int shade = current % 4; // 0-3
+		int shift;
 
         if (darken) {
-
             if (shade > 0 && shade < 3) {
                 shift = -1;
-
             } else if (shade == 0) {
                 shift = 3;
-
             } else {
                 return currentPixelColour;
             }
-
         } else {
-
             if (shade < 2 && shade >= 0) {
                 shift = 1;
-
             } else if (shade == 3) {
                 shift = -3;
-
             } else {
                 return currentPixelColour;
             }
         }
-        return (byte) (currentPixelColour + shift);
+		/*
+		 * ArtMap.instance().getLogger().info("Current color=" + current +
+		 * " Current shade=" + shade + " Shift=" + shift + "New Color=" + (byte)
+		 * (current + shift));
+		 */
+		return (byte) (current + shift);
     }
 
     @Override
