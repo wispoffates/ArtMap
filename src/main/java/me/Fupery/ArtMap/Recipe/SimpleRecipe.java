@@ -1,13 +1,16 @@
 package me.Fupery.ArtMap.Recipe;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import me.Fupery.ArtMap.ArtMap;
 
 public abstract class SimpleRecipe {
 
@@ -15,9 +18,23 @@ public abstract class SimpleRecipe {
 
     public abstract ItemStack[] getPreview();
 
+	private String name;
+
+	public SimpleRecipe(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
     public static class Shaped extends SimpleRecipe {
 
-        private HashMap<Character, Ingredient> items = new HashMap<>();
+		public Shaped(String name) {
+			super(name);
+		}
+
+		private HashMap<Character, Ingredient> items = new HashMap<>();
         private String[] shape;
 
         public Shaped shape(String... rows) {
@@ -43,7 +60,8 @@ public abstract class SimpleRecipe {
 
         @Override
         public Recipe toBukkitRecipe(ItemStack result) {
-            ShapedRecipe recipe = new ShapedRecipe(result);
+			NamespacedKey key = new NamespacedKey(ArtMap.instance(), this.getName());
+			ShapedRecipe recipe = new ShapedRecipe(key, result);
             recipe.shape(shape);
             for (Character c : items.keySet()) {
                 Ingredient item = items.get(c);
@@ -68,7 +86,11 @@ public abstract class SimpleRecipe {
 
     public static class Shapeless extends SimpleRecipe {
 
-        private ArrayList<Ingredient> items = new ArrayList<>();
+		public Shapeless(String name) {
+			super(name);
+		}
+
+		private ArrayList<Ingredient> items = new ArrayList<>();
 
         public Shapeless add(Material material, int durability, int amount) {
             items.add(new Ingredient.WrappedMaterial(material, durability, amount));
@@ -90,7 +112,8 @@ public abstract class SimpleRecipe {
 
         @Override
         public Recipe toBukkitRecipe(ItemStack result) {
-            ShapelessRecipe recipe = new ShapelessRecipe(result);
+			NamespacedKey key = new NamespacedKey(ArtMap.instance(), this.getName());
+			ShapelessRecipe recipe = new ShapelessRecipe(key, result);
             for (Ingredient item : items) {
                 recipe.addIngredient(item.getAmount(), item.getMaterial(), item.getDurability());
             }

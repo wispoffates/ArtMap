@@ -1,17 +1,18 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Configuration;
-import me.Fupery.ArtMap.IO.YamlReader;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Recipe;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Configuration;
+import me.Fupery.ArtMap.IO.YamlReader;
 
 public class RecipeLoader {
     private final FileConfiguration recipeFile;
@@ -44,7 +45,8 @@ public class RecipeLoader {
         boolean recipeIsShaped = shape != null && shape.size() != 0;
         HashMap<Character, Ingredient> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
-        SimpleRecipe recipe = recipeIsShaped ? new SimpleRecipe.Shaped() : new SimpleRecipe.Shapeless();
+		SimpleRecipe recipe = recipeIsShaped ? new SimpleRecipe.Shaped(recipeName)
+				: new SimpleRecipe.Shapeless(recipeName);
 
         if (recipeIsShaped) {
             validateRecipeShape(recipeName, shape);
