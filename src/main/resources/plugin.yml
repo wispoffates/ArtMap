@@ -7,10 +7,8 @@ softdepend: [WorldGuard, ProtocolLib, Factions, Denizen, GriefPrevention, RedPro
 author: Fupery
 
 commands:
-  artmap:
+  art:
       usage:  |
-        <command> save <title> : Save your artwork
-        <command> delete <title> : Remove your artwork
         <command> preview <title> : Preview an artwork
         <command> help : Display help
         <command> reload : Reloads the config

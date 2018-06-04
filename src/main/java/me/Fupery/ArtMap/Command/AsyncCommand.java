@@ -1,11 +1,12 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
 
 abstract class AsyncCommand {
 
@@ -22,7 +23,7 @@ abstract class AsyncCommand {
         if (usage == null) {
             throw new IllegalArgumentException("Usage must not be null");
         }
-        String[] args = usage.replace("/artmap ", "").split("\\s+");
+		String[] args = usage.replace("/art ", "").split("\\s+");
         maxArgs = args.length;
         minArgs = maxArgs - StringUtils.countMatches(usage, "[");
         this.usage = usage;

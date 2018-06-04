@@ -37,24 +37,27 @@ public class CommandHandler implements CommandExecutor {
 
 		// commands.put("preview", new CommandPreview());
 
-        /*
-		commands.put("pallete", new AsyncCommand("artmap.admin", "/artmap pallete", true) {
+		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-				MapView mapView = Bukkit.getServer().createMap(Bukkit.getWorld("world"));
+				MapView mapView = Bukkit.getServer().createMap(((Player) sender).getWorld());
 				mapView.getRenderers().clear();
 				mapView.setScale(Scale.CLOSEST);
 				mapView.addRenderer(new MapRenderer() {
+					boolean done = false;
 					@Override
 					public void render(MapView view, MapCanvas canvas, Player player) {
-						for (int y = 0; y < 128; y++) {
-							for (int x = 0; x < 128; x++) {
-								if (x < 64) {
-									canvas.setPixel(x, y, (byte) (y));
-								} else {
-									canvas.setPixel(x, y, (byte) (y + 128));
+						if (!done) {
+							for (int y = 0; y < 128; y++) {
+								for (int x = 0; x < 128; x++) {
+									if (x < 64) {
+										canvas.setPixel(x, y, (byte) (y));
+									} else {
+										canvas.setPixel(x, y, (byte) (y + 128));
+									}
 								}
 							}
+							done = true;
 						}
 					}
 				});
@@ -63,9 +66,9 @@ public class CommandHandler implements CommandExecutor {
 				((Player) sender).getInventory().setItemInMainHand(map);
 			}
 		});
-		*/
 		
-        commands.put("give", new AsyncCommand("artmap.admin", "/artmap give <player> <easel|canvas|artwork:<title>> [amount]", true) {
+		commands.put("give",
+				new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork:<title>> [amount]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 Player player = Bukkit.getPlayer(args[1]);
@@ -102,7 +105,7 @@ public class CommandHandler implements CommandExecutor {
         });
 
         //convenience commands
-        commands.put("help", new AsyncCommand("artmap.menu", "/artmap [help]", true) {
+		commands.put("help", new AsyncCommand("artmap.menu", "/art [help]", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 if (sender instanceof Player) {
@@ -120,7 +123,7 @@ public class CommandHandler implements CommandExecutor {
                 }
             }
         });
-        commands.put("reload", new AsyncCommand("artmap.admin", "/artmap reload", true) {
+		commands.put("reload", new AsyncCommand("artmap.admin", "/art reload", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 ArtMap.getScheduler().SYNC.run(() -> {

@@ -1,5 +1,15 @@
 package me.Fupery.ArtMap;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.lang.ref.SoftReference;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import me.Fupery.ArtMap.Colour.BasicPalette;
 import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Command.CommandHandler;
@@ -7,12 +17,12 @@ import me.Fupery.ArtMap.Compatability.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.EaselMap;
-import me.Fupery.ArtMap.IO.Database.Database;
 import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
 import me.Fupery.ArtMap.IO.PixelTableManager;
-import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
+import me.Fupery.ArtMap.IO.Database.Database;
+import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
+import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
@@ -20,15 +30,6 @@ import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.Scheduler;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.lang.ref.SoftReference;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class ArtMap extends JavaPlugin {
 
@@ -154,7 +155,7 @@ public class ArtMap extends JavaPlugin {
         eventManager = new EventManager(this, bukkitVersion);
         previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
-        getCommand("artmap").setExecutor(new CommandHandler());
+		getCommand("art").setExecutor(new CommandHandler());
         disabled = false;
     }
 
