@@ -26,3 +26,6 @@ forceArtKit: false
 
 #If true, return messages to players will not have the [ArtMap] prefix.
 hidePrefix: false
+
+#Force use of the GUI and disable most slash commands for a bit more immersive feel
+guiOnly: false

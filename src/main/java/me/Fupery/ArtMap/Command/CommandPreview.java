@@ -1,22 +1,27 @@
 package me.Fupery.ArtMap.Command;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Preview.ArtPreview;
-import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Preview.ArtPreview;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+
 class CommandPreview extends AsyncCommand {
 
     CommandPreview() {
-        super(null, "/artmap preview <title>", false);
+		super(null, "/art preview <title>", false);
     }
 
     private static boolean previewArtwork(final Player player, final MapArt art) {
+		if (ArtMap.getConfiguration().FORCE_GUI) {
+			player.sendMessage("Please use the Paint Brush to access previews.");
+			return false;
+		}
 
         if (player.hasPermission("artmap.admin")) {
             ArtMap.getScheduler().SYNC.run(() -> {

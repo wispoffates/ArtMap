@@ -51,7 +51,8 @@ public class ArtItem {
         itemStack[25] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
         itemStack[26] = new KitItem(Material.COAL, "§7§lCoal").toItemStack();
         itemStack[27] = new KitItem(Material.COMPASS, "§6§lCompass").toItemStack();
-        itemStack[28] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
+		itemStack[28] = ArtMaterial.PAINT_BRUSH.getItem();
+		itemStack[29] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
         kitReference = new WeakReference<>(itemStack);
         return kitReference.get();
     }

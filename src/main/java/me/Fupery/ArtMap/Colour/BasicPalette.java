@@ -96,7 +96,7 @@ public class BasicPalette implements Palette {
 			GREEN_TERRACOTTA = new BasicDye(Lang.DYE_GREEN_TERRACOTTA.get(), 49, ChatColor.GREEN,
 					Material.POISONOUS_POTATO), // new
 			RED_TERRACOTTA = new BasicDye(Lang.DYE_RED_TERRACOTTA.get(), 50, ChatColor.RED, Material.APPLE), // new
-			BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.BLACK, Material.COAL, 1), // new
+			BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.DARK_GRAY, Material.COAL, 1), // new
 
 			// Shading Dyes
 			COAL = new ShadingDye(DYE_COAL.get(), true, ChatColor.DARK_GRAY, Material.COAL),

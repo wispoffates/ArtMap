@@ -31,11 +31,11 @@ public class CommandHandler implements CommandExecutor {
         commands = new HashMap<>();
         //Commands go here - note that they are run on an async thread
 
-		// commands.put("save", new CommandSave());
+		commands.put("save", new CommandSave());
 
-		// commands.put("delete", new CommandDelete());
+		commands.put("delete", new CommandDelete());
 
-		// commands.put("preview", new CommandPreview());
+		commands.put("preview", new CommandPreview());
 
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override

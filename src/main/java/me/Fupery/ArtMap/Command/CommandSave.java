@@ -1,5 +1,10 @@
 package me.Fupery.ArtMap.Command;
 
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
@@ -7,22 +12,22 @@ import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 class CommandSave extends AsyncCommand {
 
     private TitleFilter filter;
 
     CommandSave() {
-        super("artmap.artist", "/artmap save <title>", false);
+		super("artmap.artist", "/art save <title>", false);
         this.filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
     }
 
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+		if (ArtMap.getConfiguration().FORCE_GUI) {
+			sender.sendMessage("Please use the Paint Brush to save.");
+			return;
+		}
 
         final String title = args[1];
 

@@ -1,19 +1,25 @@
 package me.Fupery.ArtMap.Command;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 class CommandDelete extends AsyncCommand {
 
     CommandDelete() {
-        super(null, "/artmap delete <title>", true);
+		super(null, "/art delete <title>", true);
     }
 
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+		if (ArtMap.getConfiguration().FORCE_GUI) {
+			sender.sendMessage("Please use the Paint Brush to access the artwork for delete.");
+			return;
+		}
+
         MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
 
         if (art == null) {
