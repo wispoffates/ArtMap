@@ -12,7 +12,7 @@
 # will become "Successfully saved Art".
 # So any time you see '%s', don't change it! Just change the words around it.
 #
-# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+# Any time you see "/art", leave that unchanged as well (this is the help command)
 #
 # Any time you see § next to a number or letter (something like §a or §2), this is a colour code
 
@@ -38,7 +38,7 @@ NO_PERM_ACTION: "§4§lYou don't have permission to do this."
 ELSE_USING: "§4§lSomeone else is using this canvas!"
 PAINTBRUSH_GROUND: "§cYou shouldn't throw your brush on the ground like that!"
 NOT_RIDING_EASEL: "§cYou must be sitting at your easel to save."
-NEED_CANVAS: "§4§lPlace a canvas on the easel to paint. §3§l/artmap §4§lfor more info."
+NEED_CANVAS: "§4§lPlace a canvas on the easel to paint. §3§l/art §4§lfor more info."
 NOT_YOUR_EASEL: "§cYou cannot destroy %s's artwork!"
 BREAK_CANVAS: "Sneak + Right-Click the easel to break it."
 MAP_NOT_FOUND: "§cArtwork '%s' could not be found."
