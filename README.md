@@ -1,4 +1,7 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
+
+This is not my original work and belongs to Fupery.  I continue maintenance of this plugin in his absence for my personal use.  As he had the code pulibicly available I have continued that with my updates.  I ask that anyone that uses this plugin have either previosly bought it from spigot.  Or please do so in the future if Fupery returns.
+
 Bukkit plugin - allows players to draw directly onto minecraft maps. 
 User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
 
