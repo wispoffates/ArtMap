@@ -7,7 +7,7 @@ I've moved this project to gitlab https://gitlab.com/BlockStack/ArtMap.  Mirrori
 This is not my original work and belongs to Fupery.  I continue maintenance of this plugin in his absence for my personal use.  As he had the code freely available I have continued that with my updates.  I ask that anyone that uses this plugin have either previously bought it from spigot.  Or please do so in the future if Fupery returns.
 
 Bukkit plugin - allows players to draw directly onto minecraft maps. 
-User guide at [ArtMap Wiki](https://github.com/Fupery/ArtMap/wiki).
+User guide at [ArtMap Wiki](https://gitlab.com/BlockStack/ArtMap/wikis/home).
 
 ### Features
 * Custom easel entity
