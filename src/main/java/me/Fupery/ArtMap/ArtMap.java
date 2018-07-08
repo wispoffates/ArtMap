@@ -6,8 +6,16 @@ import java.io.Reader;
 import java.lang.ref.SoftReference;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Fupery.ArtMap.Colour.BasicPalette;
@@ -51,6 +59,8 @@ public class ArtMap extends JavaPlugin {
     private Palette dyePalette;
     private boolean recipesLoaded = false;
     private boolean disabled;
+
+	private Map<UUID, SkullMeta> playerSkullMetas;
 
     public static Database getArtDatabase() {
         return instance().database;
@@ -123,6 +133,10 @@ public class ArtMap extends JavaPlugin {
         this.dyePalette = palette;
     }
 
+	public Map<UUID, SkullMeta> getPlayerSkullMetaCache() {
+		return this.playerSkullMetas;
+	}
+
     @Override
     public void onEnable() {
         pluginInstance = new SoftReference<>(this);
@@ -156,6 +170,12 @@ public class ArtMap extends JavaPlugin {
         previewManager = new PreviewManager();
         menuHandler = new MenuHandler(this);
 		getCommand("art").setExecutor(new CommandHandler());
+		this.playerSkullMetas = new HashMap<>();
+		// load the artist button cache
+		this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
+			this.initButtonCache();
+		});
+
         disabled = false;
     }
 
@@ -169,8 +189,29 @@ public class ArtMap extends JavaPlugin {
         database.close();
 //        recipeLoader.unloadRecipes();
         reloadConfig();
+		this.playerSkullMetas = null;
         pluginInstance = null;
     }
+
+	private void initButtonCache() {
+		UUID[] artists = ArtMap.getArtDatabase().listArtists(UUID.randomUUID());
+		this.getLogger().info(MessageFormat.format("Async load of {0} artists started.", artists.length));
+		// skip the first one since we dummied it
+		for (int i = 1; i < artists.length; i++) {
+			ItemStack tempSkull = new ItemStack(Material.SKULL_ITEM);
+			SkullMeta meta = (SkullMeta) tempSkull.getItemMeta();
+
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artists[i]);
+			if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+				meta.setOwner(offlinePlayer.getName());
+				meta.setDisplayName(offlinePlayer.getName());
+			} else {
+				meta.setDisplayName(artists[i].toString());
+			}
+			this.playerSkullMetas.put(artists[i], meta);
+		}
+		this.getLogger().info(MessageFormat.format("Async load of {0} artists completed.", artists.length));
+	}
 
     public boolean writeResource(String resourcePath, File destination) {
         String writeError = String.format("Cannot write resource '%s' to destination '%s'.",

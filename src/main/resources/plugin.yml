@@ -8,6 +8,7 @@ author: Fupery
 
 commands:
   art:
+      aliases: artmap
       usage:  |
         <command> save <title> : Save your artwork
         <command> delete <title> : Remove your artwork

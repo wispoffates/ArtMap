@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -67,9 +66,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
     @Override
     protected Button[] getListItems() {
-        OfflinePlayer player = Bukkit.getOfflinePlayer(artist);
-        if (player == null || !player.hasPlayedBefore()) return new Button[0];
-        MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(player.getUniqueId());
+		MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(this.artist);
         Button[] buttons;
 
         if (artworks != null && artworks.length > 0) {

@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -22,71 +24,75 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public class ArtistMenu extends ListMenu implements ChildMenu {
 
-    private final UUID viewer;
+	private final UUID viewer;
 
-    public ArtistMenu(Player viewer) {
-        super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
-        this.viewer = viewer.getUniqueId();
-    }
+	public ArtistMenu(Player viewer) {
+		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
+		this.viewer = viewer.getUniqueId();
+	}
 
-    @Override
-    public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
-    }
+	@Override
+	public CacheableMenu getParent(Player viewer) {
+		return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+	}
 
-    @Override
-    protected Button[] getListItems() {
-        UUID[] artists = ArtMap.getArtDatabase().listArtists(viewer);
-        Button[] buttons;
+	@Override
+	protected Button[] getListItems() {
+		UUID[] artists = ArtMap.getArtDatabase().listArtists(viewer);
+		List<Button> buttons = new LinkedList<Button>();
 
-        if (artists != null && artists.length > 0) {
-            buttons = new Button[artists.length];
+		// skip 0 as it is the viewer
+		for (int i = 1; i < artists.length; i++) {
+			buttons.add(new ArtworkListButton(artists[i]));
+		}
+		// sort the list
+		buttons.sort((Button o1, Button o2) -> o1.getItemMeta().getDisplayName().toLowerCase()
+				.compareTo(o2.getItemMeta().getDisplayName().toLowerCase()));
+		buttons.add(0, new ArtworkListButton(viewer)); // add viewer first
+		return buttons.toArray(new Button[0]);
+	}
 
-            for (int i = 0; i < artists.length; i++) {
-                OfflinePlayer artist = Bukkit.getOfflinePlayer(artists[i]);
-                if (artist == null || !artist.hasPlayedBefore()) continue;
-                buttons[i] = new ArtworkListButton(artist);
-            }
+	public Player getViewer() {
+		return Bukkit.getPlayer(viewer);
+	}
 
-        } else {
-            buttons = new Button[0];
-        }
-        return buttons;
-    }
+	private ArtistMenu getMenu() {
+		return this;
+	}
 
-    public Player getViewer() {
-        return Bukkit.getPlayer(viewer);
-    }
+	public class ArtworkListButton extends Button {
 
-    private ArtistMenu getMenu() {
-        return this;
-    }
+		final UUID artist;
 
-    private class ArtworkListButton extends Button {
+		public ArtworkListButton(UUID artist) {
+			super(Material.SKULL_ITEM, 3);
+			this.artist = artist;
 
-        final UUID artist;
+			SkullMeta meta = (SkullMeta) getItemMeta();
+			// check cache
+			if (ArtMap.instance().getPlayerSkullMetaCache().containsKey(artist)) {
+				meta = ArtMap.instance().getPlayerSkullMetaCache().get(artist);
+			} else { // cache miss
+				ArtMap.instance().getLogger().info("Cache Miss!");
+				meta = (SkullMeta) getItemMeta();
+				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artist);
+				if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
+					meta.setOwner(offlinePlayer.getName());
+					meta.setDisplayName(offlinePlayer.getName());
+				} else {
+					meta.setDisplayName(artist.toString());
+				}
+				ArtMap.instance().getPlayerSkullMetaCache().put(artist, meta); // add to cache
+			}
+			meta.setLore(Collections.singletonList(HelpMenu.CLICK));
+			setItemMeta(meta);
+		}
 
-        public ArtworkListButton(OfflinePlayer artist) {
-            super(Material.SKULL_ITEM);
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artist.getUniqueId());
-
-            setDurability((short) 3);
-            SkullMeta meta = (SkullMeta) getItemMeta();
-
-            meta.setOwner(offlinePlayer.getName());
-            meta.setDisplayName(offlinePlayer.getName());
-            meta.setLore(Collections.singletonList(HelpMenu.CLICK));
-            setItemMeta(meta);
-            this.artist = artist.getUniqueId();
-        }
-
-        @Override
-        public void onClick(Player player, ClickType clickType) {
-            SoundCompat.UI_BUTTON_CLICK.play(player);
-            ArtMap.getMenuHandler().openMenu(player,
-                    new ArtistArtworksMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
-        }
-    }
+		@Override
+		public void onClick(Player player, ClickType clickType) {
+			SoundCompat.UI_BUTTON_CLICK.play(player);
+			ArtMap.getMenuHandler().openMenu(player,
+					new ArtistArtworksMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
+		}
+	}
 }
-
-
