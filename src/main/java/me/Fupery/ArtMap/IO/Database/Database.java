@@ -183,12 +183,12 @@ public final class Database {
 //            ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
 
             short topMapId = Map.getNextMapId();
-            if (topMapId == -1 || topMapId < mapId.getId()) {
-                ArtMap.instance().getLogger().warning(String.format(
-                        "Map Id %s could not be restored: the current maximum valid mapId is: %s.",
-                        mapId.getId(), topMapId));
-                return false;
-            }
+			/*
+			 * if (topMapId == -1 || topMapId < mapId.getId()) {
+			 * ArtMap.instance().getLogger().warning(String.format(
+			 * "Map Id %s could not be restored: the current maximum valid mapId is: %s.",
+			 * mapId.getId(), topMapId)); return false; }
+			 */
             ArtMap.instance().writeResource("blank.dat", map.getDataFile());
             needsRestore = true;
         } else {
