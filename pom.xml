@@ -3,7 +3,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>io.github.wispoffates</groupId>
+	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
 	<version>2.7.0</version>
 	<description>Make pixel art!</description>
@@ -207,4 +207,12 @@
 			<version>4.7.8.2</version>
 		</dependency>
 	</dependencies>
+	<scm>
+		<url>https://gitlab.com/BlockStack/ArtMap</url>
+		<developerConnection>wispoffates</developerConnection>
+	</scm>
+	<issueManagement>
+		<system>gitlab</system>
+		<url>https://gitlab.com/BlockStack/ArtMap/issues</url>
+	</issueManagement>
 </project>
