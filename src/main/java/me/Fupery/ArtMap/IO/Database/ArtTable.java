@@ -159,7 +159,9 @@ public final class ArtTable extends SQLiteTable {
             @Override
 			protected UUID[] read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
-                artists.add(0, player);
+				if (player != null) {
+					artists.add(0, player);
+				}
                 try {
                     while (results.next()) {
                         artists.add(UUID.fromString(results.getString("artist")));
@@ -171,6 +173,10 @@ public final class ArtTable extends SQLiteTable {
             }
         }.execute("SELECT DISTINCT artist FROM " + TABLE + " WHERE artist!=? ORDER BY artist;");
     }
+
+	public UUID[] listArtists() {
+		return this.listArtists(null);
+	}
 
     public void updateMapID(MapArt art) {
         new QueuedStatement() {

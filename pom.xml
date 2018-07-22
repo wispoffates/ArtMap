@@ -93,6 +93,10 @@
 			<id>wesjd-repo</id>
 			<url>https://nexus.wesjd.net/repository/thirdparty/</url>
 		</repository>
+		<repository>
+			<id>citizen</id>
+			<url>http://repo.citizensnpcs.co</url>
+		</repository>
 		<!-- My Repo with all the things I couldn't find in the other repos -->
 		<repository>
 			<id>troytech-public-repo</id>
@@ -195,16 +199,19 @@
 			<groupId>com.wasteofplastic</groupId>
 			<artifactId>askyblock</artifactId>
 			<version>3.0.8.2</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.plotsquared</groupId>
 			<artifactId>PlotSquared-Bukkit</artifactId>
 			<version>18.07.06</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.bekvon</groupId>
 			<artifactId>Residence</artifactId>
 			<version>4.7.8.2</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<scm>
