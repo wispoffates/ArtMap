@@ -73,7 +73,7 @@ public final class ArtTable extends SQLiteTable {
 
             @Override
 			protected Boolean read(ResultSet set) throws SQLException {
-                return set.next();
+				return set.isBeforeFirst();
             }
         }.execute("SELECT title FROM " + TABLE + " WHERE title=?;")
                 && (ignoreMapID || containsMapID(art.getMapId()));
@@ -90,7 +90,7 @@ public final class ArtTable extends SQLiteTable {
 
             @Override
 			protected Boolean read(ResultSet set) throws SQLException {
-                return set.next();
+				return set.isBeforeFirst();
             }
         }.execute("SELECT id FROM " + TABLE + " WHERE id=?;");
     }
@@ -189,8 +189,8 @@ public final class ArtTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET id=? WHERE title=?;");
     }
 
-    public void addArtwork(MapArt art) {
-        new QueuedStatement() {
+	public boolean addArtwork(MapArt art) {
+		return new QueuedStatement() {
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, art.getTitle());

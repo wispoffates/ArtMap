@@ -34,6 +34,7 @@ public class ArtItem {
     public static final String KIT_KEY = "§8[ArtKit]";
     public static final String PREVIEW_KEY = "§b§oPreview Artwork";
     public static final String COPY_KEY = "§b§oArtwork Copy";
+	public static final String COPY_KEY_ID = "§b§oArtwork Copy ID";
 	public static final String PAINT_BRUSH = "§b§oPaint Brush";
 
     private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getArtKit());

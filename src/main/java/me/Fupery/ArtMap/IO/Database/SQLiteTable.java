@@ -1,8 +1,12 @@
 package me.Fupery.ArtMap.IO.Database;
 
-import me.Fupery.ArtMap.IO.ErrorLogger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import java.sql.*;
+import me.Fupery.ArtMap.IO.ErrorLogger;
 
 public class SQLiteTable {
     protected static final String sqlError = "Database error,";
@@ -61,7 +65,7 @@ public class SQLiteTable {
                 prepare(statement);
                 result = statement.executeBatch();
             } catch (Exception e) {
-                ErrorLogger.log(e, sqlError);
+				ErrorLogger.log(statement, e, sqlError);
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
@@ -69,11 +73,13 @@ public class SQLiteTable {
             return result;
         }
 
-        protected Boolean read(ResultSet set) throws SQLException {
+        @Override
+		protected Boolean read(ResultSet set) throws SQLException {
             return false;//unused
         }
 
-        public Boolean execute(String query) {
+        @Override
+		public Boolean execute(String query) {
             Connection connection = null;
             PreparedStatement statement = null;
             boolean result = false;
@@ -85,7 +91,7 @@ public class SQLiteTable {
                 prepare(statement);
                 result = (statement.executeUpdate() != 0);
             } catch (Exception e) {
-                ErrorLogger.log(e, sqlError);
+				ErrorLogger.log(statement, e, sqlError);
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
@@ -125,7 +131,7 @@ public class SQLiteTable {
                 prepare(statement);
                 result = read(statement.executeQuery());
             } catch (Exception e) {
-                ErrorLogger.log(e, sqlError);
+				ErrorLogger.log(statement, e, sqlError);
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();

@@ -9,6 +9,7 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import net.md_5.bungee.api.ChatColor;
 
 public final class EaselEvent {
 	private final Easel easel;
@@ -55,6 +56,11 @@ public final class EaselEvent {
 			if (material == ArtMaterial.CANVAS) {
 				// Mount a canvas on the easel
 				Map map = ArtMap.getArtDatabase().createMap();
+				if (map == null) {
+					player.sendMessage(
+							ChatColor.RED + " Severe Error.  Pleae contact a server Admin! " + ChatColor.RESET);
+					return;
+				}
 				map.update(player);
 				mountCanvas(itemInHand, new Canvas(map));
 			} else if (material == ArtMaterial.MAP_ART) {
@@ -68,7 +74,8 @@ public final class EaselEvent {
 								easel.playEffect(EaselEffect.USE_DENIED);
 								return;
 							}
-							Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art.getTitle());
+							Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art.getTitle(),
+									art.getMapId());
 							mountCanvas(itemInHand, canvas);
 						} else {
 							Lang.ActionBar.NEED_CANVAS.send(player);

@@ -1,13 +1,18 @@
 package me.Fupery.ArtMap.Compatability;
 
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.Utils.Reflection;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+import io.netty.channel.Channel;
+import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArt;
+import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArtist;
+import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArtists;
+import me.Fupery.ArtMap.Utils.Reflection;
+import net.aufdemrand.denizencore.objects.ObjectFetcher;
 
 public class DenizenCompat implements ReflectionHandler {
 
@@ -16,6 +21,12 @@ public class DenizenCompat implements ReflectionHandler {
     DenizenCompat() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");
         loaded = (plugin != null && plugin.isEnabled());
+		// Add denizen objects for use in scripts
+		if (loaded) {
+			ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
+			ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
+			ObjectFetcher.registerWithObjectFetcher(ArtMapArtists.class);
+		}
     }
 
     //don't ask.

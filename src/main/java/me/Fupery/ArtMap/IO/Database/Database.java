@@ -5,11 +5,15 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.Canvas;
+import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapArt;
@@ -65,16 +69,50 @@ public final class Database {
         return artworks.getArtwork(id);
     }
 
-    public boolean saveArtwork(MapArt art) {
-        MapView mapView = getMap(art.getMapId());
-        accessSQL(() -> {
-            artworks.addArtwork(art);
-            CompressedMap map = CompressedMap.compress(mapView);
-            if (maps.containsMap(art.getMapId())) maps.updateMap(map);
-            else maps.addMap(map);
-        });
-        return true;
-    }
+	// TODO: Feels wrong to handle all of this here.
+	public MapArt saveArtwork(Canvas art, String title, Player player) {
+		// handle update case or all ready used name
+		MapArt mapArt = ArtMap.getArtDatabase().getArtwork(title);
+		if (mapArt != null) { // same name
+			if (art instanceof Canvas.CanvasCopy) {
+				CanvasCopy copy = CanvasCopy.class.cast(art);
+				if (copy.getOriginalId().equals(mapArt.getMapId())) {
+					if (mapArt.getArtist().equals(player.getUniqueId()) || player.isOp()
+							|| player.hasPermission("artmap.admin")) {
+						// update
+						MapView newView = getMap(art.getMapId());
+						// Force update of map data
+						mapArt.getMap().setMap(Reflection.getMap(newView), true);
+						// Update database
+						CompressedMap map = CompressedMap.compress(copy.getOriginalId(), newView);
+						maps.updateMap(map);
+						return mapArt;
+					} else {
+						Lang.NO_PERM.send(player);
+						return null;
+					}
+				}
+			} else {
+				// duplicate name
+				Lang.TITLE_USED.send(player);
+				return null;
+			}
+		}
+		// new artwork
+		mapArt = new MapArt(art.getDurability(), title, player);
+		MapView mapView = getMap(art.getMapId());
+		CompressedMap map = CompressedMap.compress(mapView);
+		boolean success = artworks.addArtwork(mapArt);
+		if (!success) {
+			return null;
+		}
+		if (maps.containsMap(map.getId())) {
+			maps.updateMap(map);
+		} else {
+			maps.addMap(map);
+		}
+		return mapArt;
+	}
 
     public boolean deleteArtwork(MapArt art) {
         if (artworks.deleteArtwork(art.getTitle())) {
@@ -162,6 +200,9 @@ public final class Database {
         } else {
             mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
         }
+		if (mapView == null) {
+			ArtMap.instance().getLogger().severe("MapView creation Failed! id=" + id);
+		}
         Reflection.setWorldMap(mapView, Map.BLANK_MAP);
         return new Map(mapView);
     }

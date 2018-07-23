@@ -1,14 +1,14 @@
 package me.Fupery.ArtMap.IO.Database;
 
-import me.Fupery.ArtMap.IO.CompressedMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.IO.MapId;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import me.Fupery.ArtMap.IO.CompressedMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.IO.MapId;
 
 public final class MapTable extends SQLiteTable {
     public MapTable(SQLiteDatabase database) {
@@ -22,7 +22,8 @@ public final class MapTable extends SQLiteTable {
 
     public void addMap(CompressedMap map) {
         new QueuedStatement() {
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, map.getId());
                 statement.setInt(2, map.getHash());
                 statement.setBytes(3, map.getCompressedMap());
@@ -32,7 +33,8 @@ public final class MapTable extends SQLiteTable {
 
     void updateMapId(int oldMapId, int newMapId) {
         new QueuedStatement() {
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, newMapId);
                 statement.setInt(2, oldMapId);
             }
@@ -42,7 +44,8 @@ public final class MapTable extends SQLiteTable {
     public boolean deleteMap(short mapId) {
         return new QueuedStatement() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
         }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
@@ -57,7 +60,7 @@ public final class MapTable extends SQLiteTable {
 
             @Override
             protected Boolean read(ResultSet set) throws SQLException {
-                return set.next();
+				return set.isBeforeFirst();
             }
         }.execute("SELECT hash FROM " + TABLE + " WHERE id=?;");
     }
@@ -76,11 +79,13 @@ public final class MapTable extends SQLiteTable {
     public CompressedMap getMap(short mapId) {
         return new QueuedQuery<CompressedMap>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
 
-            protected CompressedMap read(ResultSet set) throws SQLException {
+            @Override
+			protected CompressedMap read(ResultSet set) throws SQLException {
                 if (!set.next()) return null;
                 short id = (short) set.getInt("id");
                 int hash = set.getInt("hash");
@@ -93,11 +98,13 @@ public final class MapTable extends SQLiteTable {
     public Integer getHash(short mapId) {
         return new QueuedQuery<Integer>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
 
-            protected Integer read(ResultSet set) throws SQLException {
+            @Override
+			protected Integer read(ResultSet set) throws SQLException {
                 return (set.next()) ? set.getInt("hash") : null;
             }
         }.execute("SELECT hash FROM " + TABLE + " WHERE id=?;");
@@ -107,10 +114,12 @@ public final class MapTable extends SQLiteTable {
     List<MapId> getMapIds() {
         return new QueuedQuery<List<MapId>>() {
 
-            protected void prepare(PreparedStatement statement) throws SQLException {
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
             }
 
-            protected List<MapId> read(ResultSet set) throws SQLException {
+            @Override
+			protected List<MapId> read(ResultSet set) throws SQLException {
                 List<MapId> mapHashes = new ArrayList<>();
                 while (set.next()) {
                     mapHashes.add(new MapId((short) set.getInt("id"), set.getInt("hash")));

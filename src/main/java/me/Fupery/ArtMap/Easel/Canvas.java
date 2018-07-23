@@ -1,92 +1,81 @@
 package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Database.Map;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import org.bukkit.Location;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 
-public class Canvas {
-
-    private final short mapId;
+/**
+ * Represents a painting canvas. Extends ItemStack so that information can be
+ * retrieved when it is pulled off the easel.
+ *
+ */
+public class Canvas extends ItemStack {
 
     public Canvas(Map map) {
-        this.mapId = map.getMapId();
+		this(map.getMapId());
     }
 
-    private Canvas(short mapId) {
-        this.mapId = mapId;
+	protected Canvas(short mapId) {
+		super(Material.MAP, 1, mapId);
     }
 
-    static Canvas getCanvas(ItemStack item) {
+	public static Canvas getCanvas(ItemStack item) {
         if (item == null || item.getType() != Material.MAP) return null;
         short mapId = item.getDurability();
-        if (item.hasItemMeta() && item.getItemMeta().hasLore()
-                && item.getItemMeta().getLore().get(0).equals(ArtItem.COPY_KEY)) {
-            final String originalName = item.getItemMeta().getLore().get(1);
-            return new CanvasCopy(mapId, originalName);
-        } else {
-            return new Canvas(mapId);
-        }
+		if (item.getItemMeta() != null && item.getItemMeta().getLore() != null
+				&& item.getItemMeta().getLore().contains(ArtItem.COPY_KEY)) {
+			return new CanvasCopy(item);
+		} else {
+			return new Canvas(mapId);
+		}
     }
 
-    ItemStack getEaselItem() {
-        return new ItemStack(Material.MAP, 1, mapId);
+	public short getMapId() {
+		return this.getDurability();
     }
 
-    private ItemStack getDropItem() {
-        return ArtMaterial.CANVAS.getItem();
-    }
-
-    void dropItem(Location location) {
-        location.getWorld().dropItemNaturally(location, getDropItem());
-    }
-
-    short getMapId() {
-        return mapId;
-    }
-
-    static class CanvasCopy extends Canvas {
+	public static class CanvasCopy extends Canvas {
 
         private final String originalName;
+		private final Short originalId;
 
-        public CanvasCopy(Map map, String originalName) {
+		public CanvasCopy(Map map, String originalName, Short originalId) {
             super(map);
             this.originalName = originalName;
+			this.originalId = originalId;
+			// Set copy lore
+			ItemMeta meta = this.getItemMeta();
+			meta.setLore(Arrays.asList(ArtItem.COPY_KEY, originalName, ArtItem.COPY_KEY_ID, originalId.toString()));
+			this.setItemMeta(meta);
         }
 
-        private CanvasCopy(short mapId, String originalName) {
-            super(mapId);
-            this.originalName = originalName;
-        }
+		public CanvasCopy(ItemStack map) {
+			super(map.getDurability());
+			ItemMeta meta = map.getItemMeta();
+			List<String> lore = meta.getLore();
+			if (lore != null && !lore.contains(ArtItem.COPY_KEY)) {
+				throw new IllegalArgumentException("The Copied canvas is missing the copy key!");
+			}
+			this.originalName = lore.get(lore.indexOf(ArtItem.COPY_KEY) + 1);
+			if (lore.contains(ArtItem.COPY_KEY_ID)) {
+				this.originalId = Short.valueOf(lore.get(lore.indexOf(ArtItem.COPY_KEY_ID) + 1));
+			} else {
+				this.originalId = null;
+			}
+		}
 
-        @Override
-        ItemStack getEaselItem() {
-            ItemStack item = super.getEaselItem();
-            ItemMeta meta = item.getItemMeta();
-            meta.setLore(Arrays.asList(ArtItem.COPY_KEY, originalName));
-            item.setItemMeta(meta);
-            return item;
-        }
+		public String getOriginalName() {
+			return this.originalName;
+		}
 
-        @Override
-        void dropItem(Location location) {
-            ArtMap.getScheduler().ASYNC.run(() -> {
-                MapArt original = ArtMap.getArtDatabase().getArtwork(originalName);
-                ArtMap.getScheduler().SYNC.run(() -> {
-                    if (original != null) {
-                        location.getWorld().dropItemNaturally(location, original.getMapItem());
-                    } else {
-                        location.getWorld().dropItemNaturally(location, super.getDropItem());
-                    }
-                });
-            });
-        }
+		public Short getOriginalId() {
+			return this.originalId;
+		}
     }
 }

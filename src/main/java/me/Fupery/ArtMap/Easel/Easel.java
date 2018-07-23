@@ -1,9 +1,10 @@
 package me.Fupery.ArtMap.Easel;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.ChunkLocation;
-import me.Fupery.ArtMap.Utils.LocationHelper;
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -15,10 +16,10 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ChunkLocation;
+import me.Fupery.ArtMap.Utils.LocationHelper;
 
 public class Easel {
 
@@ -134,7 +135,7 @@ public class Easel {
      */
     public void mountCanvas(Canvas canvas) {
         if (getItem() != null) removeItem();
-        setItem(canvas.getEaselItem());
+		setItem(canvas);
         EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
     }
 
@@ -149,7 +150,7 @@ public class Easel {
 
         setItem(new ItemStack(Material.AIR));
         if (canvas != null) {
-            canvas.dropItem(location);
+			location.getWorld().dropItem(location, canvas);
         } else {
             if (item != null && item.getType() != Material.AIR)
                 location.getWorld().dropItemNaturally(location, item);

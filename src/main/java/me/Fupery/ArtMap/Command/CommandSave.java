@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
@@ -33,15 +34,8 @@ class CommandSave extends AsyncCommand {
 
         final Player player = (Player) sender;
 
-        if (!filter.check(title)) {
+		if (!this.filter.check(title)) {
             msg.message = Lang.BAD_TITLE.get();
-            return;
-        }
-
-        MapArt art = ArtMap.getArtDatabase().getArtwork(title);
-
-        if (art != null) {
-            msg.message = Lang.TITLE_USED.get();
             return;
         }
 
@@ -62,12 +56,15 @@ class CommandSave extends AsyncCommand {
             easel.playEffect(EaselEffect.SAVE_ARTWORK);
             ArtMap.getArtistHandler().removePlayer(player);
 
-            MapArt art1 = new MapArt(easel.getItem().getDurability(), title, player);
-            ArtMap.getArtDatabase().saveArtwork(art1);
-
-            easel.setItem(new ItemStack(Material.AIR));
-            ItemUtils.giveItem(player, art1.getMapItem());
-            player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+			Canvas canvas = Canvas.getCanvas(easel.getItem());
+			MapArt art1 = ArtMap.getArtDatabase().saveArtwork(canvas, title, player);
+			if (art1 != null) {
+				easel.setItem(new ItemStack(Material.AIR));
+				ItemUtils.giveItem(player, art1.getMapItem());
+				player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+			} else {
+				Lang.SAVE_FAILURE.send(player);
+			}
         });
     }
 }

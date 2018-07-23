@@ -1,5 +1,12 @@
 package me.Fupery.ArtMap.Painting;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
@@ -10,12 +17,6 @@ import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.VersionHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class ArtSession {
     private final CanvasRenderer canvas;
@@ -106,16 +107,20 @@ public class ArtSession {
         }
     }
 
-    public void removeKit(Player player) {
+	public boolean removeKit(Player player) {
         if (inventory != null) {
             if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
                 player.getInventory().setStorageContents(inventory);
                 player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+				inventory = null;
+				return true;
             } else {
                 player.getInventory().setContents(inventory);
+				inventory = null;
+				return true;
             }
-            inventory = null;
         }
+		return false;
     }
 
     public Easel getEasel() {
