@@ -135,7 +135,7 @@ public class Easel {
      */
     public void mountCanvas(Canvas canvas) {
         if (getItem() != null) removeItem();
-		setItem(canvas);
+		setItem(canvas.getEaselItem());
         EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
     }
 
@@ -150,7 +150,7 @@ public class Easel {
 
         setItem(new ItemStack(Material.AIR));
         if (canvas != null) {
-			location.getWorld().dropItem(location, canvas);
+			location.getWorld().dropItem(location, canvas.getDroppedItem());
         } else {
             if (item != null && item.getType() != Material.AIR)
                 location.getWorld().dropItemNaturally(location, item);
@@ -210,8 +210,10 @@ public class Easel {
         if (seat == null || marker == null) return false;
         Location location = user.getEyeLocation();
         EaselEffect.START_RIDING.playEffect(location);
-        seat.setPassenger(user);
-        if (seat.getPassenger() == null) return false;
+		seat.addPassenger(user);
+		if (seat.getPassengers() == null || seat.getPassengers().contains(user)) {
+			return false;
+		}
 
         this.user = user.getUniqueId();
         return true;

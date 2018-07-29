@@ -50,7 +50,7 @@ public final class EaselEvent {
 				easel.removeItem();
 				return;
 			}
-			ItemStack itemInHand = player.getItemInHand();
+			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
 			if (material == ArtMaterial.CANVAS) {
@@ -74,8 +74,7 @@ public final class EaselEvent {
 								easel.playEffect(EaselEffect.USE_DENIED);
 								return;
 							}
-							Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art.getTitle(),
-									art.getMapId());
+							Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art);
 							mountCanvas(itemInHand, canvas);
 						} else {
 							Lang.ActionBar.NEED_CANVAS.send(player);

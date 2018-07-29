@@ -76,7 +76,7 @@ public final class Database {
 		if (mapArt != null) { // same name
 			if (art instanceof Canvas.CanvasCopy) {
 				CanvasCopy copy = CanvasCopy.class.cast(art);
-				if (copy.getOriginalId().equals(mapArt.getMapId())) {
+				if (copy.getOriginalId() == mapArt.getMapId()) {
 					if (mapArt.getArtist().equals(player.getUniqueId()) || player.isOp()
 							|| player.hasPermission("artmap.admin")) {
 						// update
@@ -86,6 +86,7 @@ public final class Database {
 						// Update database
 						CompressedMap map = CompressedMap.compress(copy.getOriginalId(), newView);
 						maps.updateMap(map);
+						this.recycleMap(new Map(copy.getMapId())); // recycle the copy
 						return mapArt;
 					} else {
 						Lang.NO_PERM.send(player);
@@ -99,7 +100,7 @@ public final class Database {
 			}
 		}
 		// new artwork
-		mapArt = new MapArt(art.getDurability(), title, player);
+		mapArt = new MapArt(art.getMapId(), title, player);
 		MapView mapView = getMap(art.getMapId());
 		CompressedMap map = CompressedMap.compress(mapView);
 		boolean success = artworks.addArtwork(mapArt);
