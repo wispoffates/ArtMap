@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Painting;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -30,6 +29,7 @@ public class ArtSession {
     private ItemStack[] inventory;
     private boolean active = false;
     private boolean dirty = true;
+	private int artkitPage = 0;
 
     ArtSession(Easel easel, Map map, int yawOffset) {
         this.easel = easel;
@@ -47,7 +47,6 @@ public class ArtSession {
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) return false;
 
-        Location location = easel.getLocation();
         easel.seatUser(player);
         //Run tasks
         ArtMap.getArtDatabase().restoreMap(map);
@@ -100,12 +99,44 @@ public class ArtSession {
             if (leftOver != null && leftOver.getType() != Material.AIR) 
                 player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
             this.inventory = inventory.getStorageContents().clone();
-            inventory.setStorageContents(ArtItem.getArtKit());
+			inventory.setStorageContents(ArtItem.getArtKit(0));
         } else {
-            this.inventory = inventory.getContents();
-            inventory.setContents(ArtItem.getArtKit());
+			this.inventory = inventory.getContents().clone();
+			inventory.setContents(ArtItem.getArtKit(0));
         }
     }
+
+	public void nextKitPage(Player player) {
+		this.artkitPage++;
+		this.setKitPage(player, this.artkitPage);
+	}
+
+	public void prevKitPage(Player player) {
+		if (this.artkitPage > 0) {
+			this.artkitPage--;
+			this.setKitPage(player, this.artkitPage);
+		}
+	}
+
+	/*
+	 * Set the contents of the inventory without replacing the hotkey bar.
+	 */
+	private void setKitPage(Player player, int page) {
+		ItemStack[] kit = ArtItem.getArtKit(this.artkitPage);
+		if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
+			ItemStack[] current = player.getInventory().getStorageContents();
+			for (int i = 0; i < 9; i++) {
+				kit[i] = current[i];
+			}
+			player.getInventory().setStorageContents(kit);
+		} else {
+			ItemStack[] current = player.getInventory().getContents();
+			for (int i = 0; i < 9; i++) {
+				kit[i] = current[i];
+			}
+			player.getInventory().setContents(kit);
+		}
+	}
 
 	public boolean removeKit(Player player) {
         if (inventory != null) {

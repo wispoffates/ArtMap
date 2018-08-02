@@ -10,6 +10,8 @@ import static org.bukkit.ChatColor.YELLOW;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -36,25 +38,62 @@ public class ArtItem {
     public static final String COPY_KEY = "§b§oArtwork Copy";
 	public static final String PAINT_BRUSH = "§b§oPaint Brush";
 
-    private static WeakReference<ItemStack[]> kitReference = new WeakReference<>(getArtKit());
+	private static WeakReference<List<ItemStack[]>> kitReference = new WeakReference<>(new LinkedList<>());
 
-    public static ItemStack[] getArtKit() {
-        if (kitReference != null && kitReference.get() != null) return kitReference.get().clone();
+	// 27 inv slots + 9 hotbar slots = 36 slots
+	public static ItemStack[] getArtKit(int page) {
+		// check the cache
+		if (kitReference != null && kitReference.get() != null && !kitReference.get().isEmpty()) {
+			return kitReference.get().get(page).clone();
+		}
+		kitReference = new WeakReference<>(new LinkedList<>());
         Palette palette = ArtMap.getDyePalette();
-        ItemStack[] itemStack = new ItemStack[36];
-        Arrays.fill(itemStack, new ItemStack(Material.AIR));
+		int numDyes = palette.getDyes(DyeType.DYE).length;
+		int pages = (int) Math.ceil(numDyes / 18d);
+		for (int pg = 0; pg < pages; pg++) {
+			ItemStack[] itemStack = new ItemStack[36]; // 27 inv slots
+			Arrays.fill(itemStack, new ItemStack(Material.AIR));
 
-        for (int i = 0; i < 25; i++) {
-            ArtDye dye = palette.getDyes(DyeType.DYE)[i];
-            itemStack[i] = ItemUtils.addKey(dye.toItem(), KIT_KEY);
-        }
-        itemStack[25] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
-        itemStack[26] = new KitItem(Material.COAL, "§7§lCoal").toItemStack();
-        itemStack[27] = new KitItem(Material.COMPASS, "§6§lCompass").toItemStack();
-		itemStack[28] = ArtMaterial.PAINT_BRUSH.getItem();
-		itemStack[29] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
-        kitReference = new WeakReference<>(itemStack);
-        return kitReference.get();
+			for (int j = 0; j < 18; j++) {
+				if (((pg * 18) + j) >= numDyes) {
+					break;
+				}
+				ArtDye dye = palette.getDyes(DyeType.DYE)[(pg * 18) + j];
+				itemStack[j + 9] = ItemUtils.addKey(dye.toItem(), KIT_KEY);
+			}
+
+			// if not first page add back button
+			if (pg != 0) {
+				ItemStack back = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
+				ItemMeta meta = back.getItemMeta();
+				meta.setDisplayName("Back");
+				meta.setLore(Arrays.asList("Artkit:Back"));
+				back.setItemMeta(meta);
+				itemStack[27] = back;
+			}
+			// if not last page add next button
+			if (pg < pages - 1) {
+				ItemStack next = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
+				ItemMeta meta = next.getItemMeta();
+				meta.setDisplayName("Next");
+				meta.setLore(Arrays.asList("Artkit:Next"));
+				next.setItemMeta(meta);
+				itemStack[35] = next;
+			}
+
+			itemStack[29] = new KitItem(Material.FEATHER, "§lFeather").toItemStack();
+			itemStack[30] = new KitItem(Material.COAL, "§7§lCoal").toItemStack();
+			itemStack[31] = new KitItem(Material.COMPASS, "§6§lCompass").toItemStack();
+			itemStack[32] = ArtMaterial.PAINT_BRUSH.getItem();
+			itemStack[33] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
+			kitReference.get().add(itemStack);
+		}
+
+       
+
+
+
+		return kitReference.get().get(page).clone();
     }
 
     static class CraftableItem extends CustomItem {
