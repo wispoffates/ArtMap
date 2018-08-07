@@ -58,7 +58,8 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
             this.recipe = material;
             ItemMeta meta = material.getItem().getItemMeta();
             List<String> lore = meta.getLore();
-            lore.set(lore.size() - 1, ChatColor.GREEN + Lang.RECIPE_BUTTON.get());
+			lore.add("");
+			lore.add(ChatColor.GREEN + Lang.RECIPE_BUTTON.get());
             if (adminMenu) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
             meta.setLore(lore);
             setItemMeta(meta);

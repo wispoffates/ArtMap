@@ -93,36 +93,30 @@ HELP_GETTING_STARTED:
   - ""
   - "§7§oLook at the other tabs in this menu to see more"
   - "§7§oinformation on Recipes, Tools, and Dye Colours."
-  - ""
 HELP_RECIPES:
   - "             §6§l⊱§e§lRecipes§6§l⊰"
   - "§7View the crafting recipes for all"
   - "§7the items you will need to paint."
   - "          §a✸§2§oClick to View§a✸"
-  - ""
 HELP_TOOLS:
   - "            §6§l⊱§e§lTools§6§l⊰"
   - "§7View all the tools that you"
   - "§7can use to help you paint."
   - "       §a✸§2§oClick to View§a✸"
-  - ""
 HELP_DYES:
   - "           §6§l⊱§e§lDyes§6§l⊰"
   - "§7View all the dye colours"
   - "§7that you can paint with."
   - "      §a✸§2§oClick to View§a✸"
-  - ""
 HELP_LIST:
   - "             §6§l⊱§e§lArtworks§6§l⊰"
   - "      §3✺§b§oView Player Art§3✺"
   - "§7View your artwork or view other"
   - "§7players' work grouped by artist."
   - "          §a✸§2§oClick to browse§a✸"
-  - ""
 HELP_CLOSE:
   - "    §6§l⊱§e§lBack§6§l⊰"
   - "§4﴾§cClose Menu§4﴿"
-  - ""
 INFO_DYES:
   - "              §6§l⊱§e§lDye Colours§6§l⊰"
   - "§7Click your canvas with any of these"
@@ -134,7 +128,6 @@ INFO_DYES:
   - "§7Any dye can be crafted with a bucket"
   - "§7to make a §6PaintBucket§7."
   - "           §b§oHover to view colour"
-  - ""
 INFO_RECIPES:
   - "              §6§l⊱§e§lRecipe Help§6§l⊰"
   - "§7Craft any artwork with a §6blank map"
@@ -142,26 +135,22 @@ INFO_RECIPES:
   - "§7author of an artwork will be able to"
   - "§7make copies."
   - "        §b§oHover to view usage info"
-  - ""
 INFO_TOOLS:
   - "              §6§l⊱§e§lTool Help§6§l⊰"
   - "§7You can use these items along with"
   - "§2dyes §7to help you paint."
   - "       §b§oHover to view usage info"
-  - ""
 TOOL_DYE:
   - "              §6§l⊱§e§lDyes§6§l⊰"
   - " §7Left-Click to draw pixels"
   - " §7Right-Click to draw lines"
   - "§a✸§2§oClick to view all colours§a✸"
-  - ""
 TOOL_PAINTBUCKET:
   - "         §6§l⊱§e§lPaintBucket§6§l⊰"
   - "§7Left-Click to fill an area of"
   - "§7the canvas. Craft with dye to"
   - "§7change the bucket's colour."
   - "§7Right-Click to undo last fill."
-  - ""
 TOOL_COAL:
   - "              §6§l⊱§e§lCoal§6§l⊰"
   - "§7Left-Click to darken pixels."
@@ -171,34 +160,23 @@ TOOL_FEATHER:
   - "            §6§l⊱§e§lFeather§6§l⊰"
   - "§7Left-Click to lighten pixels."
   - "§7Right-Click to lighten lines."
-  - ""
 TOOL_COMPASS:
   - "            §6§l⊱§e§lCompass§6§l⊰"
   - "§7Left-Click to flip horizontally."
   - "§7Right-Click to flip vertically."
-  - ""
-  - ""
 RECIPE_EASEL:
   - "§7Use to edit artworks"
   - "§7Right click to place"
-  - ""
-  - ""
 RECIPE_CANVAS:
   - "§7Use on an §aEasel"
   - "§7to start painting"
-  - ""
-  - ""
 RECIPE_PAINTBUCKET:
   - "§7Use with an §aEasel §7and"
   - "§aCanvas §7to fill colours"
   - "§7Right-Click to undo"
-  - ""
-  - ""
 RECIPE_PAINT_BRUSH:
   - "§7Use with an §aEasel §7and"
   - "§aCanvas §7to save a painting."
-  - ""
-  - ""
 CONSOLE_HELP:
   - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
   - "§3/art §b: §eTo access the help GUI."
