@@ -154,6 +154,13 @@ public class ArtSession {
 		return false;
     }
 
+	/**
+	 * @return True if the artsession has the artkit in use.
+	 */
+	public boolean isInArtKit() {
+		return this.inventory != null;
+	}
+
     public Easel getEasel() {
         return easel;
     }

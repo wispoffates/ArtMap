@@ -23,6 +23,7 @@ class InventoryInteractListener implements RegisteredListener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         checkPreviewing(((Player) event.getWhoClicked()), event);
+        checkSlotClicked((Player) event.getWhoClicked(), event);
 		checkArtKitPagination(((Player) event.getWhoClicked()), event.getCurrentItem(), event);
     }
 
@@ -47,6 +48,16 @@ class InventoryInteractListener implements RegisteredListener {
 			if (ItemUtils.hasKey(itemStack, "Artkit:Back")) {
 				event.setCancelled(true);
 				ArtMap.getArtistHandler().getCurrentSession(player).prevKitPage(player);
+			}
+		}
+	}
+	
+	private void checkSlotClicked(Player player, InventoryClickEvent event) {
+		//is player in artkit
+		if (ArtMap.getArtistHandler().containsPlayer(player) && ArtMap.getArtistHandler().getCurrentSession(player).isInArtKit()) {
+			//if the player is interacting with a non inventory slot cancel the event.
+			if(event.getSlot() > 35 || event.getSlot() < 0) {
+				event.setCancelled(true);
 			}
 		}
 	}

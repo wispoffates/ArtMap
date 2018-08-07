@@ -21,6 +21,7 @@ import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.LocationHelper;
+import me.Fupery.ArtMap.Utils.VersionHandler;
 
 class PlayerInteractListener implements RegisteredListener {
 
@@ -92,10 +93,9 @@ class PlayerInteractListener implements RegisteredListener {
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
-        ItemStack item = player.getItemInHand().clone();
-        item.setAmount(1);
 
-        player.getInventory().removeItem(item);
+		// remove 1 easel from either hand
+		removeEaselFromHandle(player);
 
         if (easel == null) {
             Lang.ActionBar.INVALID_POS.send(player);
@@ -103,6 +103,40 @@ class PlayerInteractListener implements RegisteredListener {
         } else {
             EaselEffect.SPAWN.playEffect(new LocationHelper(baseLocation).shiftTowards(facing, .5));
         }
+	}
+
+	private void removeEaselFromHandle(Player player) {
+		// check main hand
+		if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
+			if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInMainHand())) {
+				ItemStack items = player.getInventory().getItemInMainHand();
+				if (items.getAmount() > 1) {
+					items.setAmount(items.getAmount() - 1);
+				} else {
+					items = null;
+				}
+				player.getInventory().setItemInMainHand(items);
+				// check off hand
+			} else if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInOffHand())) {
+				ItemStack items = player.getInventory().getItemInOffHand();
+				if (items.getAmount() > 1) {
+					items.setAmount(items.getAmount() - 1);
+				} else {
+					items = null;
+				}
+				player.getInventory().setItemInOffHand(items);
+			}
+		} else {
+			if (ArtMaterial.EASEL.isValidMaterial(player.getItemInHand())) {
+				ItemStack items = player.getItemInHand();
+				if (items.getAmount() > 1) {
+					items.setAmount(items.getAmount() - 1);
+				} else {
+					items = null;
+				}
+				player.setItemInHand(items);
+			}
+		}
     }
 
     @EventHandler
