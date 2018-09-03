@@ -176,7 +176,7 @@ public final class Database {
                 if (restoreMap(mapId)) artworksRestored++;
             }
             if (artworksRestored > 0)
-                ArtMap.instance().getLogger().info(artworksRestored + "%s corrupted artworks were restored.");
+				ArtMap.instance().getLogger().info(artworksRestored + " corrupted artworks were restored.");
         });
     }
 
@@ -232,8 +232,7 @@ public final class Database {
         Map map = new Map(mapId.getId());
 		if (!map.exists()) {
 			// spicy map necromancy
-			// ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is
-			// corrupted! Restoring data file...");
+			ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is missing! Restoring data file...");
 
 			short topMapId = Map.getNextMapId();
 
@@ -250,10 +249,13 @@ public final class Database {
 		} else {
 			byte[] storedMap = map.readData();
 			needsRestore = Arrays.hashCode(storedMap) != mapId.getHash();
+			if (needsRestore) {
+				ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
+			}
 		}
         if (needsRestore) {
             map.setMap(maps.getMap(mapId.getId()).decompressMap());
-//            ArtMap.instance().getLogger().info(String.format("Id '%s' was restored!", mapId.getId()));
+			//ArtMap.instance().getLogger().info(String.format("Id '%s' was restored!", mapId.getId()));
             return true;
         }
         return false;
