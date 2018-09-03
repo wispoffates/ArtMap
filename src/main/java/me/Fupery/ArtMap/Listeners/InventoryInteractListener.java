@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -57,6 +58,7 @@ class InventoryInteractListener implements RegisteredListener {
 		if (ArtMap.getArtistHandler().containsPlayer(player) && ArtMap.getArtistHandler().getCurrentSession(player).isInArtKit()) {
 			//if the player is interacting with a non inventory slot cancel the event.
 			if(event.getSlot() > 35 || event.getSlot() < 0) {
+				event.setResult(Event.Result.DENY);
 				event.setCancelled(true);
 			}
 		}
