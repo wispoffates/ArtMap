@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -17,6 +16,7 @@ import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Heads.Heads;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
@@ -69,21 +69,14 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 			this.artist = artist;
 
 			SkullMeta meta = (SkullMeta) getItemMeta();
-			// check cache
-			if (ArtMap.instance().getPlayerSkullMetaCache().containsKey(artist)) {
-				meta = ArtMap.instance().getPlayerSkullMetaCache().get(artist);
-			} else { // cache miss
-				ArtMap.instance().getLogger().info("Cache Miss!");
-				meta = (SkullMeta) getItemMeta();
-				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(artist);
-				if (offlinePlayer != null && offlinePlayer.hasPlayedBefore()) {
-					meta.setOwner(offlinePlayer.getName());
-					meta.setDisplayName(offlinePlayer.getName());
-				} else {
-					meta.setDisplayName(artist.toString());
-				}
-				ArtMap.instance().getPlayerSkullMetaCache().put(artist, meta); // add to cache
+			SkullMeta head = Heads.getHeadMeta(artist);
+
+			if (head != null) {
+				meta = head.clone();
+			} else {
+				meta.setDisplayName(artist.toString());
 			}
+
 			meta.setLore(Collections.singletonList(HelpMenu.CLICK));
 			setItemMeta(meta);
 		}
