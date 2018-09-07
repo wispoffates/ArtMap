@@ -6,6 +6,7 @@ import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
 import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -77,7 +78,12 @@ public class Map {
     }
 
     public Map cloneMap() {
-        MapView newMapView = Bukkit.getServer().createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
+        World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
+        if (world == null) {
+            ArtMap.instance().getLogger().severe("Tried to create MapView instance for Non-existent world, " + ArtMap.getConfiguration().WORLD);
+        }
+
+        MapView newMapView = Bukkit.createMap(world);
         Map newMap = new Map(newMapView);
         byte[] mapData = readData();
         newMap.setMap(mapData);
