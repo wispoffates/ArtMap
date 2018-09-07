@@ -1,8 +1,5 @@
 package me.Fupery.ArtMap.Menu.Handler;
 
-import me.Fupery.ArtMap.Menu.API.MenuTemplate;
-import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,6 +7,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.API.MenuTemplate;
+import me.Fupery.ArtMap.Menu.Button.Button;
+import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 
 public abstract class CacheableMenu implements MenuTemplate {
 
@@ -32,11 +34,16 @@ public abstract class CacheableMenu implements MenuTemplate {
     }
 
     void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(player, type, heading);
-        loadButtons(inventory);
-        player.openInventory(inventory);
-        onMenuOpenEvent(player);
-        this.open = true;
+		ArtMap.instance();
+		ArtMap.getScheduler().ASYNC.run(() -> {
+			Inventory inventory = Bukkit.createInventory(player, type, heading);
+			loadButtons(inventory);
+			ArtMap.getScheduler().SYNC.run(() -> {
+				player.openInventory(inventory);
+				onMenuOpenEvent(player);
+				this.open = true;
+			});
+		});
     }
 
     protected void refresh(Player player) {
