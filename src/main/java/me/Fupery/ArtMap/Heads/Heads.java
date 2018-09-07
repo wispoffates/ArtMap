@@ -106,7 +106,7 @@ public class Heads {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			ArtMap.instance().getLogger().info("Error retrieving head texture.  Server is likely over API limit temporarily.");
 		}
 		return null;
 	}
