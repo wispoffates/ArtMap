@@ -65,7 +65,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 		final UUID artist;
 
 		public ArtworkListButton(UUID artist) {
-			super(Material.SKULL_ITEM, 3);
+			super(Material.PLAYER_HEAD);
 			this.artist = artist;
 
 			SkullMeta meta = (SkullMeta) getItemMeta();

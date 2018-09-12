@@ -25,8 +25,8 @@ class CommandPreview extends AsyncCommand {
 
         if (player.hasPermission("artmap.admin")) {
             ArtMap.getScheduler().SYNC.run(() -> {
-                ItemStack currentItem = player.getItemInHand();
-                player.setItemInHand(art.getMapItem());
+				ItemStack currentItem = player.getInventory().getItemInMainHand();
+				player.getInventory().setItemInMainHand(art.getMapItem());
 
                 if (currentItem != null) {
                     ItemUtils.giveItem(player, currentItem);
@@ -37,7 +37,7 @@ class CommandPreview extends AsyncCommand {
 
             ArtMap.getPreviewManager().endPreview(player);
 
-            if (player.getItemInHand().getType() != Material.AIR) {
+			if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 return false;
             }
 

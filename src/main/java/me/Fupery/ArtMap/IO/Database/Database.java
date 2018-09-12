@@ -235,7 +235,6 @@ public final class Database {
 			ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is missing! Restoring data file...");
 
 			short topMapId = Map.getNextMapId();
-
 			if (topMapId == -1 || topMapId < mapId.getId()) {
 				ArtMap.instance().getLogger()
 						.warning(String.format(

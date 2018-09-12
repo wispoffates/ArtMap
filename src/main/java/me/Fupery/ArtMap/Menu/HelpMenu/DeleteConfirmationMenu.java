@@ -32,7 +32,7 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
-		return item != null && item.getType() == Material.MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
+		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
 				&& item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
 	}
 

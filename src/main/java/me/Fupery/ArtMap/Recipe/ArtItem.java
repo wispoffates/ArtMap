@@ -19,6 +19,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
@@ -151,7 +152,10 @@ public class ArtItem {
 
     public static class ArtworkItem extends CustomItem {
         public ArtworkItem(short id, String title, OfflinePlayer player, String date) {
-            super(Material.MAP, ARTWORK_TAG, id);
+			super(new ItemStack(Material.FILLED_MAP), title);
+			MapMeta meta = (MapMeta) this.stack.get().getItemMeta();
+			meta.setMapId(id);
+			this.stack.get().setItemMeta(meta);
             String name = player != null ? player.getName() : "Player";
             name(title);
             String artist = GOLD + String.format(RECIPE_ARTWORK_ARTIST.get(), (YELLOW + name));
@@ -162,11 +166,6 @@ public class ArtItem {
     public static class KitItem extends CustomItem {
         KitItem(Material material, String name) {
             super(material, KIT_KEY, name);
-        }
-
-        KitItem(Material material, int durability, String name) {
-            super(material, KIT_KEY, durability);
-            name(name);
         }
     }
 }

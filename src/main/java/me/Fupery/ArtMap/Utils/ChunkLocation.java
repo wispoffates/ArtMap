@@ -24,4 +24,10 @@ public class ChunkLocation {
     public int getZ() {
         return z;
     }
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
 }

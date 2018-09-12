@@ -11,8 +11,9 @@ public interface Palette {
     ArtDye getDye(ItemStack item);
 
     /**
-     * @return a list of all possible dyes in this palette
-     */
+	 * @param dyeType The type of the dye.
+	 * @return a list of all possible dyes in this palette
+	 */
     ArtDye[] getDyes(DyeType dyeType);
 
     BasicDye getDefaultColour();

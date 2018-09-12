@@ -48,6 +48,8 @@ public enum EaselPart {
 			return stand.isVisible() ? STAND : (stand.isSmall() ? MARKER : SEAT);
 		case ITEM_FRAME:
 			return FRAME;
+			default:
+				break;
 		}
 		return null;
 	}
@@ -99,7 +101,7 @@ public enum EaselPart {
 	}
 
 	private EntityType getType() {
-		return entityType;
+		return this.entityType;
 	}
 
 	public Entity spawn(Location easelLocation, BlockFace facing) {
@@ -166,11 +168,11 @@ public enum EaselPart {
 
 		switch (facing) {
 		case NORTH:
-			z = -modifier;
+				z = -this.modifier;
 			yaw = 180;
 			break;
 		case SOUTH:
-			z = modifier;
+				z = this.modifier;
 
 			if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
 				z += .031;
@@ -178,11 +180,11 @@ public enum EaselPart {
 			yaw = 0;
 			break;
 		case WEST:
-			x = -modifier;
+				x = -this.modifier;
 			yaw = 90;
 			break;
 		case EAST:
-			x = modifier;
+				x = this.modifier;
 			yaw = 270;
 
 			if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
@@ -191,11 +193,11 @@ public enum EaselPart {
 			break;
 		}
 
-		if (centred) {
+		if (this.centred) {
 			x += 0.5;
 			z += 0.5;
 		}
-		return new Location(world, x, heightOffset, z, yaw, 0);
+		return new Location(world, x, this.heightOffset, z, yaw, 0);
 	}
 
 	private Location getPartPos(Location easelLocation, BlockFace facing) {

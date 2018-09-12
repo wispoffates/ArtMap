@@ -1,37 +1,35 @@
 package me.Fupery.ArtMap.Easel;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Particle;
 
 import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.LocationHelper;
 
 public enum EaselEffect {
-    SPAWN(location -> {
-        SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0);
-        Block floorBlock = new LocationHelper(location).shiftTowards(BlockFace.DOWN).getBlock();
-        location.getWorld().spigot().playEffect(location, Effect.TILE_DUST,
-                floorBlock.getTypeId(), floorBlock.getData(), 0.10f, 0.15f, 0.10f, 0.08f, 4, 10);
+	SPAWN(location -> {/*
+	                    * SoundCompat.BLOCK_WOOD_HIT.play(location, 1, 0); Block floorBlock = new
+	                    * LocationHelper(location).shiftTowards(BlockFace.DOWN).getBlock();
+	                    * location.getWorld().spawnParticle(Particle.BLOCK_DUST, location, 0, 0.10d,
+	                    * 0.15d, 0.10d, 0.08d);
+	                    */
     }),
     BREAK(location -> {
         SoundCompat.BLOCK_WOOD_BREAK.play(location, 1, -1);
-        playEffect(location, Effect.CLOUD);
+		playEffect(location, Particle.CLOUD);
     }),
     USE_DENIED(location -> {
         SoundCompat.ENTITY_ARMORSTAND_BREAK.play(location);
-        playEffect(location, Effect.CRIT);
+		playEffect(location, Particle.CRIT);
     }),
     SAVE_ARTWORK(location -> {
-        playEffect(location, Effect.HAPPY_VILLAGER);
+		playEffect(location, Particle.VILLAGER_HAPPY);
         SoundCompat.ENTITY_EXPERIENCE_ORB_PICKUP.play(location, 1, 0);
     }),
     MOUNT_CANVAS(location -> {
         SoundCompat.BLOCK_CLOTH_STEP.play(location, 1, 0);
-        playEffect(location, Effect.POTION_SWIRL_TRANSPARENT);
+		playEffect(location, Particle.SPELL);
     }),
     START_RIDING(location -> {
         SoundCompat.ENTITY_ITEM_PICKUP.play(location, 1, -3);
@@ -44,8 +42,8 @@ public enum EaselEffect {
         this.effect = effect;
     }
 
-    private static void playEffect(Location loc, Effect effect) {
-        loc.getWorld().spigot().playEffect(loc, effect, 8, 10, 0.10f, 0.15f, 0.10f, 0.02f, 3, 10);
+	private static void playEffect(Location loc, Particle effect) {
+		// loc.getWorld().spawnParticle(effect, loc, 0, 0.10d, 0.15d, 0.10d, 0.02d);
     }
 
     public void playEffect(Location location) {

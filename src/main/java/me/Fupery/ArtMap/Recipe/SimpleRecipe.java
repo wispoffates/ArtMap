@@ -45,7 +45,7 @@ public abstract class SimpleRecipe {
         }
 
         public Shaped set(char key, Material material, int durability) {
-            items.put(key, new Ingredient.WrappedMaterial(material, durability, 1));
+			items.put(key, new Ingredient.WrappedMaterial(material, 1));
             return this;
         }
 
@@ -65,7 +65,7 @@ public abstract class SimpleRecipe {
             recipe.shape(shape);
             for (Character c : items.keySet()) {
                 Ingredient item = items.get(c);
-                recipe.setIngredient(c, item.getMaterial(), item.getDurability());
+				recipe.setIngredient(c, item.getMaterial());
             }
             return recipe;
         }
@@ -93,7 +93,7 @@ public abstract class SimpleRecipe {
 		private ArrayList<Ingredient> items = new ArrayList<>();
 
         public Shapeless add(Material material, int durability, int amount) {
-            items.add(new Ingredient.WrappedMaterial(material, durability, amount));
+			items.add(new Ingredient.WrappedMaterial(material, amount));
             return this;
         }
 
@@ -115,7 +115,7 @@ public abstract class SimpleRecipe {
 			NamespacedKey key = new NamespacedKey(ArtMap.instance(), this.getName());
 			ShapelessRecipe recipe = new ShapelessRecipe(key, result);
             for (Ingredient item : items) {
-                recipe.addIngredient(item.getAmount(), item.getMaterial(), item.getDurability());
+				recipe.addIngredient(item.getAmount(), item.getMaterial());
             }
             return recipe;
         }
@@ -132,7 +132,10 @@ public abstract class SimpleRecipe {
     }
 
     private class RecipeException extends RuntimeException {
-        private RecipeException(String message) {
+		/**  */
+		private static final long serialVersionUID = 1L;
+
+		private RecipeException(String message) {
             super(message);
         }
     }

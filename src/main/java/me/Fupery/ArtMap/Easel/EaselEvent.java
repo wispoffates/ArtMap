@@ -9,6 +9,7 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import net.md_5.bungee.api.ChatColor;
 
 public final class EaselEvent {
@@ -40,9 +41,9 @@ public final class EaselEvent {
 			Lang.ActionBar.EASEL_HELP.send(player);
 			return;
 		case RIGHT_CLICK:
-			if (easel.getItem().getType() == Material.MAP) {
+				if (easel.getItem().getType() == Material.FILLED_MAP) {
 				// If the easel has a canvas, player rides the easel
-				ArtMap.getArtistHandler().addPlayer(player, easel, new Map(easel.getItem().getDurability()),
+					ArtMap.getArtistHandler().addPlayer(player, easel, new Map(ItemUtils.getMapID(easel.getItem())),
 						EaselPart.getYawOffset(easel.getFacing()));
 				return;
 			} else if (easel.getItem().getType() != Material.AIR) {
@@ -66,7 +67,7 @@ public final class EaselEvent {
 			} else if (material == ArtMaterial.MAP_ART) {
 				// Edit an artwork on the easel
 				ArtMap.getScheduler().ASYNC.run(() -> {
-					MapArt art = ArtMap.getArtDatabase().getArtwork(itemInHand.getDurability());
+						MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(itemInHand));
 					ArtMap.getScheduler().SYNC.run(() -> {
 						if (art != null) {
 							if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
@@ -90,7 +91,7 @@ public final class EaselEvent {
 
 		case SHIFT_RIGHT_CLICK:
 			if (easel.hasItem()) {
-				ArtMap.getArtDatabase().recycleMap(new Map(easel.getItem().getDurability()));
+					ArtMap.getArtDatabase().recycleMap(new Map(ItemUtils.getMapID(easel.getItem())));
 				easel.removeItem();
 			}
 			easel.breakEasel();

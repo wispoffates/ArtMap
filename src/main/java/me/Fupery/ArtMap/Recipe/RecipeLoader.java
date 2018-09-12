@@ -86,28 +86,34 @@ public class RecipeLoader {
                     materialList.getString(key + ".MATERIAL") :
                     materialList.getString(key);
             Material material;
-            int durability = 0;
             int amount = 1;
             try {
                 material = Material.valueOf(materialName);
             } catch (IllegalArgumentException e) {
                 throw new InvalidMaterialKeyException(recipeName, materialName, "is not a valid material");
             }
-            if (materialList.contains(key + ".DURABILITY")) durability = materialList.getInt(key + ".DURABILITY");
+			// if (materialList.contains(key + ".DURABILITY")) durability =
+			// materialList.getInt(key + ".DURABILITY");
             if (materialList.contains(key + ".AMOUNT")) amount = materialList.getInt(key + ".AMOUNT");
-            materials.put(key.charAt(0), new Ingredient.WrappedMaterial(material, durability, amount));
+			materials.put(key.charAt(0), new Ingredient.WrappedMaterial(material, amount));
         }
         return materials;
     }
 
     static class InvalidRecipeException extends Exception {
-        private InvalidRecipeException(String recipeName, String message) {
+		/**  */
+		private static final long serialVersionUID = 1L;
+
+		private InvalidRecipeException(String recipeName, String message) {
             super("Error loading recipe for " + recipeName + ": " + message);
         }
     }
 
     private static class InvalidMaterialKeyException extends InvalidRecipeException {
-        private InvalidMaterialKeyException(String recipeName, String key, String message) {
+		/**  */
+		private static final long serialVersionUID = 1L;
+
+		private InvalidMaterialKeyException(String recipeName, String key, String message) {
             super(recipeName, String.format("'%s' %s", key, message));
         }
     }

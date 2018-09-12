@@ -34,52 +34,53 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.Config.Lang;
 
+@SuppressWarnings("javadoc")
 public class BasicPalette implements Palette {
 	public final ArtDye
 
-	VOID = new BasicDye(DYE_VOID.get(), 0, ChatColor.DARK_GREEN, Material.EYE_OF_ENDER),
-			GRASS = new BasicDye(DYE_GRASS.get(), 1, ChatColor.DARK_GREEN, Material.SEEDS),
+							VOID	= new BasicDye(DYE_VOID.get(), 0, ChatColor.DARK_GREEN, Material.ENDER_EYE),
+	        GRASS = new BasicDye(DYE_GRASS.get(), 1, ChatColor.DARK_GREEN, Material.GRASS),
 			CREAM = new BasicDye(DYE_CREAM.get(), 2, ChatColor.GOLD, Material.PUMPKIN_SEEDS),
-			LIGHT_GRAY = new BasicDye(Lang.DYE_LIGHT_GRAY.get(), 3, ChatColor.GRAY, Material.WEB), // new
-			RED = new BasicDye(DYE_RED.get(), 4, ChatColor.RED, Material.INK_SACK, 1),
+	        LIGHT_GRAY = new BasicDye(Lang.DYE_LIGHT_GRAY.get(), 3, ChatColor.GRAY, Material.COBWEB),															// new
+	        RED = new BasicDye(DYE_RED.get(), 4, ChatColor.RED, Material.ROSE_RED),
 			ICE = new BasicDye(Lang.DYE_ICE.get(), 5, ChatColor.GRAY, Material.ICE), // new
-			SILVER = new BasicDye(DYE_SILVER.get(), 6, ChatColor.GRAY, Material.INK_SACK, 7),
-			LEAVES = new BasicDye(Lang.DYE_LEAVES.get(), 7, ChatColor.GREEN, Material.LEAVES), // new
+	        SILVER = new BasicDye(DYE_SILVER.get(), 6, ChatColor.GRAY, Material.LIGHT_GRAY_DYE),
+	        LEAVES = new BasicDye(Lang.DYE_LEAVES.get(), 7, ChatColor.GREEN, Material.OAK_LEAVES),																// new
 			SNOW = new BasicDye(Lang.DYE_SNOW.get(), 8, ChatColor.BLUE, Material.SNOW), // new
-			GRAY = new BasicDye(DYE_GRAY.get(), 9, ChatColor.DARK_GRAY, Material.INK_SACK, 8),
+	        GRAY = new BasicDye(DYE_GRAY.get(), 9, ChatColor.DARK_GRAY, Material.GRAY_DYE),
 			COFFEE = new BasicDye(DYE_COFFEE.get(), 10, ChatColor.DARK_RED, Material.MELON_SEEDS),
 			STONE = new BasicDye(Lang.DYE_STONE.get(), 11, ChatColor.DARK_GRAY, Material.GHAST_TEAR), // new
 			WATER = new BasicDye(Lang.DYE_WATER.get(), 12, ChatColor.DARK_BLUE, Material.LAPIS_BLOCK), // new
-			DARK_WOOD = new BasicDye(Lang.DYE_DARK_WOOD.get(), 13, ChatColor.GREEN, Material.WOOD, 1), // new
-			WHITE = new BasicDye(DYE_WHITE.get(), 14, ChatColor.WHITE, Material.INK_SACK, 15),
-			ORANGE = new BasicDye(DYE_ORANGE.get(), 15, ChatColor.GOLD, Material.INK_SACK, 14),
-			MAGENTA = new BasicDye(DYE_MAGENTA.get(), 16, ChatColor.LIGHT_PURPLE, Material.INK_SACK, 13),
-			LIGHT_BLUE = new BasicDye(DYE_LIGHT_BLUE.get(), 17, ChatColor.BLUE, Material.INK_SACK, 12),
-			YELLOW = new BasicDye(DYE_YELLOW.get(), 18, ChatColor.YELLOW, Material.INK_SACK, 11),
-			LIME = new BasicDye(DYE_LIME.get(), 19, ChatColor.GREEN, Material.INK_SACK, 10),
-			PINK = new BasicDye(DYE_PINK.get(), 20, ChatColor.LIGHT_PURPLE, Material.INK_SACK, 9),
+	        DARK_WOOD = new BasicDye(Lang.DYE_DARK_WOOD.get(), 13, ChatColor.GREEN, Material.OAK_WOOD),															// new
+	        WHITE = new BasicDye(DYE_WHITE.get(), 14, ChatColor.WHITE, Material.BONE_MEAL),
+	        ORANGE = new BasicDye(DYE_ORANGE.get(), 15, ChatColor.GOLD, Material.ORANGE_DYE),
+	        MAGENTA = new BasicDye(DYE_MAGENTA.get(), 16, ChatColor.LIGHT_PURPLE, Material.MAGENTA_DYE),
+	        LIGHT_BLUE = new BasicDye(DYE_LIGHT_BLUE.get(), 17, ChatColor.BLUE, Material.LIGHT_BLUE_DYE),
+	        YELLOW = new BasicDye(DYE_YELLOW.get(), 18, ChatColor.YELLOW, Material.DANDELION_YELLOW),
+	        LIME = new BasicDye(DYE_LIME.get(), 19, ChatColor.GREEN, Material.LIME_DYE),
+	        PINK = new BasicDye(DYE_PINK.get(), 20, ChatColor.LIGHT_PURPLE, Material.PINK_DYE),
 			GRAPHITE = new BasicDye(DYE_GRAPHITE.get(), 21, ChatColor.DARK_GRAY, Material.FLINT),
-			GUNPOWDER = new BasicDye(DYE_GUNPOWDER.get(), 22, ChatColor.GRAY, Material.SULPHUR),
-			CYAN = new BasicDye(DYE_CYAN.get(), 23, ChatColor.DARK_AQUA, Material.INK_SACK, 6),
-			PURPLE = new BasicDye(DYE_PURPLE.get(), 24, ChatColor.DARK_PURPLE, Material.INK_SACK, 5),
-			BLUE = new BasicDye(DYE_BLUE.get(), 25, ChatColor.DARK_BLUE, Material.INK_SACK, 4),
-			BROWN = new BasicDye(DYE_BROWN.get(), 26, ChatColor.DARK_RED, Material.INK_SACK, 3),
-			GREEN = new BasicDye(DYE_GREEN.get(), 27, ChatColor.DARK_GREEN, Material.INK_SACK, 2),
+	        GUNPOWDER = new BasicDye(DYE_GUNPOWDER.get(), 22, ChatColor.GRAY, Material.GUNPOWDER),
+	        CYAN = new BasicDye(DYE_CYAN.get(), 23, ChatColor.DARK_AQUA, Material.CYAN_DYE),
+	        PURPLE = new BasicDye(DYE_PURPLE.get(), 24, ChatColor.DARK_PURPLE, Material.PURPLE_DYE),
+	        BLUE = new BasicDye(DYE_BLUE.get(), 25, ChatColor.DARK_BLUE, Material.LAPIS_LAZULI),
+	        BROWN = new BasicDye(DYE_BROWN.get(), 26, ChatColor.DARK_RED, Material.COCOA_BEANS),
+	        GREEN = new BasicDye(DYE_GREEN.get(), 27, ChatColor.DARK_GREEN, Material.CACTUS_GREEN),
 			BRICK = new BasicDye(Lang.DYE_BRICK.get(), 28, ChatColor.RED, Material.BRICK), // new
-			BLACK = new BasicDye(DYE_BLACK.get(), 29, ChatColor.DARK_GRAY, Material.INK_SACK, 0),
+	        BLACK = new BasicDye(DYE_BLACK.get(), 29, ChatColor.DARK_GRAY, Material.INK_SAC),
 			GOLD = new BasicDye(DYE_GOLD.get(), 30, ChatColor.GOLD, Material.GOLD_NUGGET),
 			AQUA = new BasicDye(DYE_AQUA.get(), 31, ChatColor.AQUA, Material.PRISMARINE_CRYSTALS),
 			LAPIS = new BasicDye(Lang.DYE_LAPIS.get(), 32, ChatColor.BLUE, Material.LAPIS_ORE), // new
 			EMERALD = new BasicDye(Lang.DYE_EMERALD.get(), 33, ChatColor.GREEN, Material.EMERALD), // new
-			LIGHT_WOOD = new BasicDye(Lang.DYE_LIGHT_WOOD.get(), 34, ChatColor.RED, Material.WOOD, 2), // new
-			MAROON = new BasicDye(DYE_MAROON.get(), 35, ChatColor.DARK_RED, Material.NETHER_STALK),
+	        LIGHT_WOOD = new BasicDye(Lang.DYE_LIGHT_WOOD.get(), 34, ChatColor.RED, Material.BIRCH_WOOD),														// new
+	        MAROON = new BasicDye(DYE_MAROON.get(), 35, ChatColor.DARK_RED, Material.NETHER_WART),
 			WHITE_TERRACOTTA = new BasicDye(Lang.DYE_WHITE_TERRACOTTA.get(), 36, ChatColor.DARK_GRAY, Material.EGG), // new
 			ORANGE_TERRACOTTA = new BasicDye(Lang.DYE_ORANGE_TERRACOTTA.get(), 37, ChatColor.DARK_GRAY,
 					Material.MAGMA_CREAM), // new
 			MAGENTA_TERRACOTTA = new BasicDye(Lang.DYE_MAGENTA_TERRACOTTA.get(), 38, ChatColor.DARK_GRAY,
 					Material.BEETROOT), // new
 			LIGHT_BLUE_TERRACOTTA = new BasicDye(Lang.DYE_LIGHT_BLUE_TERRACOTTA.get(), 39, ChatColor.DARK_GRAY,
-					Material.MYCEL), // new
+	                Material.MYCELIUM),																															// new
 			YELLOW_TERRACOTTA = new BasicDye(Lang.DYE_YELLOW_TERRACOTTA.get(), 40, ChatColor.DARK_GRAY,
 					Material.GLOWSTONE_DUST), // new
 			LIME_TERRACOTTA = new BasicDye(Lang.DYE_LIME_TERRACOTTA.get(), 41, ChatColor.GREEN, Material.SLIME_BALL), // new
@@ -92,11 +93,11 @@ public class BasicPalette implements Palette {
 					Material.CHORUS_FRUIT), // new
 			BLUE_TERRACOTTA = new BasicDye(Lang.DYE_BLUE_TERRACOTTA.get(), 47, ChatColor.DARK_BLUE,
 					Material.PURPUR_BLOCK), // new
-			BROWN_TERRACOTTA = new BasicDye(Lang.DYE_BROWN_TERRACOTTA.get(), 48, ChatColor.DARK_GRAY, Material.DIRT, 2), // new
+	        BROWN_TERRACOTTA = new BasicDye(Lang.DYE_BROWN_TERRACOTTA.get(), 48, ChatColor.DARK_GRAY, Material.COARSE_DIRT),									// new
 			GREEN_TERRACOTTA = new BasicDye(Lang.DYE_GREEN_TERRACOTTA.get(), 49, ChatColor.GREEN,
 					Material.POISONOUS_POTATO), // new
 			RED_TERRACOTTA = new BasicDye(Lang.DYE_RED_TERRACOTTA.get(), 50, ChatColor.RED, Material.APPLE), // new
-			BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.DARK_GRAY, Material.COAL, 1), // new
+	        BLACK_TERRACOTTA = new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), 51, ChatColor.DARK_GRAY, Material.CHARCOAL),										// new
 
 			// Shading Dyes
 			COAL = new ShadingDye(DYE_COAL.get(), true, ChatColor.DARK_GRAY, Material.COAL),
@@ -116,11 +117,6 @@ public class BasicPalette implements Palette {
 		for (ArtDye[] dyeList : new ArtDye[][] { dyes, tools }) {
 			for (ArtDye dye : dyeList) {
 				if (item.getType() == dye.getMaterial()) {
-					if (dye.getDurability() != -1) {
-						if (item.getDurability() != dye.getDurability()) {
-							continue;
-						}
-					}
 					return dye;
 				}
 			}

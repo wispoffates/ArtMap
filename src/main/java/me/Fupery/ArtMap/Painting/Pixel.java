@@ -35,4 +35,9 @@ public class Pixel {
         Pixel pixel = (Pixel) obj;
         return pixel.x == x && pixel.y == y && pixel.colour == colour;
     }
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

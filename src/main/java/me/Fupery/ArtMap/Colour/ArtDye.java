@@ -14,12 +14,11 @@ public abstract class ArtDye {
     private final String name;
     private final ChatColor chatColour;
     private Material material;
-    private short durability;
 
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-    protected ArtDye(String name, ChatColor chatColor, Material material, int durability) {
+	protected ArtDye(String name, ChatColor chatColor, Material material) {
 		if (name == null) {
 			ArtMap.instance().getLogger().log(Level.SEVERE,
 					"Dye with material: " + material + " does not have a name set!");
@@ -27,11 +26,6 @@ public abstract class ArtDye {
         this.name = name;
         this.chatColour = chatColor;
         this.material = material;
-        this.durability = (short) durability;
-    }
-
-    protected ArtDye(String name, ChatColor chatColour, Material material) {
-        this(name, chatColour, material, -1);
     }
 
     public abstract void apply(Pixel pixel);
@@ -54,12 +48,8 @@ public abstract class ArtDye {
         return material;
     }
 
-    public short getDurability() {
-        return durability;
-    }
-
     public ItemStack toItem() {
-        ItemStack item = new ItemStack(material, 1, getDurability());
+		ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(chatColour + name);
         item.setItemMeta(meta);

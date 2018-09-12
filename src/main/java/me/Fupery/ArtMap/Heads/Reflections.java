@@ -1,13 +1,13 @@
 package me.Fupery.ArtMap.Heads;
 
-import org.bukkit.Bukkit;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.bukkit.Bukkit;
 
 /**
  * An utility class that simplifies reflection in Bukkit plugins.
@@ -148,11 +148,12 @@ public final class Reflections {
     }
 
     /**
-     * Retrieve a class in the org.bukkit.craftbukkit.VERSION.* package.
-     *
-     * @param name the name of the class, excluding the package
-     * @throws IllegalArgumentException If the class doesn't exist
-     */
+	 * Retrieve a class in the org.bukkit.craftbukkit.VERSION.* package.
+	 *
+	 * @param name the name of the class, excluding the package
+	 * @return The craftbukkit class.
+	 * @throws IllegalArgumentException If the class doesn't exist
+	 */
     public static Class<?> getCraftBukkitClass(String name) {
         return getCanonicalClass(OBC_PREFIX + "." + name);
     }
@@ -286,11 +287,12 @@ public final class Reflections {
     }
 
     /**
-     * Retrieve a class in the net.minecraft.server.VERSION.* package.
-     *
-     * @param name the name of the class, excluding the package
-     * @throws IllegalArgumentException If the class doesn't exist
-     */
+	 * Retrieve a class in the net.minecraft.server.VERSION.* package.
+	 *
+	 * @param name the name of the class, excluding the package
+	 * @return The NMS Class name.
+	 * @throws IllegalArgumentException If the class doesn't exist
+	 */
     public static Class<?> getMinecraftClass(String name) {
         return getCanonicalClass(NMS_PREFIX + "." + name);
     }
@@ -339,14 +341,19 @@ public final class Reflections {
      *
      * @param lookupName the class name with variables
      * @return the class
-     * @see {@link #getClass()} for more information
      */
     public static Class<Object> getUntypedClass(String lookupName) {
         @SuppressWarnings({"rawtypes", "unchecked"})
-        Class<Object> clazz = (Class<Object>) (Class) getClass(lookupName);
+        Class<Object> clazz = (Class) getClass(lookupName);
         return clazz;
     }
 
+	/**
+	 * Create new instance of provided type.
+	 * 
+	 * @param type The type to create an instance of.
+	 * @return The new instance.
+	 */
     public static <T> T newInstance(Class<T> type) {
         try {
             return type.newInstance();

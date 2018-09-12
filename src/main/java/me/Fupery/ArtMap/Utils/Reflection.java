@@ -1,19 +1,20 @@
 package me.Fupery.ArtMap.Utils;
 
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.map.MapView;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.map.MapView;
+
+import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
+import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 
 public class Reflection {
 
@@ -195,21 +196,21 @@ public class Reflection {
     }
 
     public static boolean isMapArt(MapView mapView) {
-        int centerX, centerZ, map;
+		int centerX, centerZ;
 
         try {
             Object worldMap = getField(mapView, "worldMap");
             centerX = (int) getField(worldMap, "centerX");
             centerZ = (int) getField(worldMap, "centerZ");
-            map = (byte) getField(worldMap, "map");
+			// map = (byte) getField(worldMap, "map");
 
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
             return false;
         }
         return (centerX == -999999
-                && centerZ == -999999
-                && map == 5);
+		        && centerZ == -999999);
+		// && map == 5);
     }
 
     public static void setWorldMap(MapView mapView, byte[] colors) {
@@ -217,7 +218,7 @@ public class Reflection {
             Object worldMap = getField(mapView, "worldMap");
             setField(worldMap, "centerX", -999999);
             setField(worldMap, "centerZ", -999999);
-            setField(worldMap, "map", (byte) 5);
+			// setField(worldMap, "map", (byte) 5);
             setField(worldMap, "colors", colors);
 
         } catch (NoSuchFieldException | SecurityException

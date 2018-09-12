@@ -1,6 +1,11 @@
 package me.Fupery.ArtMap.Recipe;
 
-import me.Fupery.ArtMap.Config.Lang;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,31 +15,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import me.Fupery.ArtMap.Config.Lang;
 
 public class CustomItem {
     private final String key;
     private final Material material;
     private String name = null;
-    private short durability = -1;
     private String[] tooltip = new String[0];
     private ItemFlag[] itemFlags = new ItemFlag[0];
     private HashMap<Enchantment, Integer> enchants = new HashMap<>();
     private int amount = 1;
     private SimpleRecipe recipe = null;
+	protected Optional<ItemStack>			stack		= Optional.empty();
 
     public CustomItem(Material material, String uniqueKey) {
         this.material = material;
         this.key = uniqueKey;
-    }
-
-    public CustomItem(Material material, String uniqueKey, int durability) {
-        this.material = material;
-        this.key = uniqueKey;
-        this.durability = (short) durability;
     }
 
     public CustomItem(Material material, String key, String name) {
@@ -56,6 +52,12 @@ public class CustomItem {
         this.tooltip = tooltip;
     }
 
+	public CustomItem(ItemStack stack, String key) {
+		this.stack = Optional.of(stack);
+		this.material = stack.getType();
+		this.key = key;
+	}
+
     public CustomItem name(String name) {
         this.name = name;
         return this;
@@ -73,11 +75,6 @@ public class CustomItem {
 
     public CustomItem tooltip(Lang.Array tooltip) {
         this.tooltip = tooltip.get();
-        return this;
-    }
-
-    public CustomItem durability(int durability) {
-        this.durability = (short) durability;
         return this;
     }
 
@@ -117,10 +114,6 @@ public class CustomItem {
         return material;
     }
 
-    public short getDurability() {
-        return durability;
-    }
-
     public int getAmount() {
         return amount;
     }
@@ -132,8 +125,7 @@ public class CustomItem {
     public boolean checkItem(ItemStack itemStack) {
         if (itemStack != null
                 && itemStack.getType() == material
-                && itemStack.hasItemMeta()
-                && (durability == -1 || itemStack.getDurability() == durability)) {
+		        && itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta.hasLore() && itemMeta.getLore().get(0).contains(key)) {
                 return true;
@@ -143,7 +135,8 @@ public class CustomItem {
     }
 
     public ItemStack toItemStack() {
-        ItemStack item = new ItemStack(material, amount, durability);
+		// get the stack of create a new one.
+		ItemStack item = stack.isPresent() ? stack.get() : new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (name != null) meta.setDisplayName(name);
         List<String> lore = new ArrayList<>();

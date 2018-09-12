@@ -33,18 +33,18 @@ public class SQLiteTable {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TABLE);
             ps.executeQuery();
         } catch (SQLException e) {
-            ErrorLogger.log(e, ArtTable.sqlError);
+			ErrorLogger.log(e, SQLiteTable.sqlError);
             return false;
         } finally {
             if (buildTableStatement != null) try {
                 buildTableStatement.close();
             } catch (SQLException e) {
-                ErrorLogger.log(e, ArtTable.sqlError);
+					ErrorLogger.log(e, SQLiteTable.sqlError);
             }
             if (connection != null) try {
                 connection.close();
             } catch (SQLException e) {
-                ErrorLogger.log(e, ArtTable.sqlError);
+					ErrorLogger.log(e, SQLiteTable.sqlError);
             }
             manager.getLock().unlock();
         }

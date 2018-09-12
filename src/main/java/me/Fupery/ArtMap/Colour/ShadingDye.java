@@ -56,4 +56,9 @@ public class ShadingDye extends ArtDye {
         ShadingDye dye = (ShadingDye) obj;
         return dye.darken == darken;
     }
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

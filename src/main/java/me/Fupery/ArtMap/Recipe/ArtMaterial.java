@@ -35,7 +35,7 @@ public enum ArtMaterial {
             }
         };
 
-		PAINT_BRUSH.artItem = new ArtItem.CraftableItem("PAINT_BRUSH", Material.REDSTONE_TORCH_ON, ArtItem.PAINT_BRUSH)
+		PAINT_BRUSH.artItem = new ArtItem.CraftableItem("PAINT_BRUSH", Material.REDSTONE_TORCH, ArtItem.PAINT_BRUSH)
 				.name(Lang.RECIPE_PAINT_BRUSH_NAME).tooltip(Lang.Array.RECIPE_PAINT_BRUSH);
 
         for (ArtMaterial material : values()) material.artItem.addRecipe();
@@ -54,10 +54,6 @@ public enum ArtMaterial {
 
     public Material getType() {
         return artItem.getMaterial();
-    }
-
-    public short getDurability() {
-        return artItem.getDurability();
     }
 
     public ItemStack getItem() {

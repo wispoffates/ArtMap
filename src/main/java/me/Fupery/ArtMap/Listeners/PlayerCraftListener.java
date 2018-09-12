@@ -1,13 +1,5 @@
 package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,14 +10,23 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+
 class PlayerCraftListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
         ItemStack result = event.getCurrentItem();
         // Disallow players from copying ArtMap maps in the crafting table
-        if (result.getType() == Material.MAP) {
-            MapArt art = ArtMap.getArtDatabase().getArtwork(result.getDurability());
+		if (result.getType() == Material.FILLED_MAP) {
+			MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(result));
             if (art != null) {
                 if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                     Player player = (Player) event.getWhoClicked();
@@ -94,7 +95,8 @@ class PlayerCraftListener implements RegisteredListener {
         ItemUtils.giveItem(player, artworkItem);
     }
 
-    @Override
+	@SuppressWarnings("static-access")
+	@Override
     public void unregister() {
         CraftItemEvent.getHandlerList().unregister(this);
     }

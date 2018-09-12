@@ -1,13 +1,15 @@
 package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Database.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.Database.Map;
 
 public class MapInitializeListener implements RegisteredListener {
 
@@ -23,12 +25,13 @@ public class MapInitializeListener implements RegisteredListener {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Bukkit.getLogger().info("   Player online: " + player.getDisplayName());//TODO remove logging
 
-                    ItemStack item = player.getItemInHand();
-                    if (item.getType() == Material.MAP && mapId == event.getMap().getId()) {
+					ItemStack item = player.getInventory().getItemInMainHand();
+					if (item.getType() == Material.FILLED_MAP && mapId == event.getMap().getId()) {
                         Bukkit.getLogger().info("   ItemMatches!");//TODO remove logging
-
-                        item.setDurability(Bukkit.createMap(player.getWorld()).getId());
-                        player.setItemInHand(item);
+						MapMeta meta = (MapMeta) item.getItemMeta();
+						meta.setMapId(Bukkit.createMap(player.getWorld()).getId());
+						item.setItemMeta(meta);
+						player.getInventory().setItemInMainHand(item);
                     }
                 }
             });

@@ -5,6 +5,7 @@ description: ${project.description}
 depend: []
 softdepend: [WorldGuard, ProtocolLib, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock, Residence]
 author: Fupery
+api-version: 1.13
 
 commands:
   art:

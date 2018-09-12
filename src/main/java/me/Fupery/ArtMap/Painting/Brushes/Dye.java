@@ -153,5 +153,10 @@ public class Dye extends Brush {
             CachedPixel cachedPixel = (CachedPixel) obj;
             return cachedPixel.x == x && cachedPixel.y == y && cachedPixel.dye.equals(dye);
         }
+
+		@Override
+		public int hashCode() {
+			return super.hashCode();
+		}
     }
 }

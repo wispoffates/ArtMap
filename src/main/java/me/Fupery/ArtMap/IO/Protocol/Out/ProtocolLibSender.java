@@ -1,17 +1,19 @@
 package me.Fupery.ArtMap.IO.Protocol.Out;
 
+import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
+
+import java.lang.reflect.InvocationTargetException;
+
+import org.bukkit.entity.Player;
+
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
-import org.bukkit.entity.Player;
-
-import java.lang.reflect.InvocationTargetException;
-
-import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
 
 public class ProtocolLibSender implements PacketSender {
 
@@ -19,7 +21,7 @@ public class ProtocolLibSender implements PacketSender {
             ? new ChatPacketBuilder() : new ChatPacketBuilderLegacy();
 
     @Override
-    public WrappedPacket buildChatPacket(String message) {
+	public WrappedPacket<?> buildChatPacket(String message) {
         return new WrappedPacket<PacketContainer>(builder.buildChatPacket(message)) {
             @Override
             public void send(Player player) {

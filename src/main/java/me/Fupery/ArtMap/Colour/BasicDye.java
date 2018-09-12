@@ -12,14 +12,10 @@ public class BasicDye extends ArtDye {
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-    protected BasicDye(String name, int colour, ChatColor chatColor, Material material, int durability) {
-        super(name, chatColor, material, durability);
+	protected BasicDye(String name, int colour, ChatColor chatColor, Material material) {
+		super(name, chatColor, material);
         this.colour = (byte) colour;
 
-    }
-
-    protected BasicDye(String name, int colour, ChatColor chatColour, Material material) {
-        this(name, colour, chatColour, material, -1);
     }
 
 	/**
@@ -50,4 +46,9 @@ public class BasicDye extends ArtDye {
         BasicDye dye = (BasicDye) obj;
         return dye.colour == colour;
     }
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

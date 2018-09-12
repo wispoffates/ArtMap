@@ -6,12 +6,14 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 
 /**
  * Represents a painting canvas. Extends ItemStack so that information can be
@@ -31,8 +33,11 @@ public class Canvas {
     }
 
 	public static Canvas getCanvas(ItemStack item) {
-        if (item == null || item.getType() != Material.MAP) return null;
-        short mapId = item.getDurability();
+		if (item == null || item.getType() != Material.FILLED_MAP)
+			return null;
+
+		MapMeta meta = (MapMeta) item.getItemMeta();
+		short mapId = (short) meta.getMapId();
 		if (item.getItemMeta() != null && item.getItemMeta().getLore() != null
 				&& item.getItemMeta().getLore().contains(ArtItem.COPY_KEY)) {
 			return new CanvasCopy(item);
@@ -46,7 +51,11 @@ public class Canvas {
 	}
 
 	public ItemStack getEaselItem() {
-		return new ItemStack(Material.MAP, 1, this.mapId);
+		ItemStack mapItem = new ItemStack(Material.FILLED_MAP);
+		MapMeta meta = (MapMeta) mapItem.getItemMeta();
+		meta.setMapId(this.mapId);
+		mapItem.setItemMeta(meta);
+		return mapItem;
 	}
 
 	public short getMapId() {
@@ -63,7 +72,7 @@ public class Canvas {
 		}
 
 		public CanvasCopy(ItemStack map) {
-			super(map.getDurability());
+			super(ItemUtils.getMapID(map));
 			ItemMeta meta = map.getItemMeta();
 			List<String> lore = meta.getLore();
 			if (lore != null && !lore.contains(ArtItem.COPY_KEY)) {
@@ -80,12 +89,13 @@ public class Canvas {
 
 		@Override
 		public ItemStack getEaselItem() {
-			ItemStack item = new ItemStack(Material.MAP, 1, this.mapId);
+			ItemStack mapItem = new ItemStack(Material.FILLED_MAP);
+			MapMeta meta = (MapMeta) mapItem.getItemMeta();
+			meta.setMapId(this.mapId);
 			// Set copy lore
-			ItemMeta meta = item.getItemMeta();
 			meta.setLore(Arrays.asList(ArtItem.COPY_KEY, this.original.getTitle()));
-			item.setItemMeta(meta);
-			return item;
+			mapItem.setItemMeta(meta);
+			return mapItem;
 		}
 
 		/**

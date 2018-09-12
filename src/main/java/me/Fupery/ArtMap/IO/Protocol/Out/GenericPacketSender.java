@@ -1,17 +1,18 @@
 package me.Fupery.ArtMap.IO.Protocol.Out;
 
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.Utils.Reflection;
-import org.bukkit.entity.Player;
+import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
+import org.bukkit.entity.Player;
+
+import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.Utils.Reflection;
 
 public class GenericPacketSender implements PacketSender {
 
@@ -23,7 +24,7 @@ public class GenericPacketSender implements PacketSender {
     }
 
     @Override
-    public WrappedPacket buildChatPacket(String message) {
+	public WrappedPacket<?> buildChatPacket(String message) {
         return new WrappedPacket<Object>(builder.buildChatPacket(message)) {
             private String rawMessage = message;
 
@@ -47,9 +48,9 @@ public class GenericPacketSender implements PacketSender {
     }
 
     private static class ChatPacketBuilderLegacy implements PacketBuilder {
-        protected Constructor packetCons;
-        protected Method chatSerializer;
-        protected Class chatSerializerClass;
+		protected Constructor<?>	packetCons;
+		protected Method			chatSerializer;
+		protected Class<?>			chatSerializerClass;
 
         public ChatPacketBuilderLegacy(String NMS_Prefix) {
             String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
@@ -57,8 +58,8 @@ public class GenericPacketSender implements PacketSender {
             String chatSerializerName = chatComponentName + "$ChatSerializer";
 
             try {
-                Class chatPacketClass = Class.forName(packetClassName);
-                Class chatComponentClass = Class.forName(chatComponentName);
+				Class<?> chatPacketClass = Class.forName(packetClassName);
+				Class<?> chatComponentClass = Class.forName(chatComponentName);
                 chatSerializerClass = Class.forName(chatSerializerName);
 
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);
@@ -82,9 +83,9 @@ public class GenericPacketSender implements PacketSender {
     }
 
     private static class ChatPacketBuilder implements PacketBuilder {
-        protected Constructor packetCons;
+		protected Constructor<?>	packetCons;
         protected Method chatSerializer;
-        protected Class chatSerializerClass;
+		protected Class<?>			chatSerializerClass;
         protected Object chatType;
 
         public ChatPacketBuilder(String NMS_Prefix) {
@@ -94,10 +95,10 @@ public class GenericPacketSender implements PacketSender {
             String chatTypeClassName = NMS_Prefix + ".ChatMessageType";
 
             try {
-                Class chatPacketClass = Class.forName(packetClassName);
-                Class chatComponentClass = Class.forName(chatComponentName);
+				Class<?> chatPacketClass = Class.forName(packetClassName);
+				Class<?> chatComponentClass = Class.forName(chatComponentName);
                 chatSerializerClass = Class.forName(chatSerializerName);
-                Class chatTypeClass = Class.forName(chatTypeClassName);
+				Class<?> chatTypeClass = Class.forName(chatTypeClassName);
 
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, chatTypeClass);
                 chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);

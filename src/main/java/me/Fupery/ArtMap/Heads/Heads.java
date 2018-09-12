@@ -44,7 +44,7 @@ public class Heads {
 	 * @return The Skull.
 	 */
 	public static ItemStack getHead(UUID playerId) {
-		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 		SkullMeta meta = getHeadMeta(playerId);
 		if (meta == null) {
 			return null;
@@ -81,7 +81,7 @@ public class Heads {
 		if (!data.texture.isEmpty()) {
 			propertyMap.put("textures", new Property("textures", data.texture));
 		}
-		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 		ItemMeta headMeta = head.getItemMeta();
 		Class<?> headMetaClass = headMeta.getClass();
 		Reflections.getField(headMetaClass, "profile", GameProfile.class).set(headMeta, profile);

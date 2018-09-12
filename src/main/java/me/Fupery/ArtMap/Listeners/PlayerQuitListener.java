@@ -23,7 +23,7 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().removePlayer(player);
         }
         if (ArtMap.getPreviewManager().isPreviewing(player)) {
-            if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
+			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
                 ArtMap.getPreviewManager().endPreview(player);
             }
         }
@@ -38,7 +38,7 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().removePlayer(player);
         }
         if (ArtMap.getPreviewManager().isPreviewing(player)) {
-            if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
+			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
                 ArtMap.getPreviewManager().endPreview(player);
             }
         }
@@ -67,7 +67,7 @@ class PlayerQuitListener implements RegisteredListener {
 			ArtMap.getArtistHandler().removePlayer(player);
 		}
 		if (ArtMap.getPreviewManager().isPreviewing(player)) {
-			if (player.getItemInHand().getType() == Material.MAP) {
+			if (player.getItemInHand().getType() == Material.FILLED_MAP) {
 				ArtMap.getPreviewManager().endPreview(player);
 			}
 		}
@@ -82,7 +82,7 @@ class PlayerQuitListener implements RegisteredListener {
             }
         }
 		if (ArtMap.getPreviewManager().isPreviewing(event.getPlayer())) {
-			if (event.getPlayer().getItemInHand().getType() == Material.MAP) {
+			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
 				ArtMap.getPreviewManager().endPreview(event.getPlayer());
 			}
 		}

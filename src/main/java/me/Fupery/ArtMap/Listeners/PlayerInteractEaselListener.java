@@ -155,7 +155,8 @@ class PlayerInteractEaselListener implements RegisteredListener {
         return false;
     }
 
-    @Override
+	@SuppressWarnings("static-access")
+	@Override
     public void unregister() {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(this);
         PlayerArmorStandManipulateEvent.getHandlerList().unregister(this);

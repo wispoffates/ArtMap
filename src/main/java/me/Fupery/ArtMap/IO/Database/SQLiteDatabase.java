@@ -1,14 +1,15 @@
 package me.Fupery.ArtMap.IO.Database;
 
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import org.bukkit.Bukkit;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.bukkit.Bukkit;
+
+import me.Fupery.ArtMap.IO.ErrorLogger;
 
 public class SQLiteDatabase {
     protected final File dbFile;
@@ -39,7 +40,7 @@ public class SQLiteDatabase {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
         } catch (SQLException | ClassNotFoundException e) {
             connection = null;
-            ErrorLogger.log(e, ArtTable.sqlError);
+			ErrorLogger.log(e, SQLiteTable.sqlError);
         }
         return connection;
     }

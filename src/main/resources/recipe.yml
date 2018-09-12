@@ -30,7 +30,7 @@ EASEL:
 CANVAS:
   MATERIALS:
     l: LEATHER
-    p: EMPTY_MAP
+    p: MAP
     e: EMERALD
   SHAPE:
     - "lel"

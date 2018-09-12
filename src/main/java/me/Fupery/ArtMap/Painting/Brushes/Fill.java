@@ -1,14 +1,15 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
+import java.util.ArrayList;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
 
 public class Fill extends Brush {
     private final ArrayList<CachedPixel> lastFill;
@@ -108,5 +109,10 @@ public class Fill extends Brush {
             CachedPixel cachedPixel = (CachedPixel) obj;
             return cachedPixel.x == x && cachedPixel.y == y && cachedPixel.colour == colour;
         }
+
+		@Override
+		public int hashCode() {
+			return super.hashCode();
+		}
     }
 }

@@ -1,16 +1,16 @@
 package me.Fupery.ArtMap.IO.Protocol.Out;
 
+import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
+
+import java.lang.reflect.Field;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Utils.Reflection;
 
-import java.lang.reflect.Field;
-
-import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_12;
-
 public class ChatTypeWrapper {
     boolean legacy;
-    private Class chatTypeClass;
+	private Class<?>	chatTypeClass;
     private Object chatType;
 
     public ChatTypeWrapper() {
@@ -30,7 +30,7 @@ public class ChatTypeWrapper {
         }
     }
 
-    public Class getChatTypeClass() {
+	public Class<?> getChatTypeClass() {
         return chatTypeClass;
     }
 

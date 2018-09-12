@@ -11,32 +11,16 @@ public class StaticButton extends Button {
         super(material, displayName, lore);
     }
 
-    public StaticButton(Material material, int durability, String displayName, String... lore) {
-        super(material, durability, displayName, lore);
-    }
-
-    public StaticButton(Material material, int durability, String... text) {
-        super(material, durability, text);
-    }
-
     public StaticButton(Material material, String... text) {
         super(material, text);
-    }
-
-    public StaticButton(Material material, String displayName) {
-        super(material, displayName);
     }
 
     public StaticButton(Material material) {
         super(material);
     }
 
-    public StaticButton(Material material, int durability) {
-        super(material, durability);
-    }
-
     public StaticButton(ItemStack itemStack) {
-        super(itemStack.getType(), itemStack.getDurability());
+		super(itemStack.getType());
         setAmount(itemStack.getAmount());
         setItemMeta(itemStack.getItemMeta().clone());
     }

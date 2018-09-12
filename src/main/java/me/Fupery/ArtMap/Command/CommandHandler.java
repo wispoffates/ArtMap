@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -61,8 +62,10 @@ public class CommandHandler implements CommandExecutor {
 						}
 					}
 				});
-				ItemStack map = new ItemStack(Material.MAP, 1);
-				map.setDurability(mapView.getId());
+				ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
+				MapMeta meta = (MapMeta) map.getItemMeta();
+				meta.setMapId(mapView.getId());
+				map.setItemMeta(meta);
 				((Player) sender).getInventory().setItemInMainHand(map);
 			}
 		});

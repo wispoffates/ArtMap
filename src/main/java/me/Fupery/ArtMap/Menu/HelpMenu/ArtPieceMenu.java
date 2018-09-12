@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 
 import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
@@ -38,7 +39,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
-		return item != null && item.getType() == Material.MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
+		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
 				&& item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
 	}
 
@@ -73,8 +74,9 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private final ArtPieceMenu artworkMenu;
 
 		private PreviewButton(ArtPieceMenu menu, MapArt artwork, boolean adminButton) {
-			super(Material.MAP);
-			ItemMeta meta = artwork.getMapItem().getItemMeta();
+			super(Material.FILLED_MAP);
+			MapMeta meta = (MapMeta) artwork.getMapItem().getItemMeta();
+			meta.setMapId(artwork.getMapId());
 			List<String> lore = meta.getLore();
 			lore.add(HelpMenu.CLICK);
 			if (adminButton)
@@ -93,7 +95,8 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 				if (offHand.getType() == Material.AIR || isPreviewItem(offHand)) {
 					SoundCompat.BLOCK_CLOTH_FALL.play(player);
 					ItemStack preview = artwork.getMapItem();
-					ItemMeta meta = preview.getItemMeta();
+					MapMeta meta = (MapMeta) preview.getItemMeta();
+					meta.setMapId(artwork.getMapId());
 					List<String> lore = getItemMeta().getLore();
 					lore.set(0, ArtItem.PREVIEW_KEY);
 					meta.setLore(lore);
@@ -152,7 +155,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private final ArtistArtworksMenu artworkMenu;
 
 		private RenameButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
-			super(Material.BOOK_AND_QUILL);
+			super(Material.WRITABLE_BOOK);
 			ItemMeta meta = new ItemStack(Material.REDSTONE).getItemMeta();
 			meta.setDisplayName(HelpMenu.RENAME_NAME);
 			List<String> lore = new ArrayList<>();

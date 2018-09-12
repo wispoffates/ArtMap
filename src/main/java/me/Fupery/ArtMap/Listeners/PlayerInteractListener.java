@@ -20,8 +20,8 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.Utils.LocationHelper;
-import me.Fupery.ArtMap.Utils.VersionHandler;
 
 class PlayerInteractListener implements RegisteredListener {
 
@@ -107,44 +107,32 @@ class PlayerInteractListener implements RegisteredListener {
 
 	private void removeEaselFromHandle(Player player) {
 		// check main hand
-		if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-			if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInMainHand())) {
-				ItemStack items = player.getInventory().getItemInMainHand();
-				if (items.getAmount() > 1) {
-					items.setAmount(items.getAmount() - 1);
-				} else {
-					items = null;
-				}
-				player.getInventory().setItemInMainHand(items);
-				// check off hand
-			} else if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInOffHand())) {
-				ItemStack items = player.getInventory().getItemInOffHand();
-				if (items.getAmount() > 1) {
-					items.setAmount(items.getAmount() - 1);
-				} else {
-					items = null;
-				}
-				player.getInventory().setItemInOffHand(items);
+		if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInMainHand())) {
+			ItemStack items = player.getInventory().getItemInMainHand();
+			if (items.getAmount() > 1) {
+				items.setAmount(items.getAmount() - 1);
+			} else {
+				items = null;
 			}
-		} else {
-			if (ArtMaterial.EASEL.isValidMaterial(player.getItemInHand())) {
-				ItemStack items = player.getItemInHand();
-				if (items.getAmount() > 1) {
-					items.setAmount(items.getAmount() - 1);
-				} else {
-					items = null;
-				}
-				player.setItemInHand(items);
+			player.getInventory().setItemInMainHand(items);
+			// check off hand
+		} else if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInOffHand())) {
+			ItemStack items = player.getInventory().getItemInOffHand();
+			if (items.getAmount() > 1) {
+				items.setAmount(items.getAmount() - 1);
+			} else {
+				items = null;
 			}
+			player.getInventory().setItemInOffHand(items);
 		}
-    }
+	}
 
     @EventHandler
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
         final ItemStack item = event.getCursor();
 
         if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null
-                || item == null || item.getType() != Material.MAP) {
+		        || item == null || item.getType() != Material.FILLED_MAP) {
             return;
         }
 
@@ -154,7 +142,7 @@ class PlayerInteractListener implements RegisteredListener {
 
             if (!meta.hasLore()) {
 
-                MapArt art = ArtMap.getArtDatabase().getArtwork(item.getDurability());
+				MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(item));
 
                 if (art != null) {
 
@@ -165,7 +153,8 @@ class PlayerInteractListener implements RegisteredListener {
         });
     }
 
-    @Override
+	@SuppressWarnings("static-access")
+	@Override
     public void unregister() {
         PlayerInteractEvent.getHandlerList().unregister(this);
         InventoryCreativeEvent.getHandlerList().unregister(this);

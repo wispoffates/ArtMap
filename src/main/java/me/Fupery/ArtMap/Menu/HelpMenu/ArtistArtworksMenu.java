@@ -46,7 +46,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     }
 
     public static boolean isPreviewItem(ItemStack item) {
-        return item != null && item.getType() == Material.MAP && item.hasItemMeta()
+		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta()
                 && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
     }
 
@@ -88,7 +88,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
         private final ArtistArtworksMenu artworkMenu;
 
         private PreviewButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
-            super(Material.MAP);
+			super(Material.FILLED_MAP);
             ItemMeta meta = artwork.getMapItem().getItemMeta();
             List<String> lore = meta.getLore();
             lore.add(HelpMenu.CLICK);

@@ -1,12 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
-import static org.bukkit.Material.BOOK_AND_QUILL;
-import static org.bukkit.Material.INK_SACK;
-import static org.bukkit.Material.PAINTING;
-import static org.bukkit.Material.SIGN;
-import static org.bukkit.Material.WORKBENCH;
-
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
 import me.Fupery.ArtMap.ArtMap;
@@ -35,11 +30,11 @@ public class HelpMenu extends BasicMenu {
     public Button[] getButtons() {
         MenuHandler.MenuList list = ArtMap.getMenuHandler().MENU;
         return new Button[]{
-                new StaticButton(SIGN, Lang.Array.HELP_GETTING_STARTED.get()),
-                new LinkedButton(list.RECIPE, WORKBENCH, Lang.Array.HELP_RECIPES.get()),
-                new LinkedButton(list.DYES, INK_SACK, 1, Lang.Array.HELP_DYES.get()),
-                new LinkedButton(list.TOOLS, BOOK_AND_QUILL, Lang.Array.HELP_TOOLS.get()),
-                new LinkedButton(list.ARTIST, PAINTING, Lang.Array.HELP_LIST.get())
+		        new StaticButton(Material.SIGN, Lang.Array.HELP_GETTING_STARTED.get()),
+		        new LinkedButton(list.RECIPE, Material.CRAFTING_TABLE, Lang.Array.HELP_RECIPES.get()),
+		        new LinkedButton(list.DYES, Material.ROSE_RED, Lang.Array.HELP_DYES.get()),
+		        new LinkedButton(list.TOOLS, Material.WRITABLE_BOOK, Lang.Array.HELP_TOOLS.get()),
+		        new LinkedButton(list.ARTIST, Material.PAINTING, Lang.Array.HELP_LIST.get())
         };
     }
 }

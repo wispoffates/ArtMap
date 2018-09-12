@@ -1,11 +1,13 @@
 package me.Fupery.ArtMap.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.inventory.meta.MapMeta;
 
 public class ItemUtils {
 
@@ -33,4 +35,19 @@ public class ItemUtils {
         item.setItemMeta(meta);
         return item;
     }
+
+	/**
+	 * Handle 1.13 maps having their ID as part of the meta data.
+	 * 
+	 * @param item The Map Item to get the id of.
+	 * @return The ID of the map or -1 if something went wrong.
+	 */
+	public static short getMapID(ItemStack item) {
+		if (item.getType() != Material.FILLED_MAP) {
+			return -1;
+		}
+
+		MapMeta meta = (MapMeta) item.getItemMeta();
+		return (short) meta.getMapId();
+	}
 }

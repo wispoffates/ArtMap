@@ -18,24 +18,8 @@ public class NestedMenuButton extends Button {
         this.linkedMenu = linkedMenu;
     }
 
-    public NestedMenuButton(CacheableMenu linkedMenu, Material material, int durability) {
-        super(material, durability);
-        this.linkedMenu = linkedMenu;
-    }
-
     public NestedMenuButton(CacheableMenu linkedMenu, Material material, String displayName, String... lore) {
         super(material, displayName, lore);
-        this.linkedMenu = linkedMenu;
-    }
-
-    public NestedMenuButton(CacheableMenu linkedMenu, Material material, int durability,
-                            String displayName, String... lore) {
-        super(material, durability, displayName, lore);
-        this.linkedMenu = linkedMenu;
-    }
-
-    public NestedMenuButton(CacheableMenu linkedMenu, Material material, int durability, String... text) {
-        super(material, durability, text);
         this.linkedMenu = linkedMenu;
     }
 
