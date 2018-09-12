@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -196,11 +197,14 @@ public final class Database {
 
     public Map createMap() {
         Short id = idQueue.poll();
-        MapView mapView;
+        MapView mapView = null;
         if (id != null && getArtwork(id) == null) {
             mapView = getMap(id);
         } else {
-            mapView = Bukkit.createMap(Bukkit.getWorld(ArtMap.getConfiguration().WORLD));
+        	World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
+            if (world != null) {
+                mapView = Bukkit.createMap(world);
+            }
         }
 		if (mapView == null) {
 			ArtMap.instance().getLogger().severe("MapView creation Failed! id=" + id);
