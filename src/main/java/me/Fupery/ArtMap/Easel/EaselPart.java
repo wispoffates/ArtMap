@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -71,16 +72,7 @@ public enum EaselPart {
 
 	private static BlockFace getSignFacing(BlockFace facing) {
 		BlockFace orientation = facing.getOppositeFace();
-
-		if (orientation == BlockFace.SOUTH) {
-			return BlockFace.SOUTH_SOUTH_EAST;
-
-		} else if (orientation == BlockFace.EAST) {
-			return BlockFace.WEST_NORTH_WEST;
-
-		} else {
-			return orientation;
-		}
+		return orientation;
 	}
 
 	public static int getYawOffset(BlockFace face) {
@@ -107,13 +99,12 @@ public enum EaselPart {
 	public Entity spawn(Location easelLocation, BlockFace facing) {
 
 		if (this == SIGN) {
-			org.bukkit.material.Sign signFace = new org.bukkit.material.Sign(Material.SIGN);
-			BlockFace signFacing = getSignFacing(facing);
-			signFace.setFacingDirection(signFacing);
-
 			easelLocation.getBlock().setType(Material.WALL_SIGN);
+			WallSign bd = (WallSign) easelLocation.getBlock().getBlockData();
+			bd.setFacing(getSignFacing(facing));
+			easelLocation.getBlock().setBlockData(bd, false);
+
 			Sign sign = ((Sign) easelLocation.getBlock().getState());
-			sign.setData(signFace);
 			sign.setLine(3, ARBITRARY_SIGN_ID);
 			sign.update(true, false);
 

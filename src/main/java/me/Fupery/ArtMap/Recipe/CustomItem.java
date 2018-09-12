@@ -135,7 +135,7 @@ public class CustomItem {
     }
 
     public ItemStack toItemStack() {
-		// get the stack of create a new one.
+		// get the stack or create a new one.
 		ItemStack item = stack.isPresent() ? stack.get() : new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (name != null) meta.setDisplayName(name);

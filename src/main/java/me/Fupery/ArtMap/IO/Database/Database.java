@@ -176,7 +176,8 @@ public final class Database {
                 if (restoreMap(mapId)) artworksRestored++;
             }
             if (artworksRestored > 0)
-				ArtMap.instance().getLogger().info(artworksRestored + " corrupted artworks were restored.");
+				ArtMap.instance().getLogger()
+				        .info(artworksRestored + " corrupted artworks were restored. More info at https://gitlab.com/BlockStack/ArtMap/wikis/Common-Errors");
         });
     }
 
@@ -238,7 +239,7 @@ public final class Database {
 			if (topMapId == -1 || topMapId < mapId.getId()) {
 				ArtMap.instance().getLogger()
 						.warning(String.format(
-								"Map Id %s could not be restored: the current maximum valid mapId is: %s.",
+				                "Map Id %s could not be restored: the current maximum valid mapId is: %s.",
 								mapId.getId(), topMapId));
 				return false;
 			}

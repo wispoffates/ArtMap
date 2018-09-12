@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 
 import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
@@ -89,7 +89,9 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
         private PreviewButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
 			super(Material.FILLED_MAP);
-            ItemMeta meta = artwork.getMapItem().getItemMeta();
+			MapMeta meta = (MapMeta) artwork.getMapItem().getItemMeta();
+			meta.setMapId(artwork.getMapId());
+			meta.setLocationName(artwork.getTitle());
             List<String> lore = meta.getLore();
             lore.add(HelpMenu.CLICK);
             if (adminButton) lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
