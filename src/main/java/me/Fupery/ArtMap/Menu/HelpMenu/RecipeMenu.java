@@ -6,15 +6,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.github.Fupery.InvMenu.Utils.MenuType;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
-import me.Fupery.ArtMap.Menu.Button.CloseButton;
+import me.Fupery.ArtMap.Menu.Button.LinkedButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -27,19 +28,21 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
     private boolean version_1_12 = ArtMap.getBukkitVersion().getVersion().isEqualTo(VersionHandler.BukkitVersion.v1_12);
 
     public RecipeMenu(boolean adminMenu) {
-        super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), InventoryType.HOPPER);
+		super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), new MenuType(9));
         this.adminMenu = adminMenu;
     }
 
     @Override
     public Button[] getButtons() {
+		String[] back = { "§c§l⬅" };
         return new Button[]{
+		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
+		        new StaticButton(Material.AIR),
                 new StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
                 new RecipeButton(ArtMaterial.PAINT_BUCKET),
 				new RecipeButton(ArtMaterial.PAINT_BRUSH),
-                new CloseButton()
         };
     }
 

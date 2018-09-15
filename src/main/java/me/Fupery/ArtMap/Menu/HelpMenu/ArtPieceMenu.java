@@ -28,14 +28,18 @@ import net.wesjd.anvilgui.AnvilGUI;
 
 public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	private ArtistArtworksMenu parent;
-	private boolean adminViewing;
+	private Player				viewer;
+	private boolean				adminViewing	= false;
 	private MapArt artwork;
 
-	public ArtPieceMenu(ArtistArtworksMenu parent, MapArt artwork, boolean adminViewing) {
+	public ArtPieceMenu(ArtistArtworksMenu parent, MapArt artwork, Player viewer) {
 		super(artwork.getTitle(), 0);
 		this.parent = parent;
-		this.adminViewing = adminViewing;
 		this.artwork = artwork;
+		this.viewer = viewer;
+		if (this.viewer.hasPermission("artmap.admin")) {
+			this.adminViewing = true;
+		}
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
@@ -63,8 +67,11 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	protected Button[] getListItems() {
 		List<Button> buttons = new ArrayList<>();
 		buttons.add(new PreviewButton(this, this.artwork, adminViewing));
-		buttons.add(new DeleteButton(this.parent, this.artwork, adminViewing));
-		buttons.add(new RenameButton(this.parent, this.artwork, adminViewing));
+		if (this.adminViewing || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
+			buttons.add(new DeleteButton(this.parent, this.artwork, adminViewing));
+			buttons.add(new RenameButton(this.parent, this.artwork, adminViewing));
+		}
+
 		return buttons.toArray(new Button[0]);
 	}
 

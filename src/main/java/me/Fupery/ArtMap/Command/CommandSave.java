@@ -63,7 +63,7 @@ class CommandSave extends AsyncCommand {
 				ItemUtils.giveItem(player, art1.getMapItem());
 				player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
 			} else {
-				Lang.SAVE_FAILURE.send(player);
+				player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
 			}
         });
     }

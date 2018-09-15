@@ -106,7 +106,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
             if (clickType == ClickType.LEFT) {
 				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SWITCH);
-				ArtMap.getMenuHandler().openMenu(player, new ArtPieceMenu(this.artworkMenu, this.artwork, false));
+				ArtMap.getMenuHandler().openMenu(player, new ArtPieceMenu(this.artworkMenu, this.artwork, player));
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);

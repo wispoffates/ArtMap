@@ -27,7 +27,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	private final UUID viewer;
 
 	public ArtistMenu(Player viewer) {
-		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), 0);
+		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), ArtMap.getMenuHandler().MENU.HELP, 0);
 		this.viewer = viewer.getUniqueId();
 	}
 

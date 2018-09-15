@@ -3,7 +3,8 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
+
+import com.github.Fupery.InvMenu.Utils.MenuType;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
@@ -17,7 +18,7 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 public class ToolMenu extends BasicMenu implements ChildMenu {
 
     public ToolMenu() {
-        super(ChatColor.DARK_BLUE + Lang.MENU_TOOLS.get(), InventoryType.HOPPER);
+		super(ChatColor.DARK_BLUE + Lang.MENU_TOOLS.get(), new MenuType(9));
     }
 
     @Override
@@ -27,7 +28,10 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public Button[] getButtons() {
+    	String[] back = {"§c§l⬅"};
         return new Button[]{
+		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back),
+		        new StaticButton(Material.AIR),
                 new StaticButton(Material.SIGN, Lang.Array.INFO_TOOLS.get()),
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, Material.ROSE_RED, Lang.Array.TOOL_DYE.get()),
                 new StaticButton(Material.BUCKET, Lang.Array.TOOL_PAINTBUCKET.get()),

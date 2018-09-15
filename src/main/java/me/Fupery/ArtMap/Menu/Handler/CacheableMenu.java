@@ -1,12 +1,13 @@
 package me.Fupery.ArtMap.Menu.Handler;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.Fupery.InvMenu.Utils.MenuType;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.API.MenuTemplate;
@@ -16,14 +17,19 @@ import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 public abstract class CacheableMenu implements MenuTemplate {
 
     protected String heading;
-    protected InventoryType type;
+	protected MenuType	type;
     private Button[] buttons;
     private boolean open = false;
 
     protected CacheableMenu(String heading, InventoryType type) {
         this.heading = (heading.length() > 32) ? this.heading = heading.substring(0, 32) : heading;
-        this.type = type;
+		this.type = new MenuType(type);
     }
+
+	protected CacheableMenu(String heading, MenuType type) {
+		this.heading = (heading.length() > 32) ? this.heading = heading.substring(0, 32) : heading;
+		this.type = type;
+	}
 
     private void loadButtons(Inventory inventory) {
         buttons = getButtons();
@@ -36,7 +42,7 @@ public abstract class CacheableMenu implements MenuTemplate {
     void open(Player player) {
 		ArtMap.instance();
 		ArtMap.getScheduler().ASYNC.run(() -> {
-			Inventory inventory = Bukkit.createInventory(player, type, heading);
+			Inventory inventory = this.type.createInventory(player, heading);
 			loadButtons(inventory);
 			ArtMap.getScheduler().SYNC.run(() -> {
 				player.openInventory(inventory);

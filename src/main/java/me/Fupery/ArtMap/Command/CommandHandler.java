@@ -70,42 +70,46 @@ public class CommandHandler implements CommandExecutor {
 			}
 		});
 		
-		commands.put("give",
-				new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork:<title>> [amount]", true) {
-            @Override
-            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                Player player = Bukkit.getPlayer(args[1]);
-                if (player != null) {
-                    ItemStack item = null;
-                    if (args[2].equalsIgnoreCase("easel")) item = ArtMaterial.EASEL.getItem();
-                    else if (args[2].equalsIgnoreCase("canvas")) item = ArtMaterial.CANVAS.getItem();
-                    else if (args[2].contains("artwork:")) {
-                        String[] strings = args[2].split(":");
-                        if (strings.length > 1) {
-                            String title = strings[1];
-                            MapArt art = ArtMap.getArtDatabase().getArtwork(title);
-                            if (art == null) {
-                                sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
-                                return;
-                            }
-                            item = art.getMapItem();
-                        }
-                    }
-                    if (item == null) {
-                        sender.sendMessage(Lang.PREFIX + ChatColor.RED + this.usage);
-                        return;
-                    }
-                    if (args.length > 3) {
-                        int amount = Integer.parseInt(args[3]);
-                        if (amount > 1) item.setAmount(amount);
-                    }
-                    ItemStack finalItem = item;
-                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
-                    return;
-                }
-                sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
-            }
-        });
+		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork|paintbrush}:<title>> [amount]", true) {
+			@Override
+			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+				Player player = Bukkit.getPlayer(args[1]);
+				if (player != null) {
+					ItemStack item = null;
+					if (args[2].equalsIgnoreCase("easel")) {
+						item = ArtMaterial.EASEL.getItem();
+					} else if (args[2].equalsIgnoreCase("canvas")) {
+						item = ArtMaterial.CANVAS.getItem();
+					} else if (args[2].equalsIgnoreCase("paintbrush")) {
+						item = ArtMaterial.PAINT_BRUSH.getItem();
+					} else if (args[2].contains("artwork:")) {
+						String[] strings = args[2].split(":");
+						if (strings.length > 1) {
+							String title = strings[1];
+							MapArt art = ArtMap.getArtDatabase().getArtwork(title);
+							if (art == null) {
+								sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
+								return;
+							}
+							item = art.getMapItem();
+						}
+					}
+					if (item == null) {
+						sender.sendMessage(Lang.PREFIX + ChatColor.RED + this.usage);
+						return;
+					}
+					if (args.length > 3) {
+						int amount = Integer.parseInt(args[3]);
+						if (amount > 1)
+							item.setAmount(amount);
+					}
+					ItemStack finalItem = item;
+					ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
+					return;
+				}
+				sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
+			}
+		});
 
         //convenience commands
 		commands.put("help", new AsyncCommand("artmap.menu", "/art [help]", true) {

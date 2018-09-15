@@ -204,6 +204,9 @@ public final class Database {
         	World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
             if (world != null) {
                 mapView = Bukkit.createMap(world);
+			} else {
+				ArtMap.instance().getLogger()
+				        .severe("MapView creation Failed! World is null! Please check that the world: option is set correctly in config.yml");
             }
         }
 		if (mapView == null) {

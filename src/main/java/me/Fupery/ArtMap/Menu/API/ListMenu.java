@@ -1,5 +1,7 @@
 package me.Fupery.ArtMap.Menu.API;
 
+import java.util.Optional;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -9,19 +11,29 @@ import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.CloseButton;
+import me.Fupery.ArtMap.Menu.Button.LinkedButton;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
+import me.Fupery.ArtMap.Menu.Event.MenuFactory;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public abstract class ListMenu extends CacheableMenu {
 
     private final String heading;
     protected int page;
+	protected Optional<MenuFactory>	parent	= Optional.empty();
 
     public ListMenu(String heading, int page) {
         super(heading, InventoryType.CHEST);
         this.heading = heading;
         this.page = page;
     }
+
+	public ListMenu(String heading, MenuFactory parent, int page) {
+		super(heading, InventoryType.CHEST);
+		this.heading = heading;
+		this.page = page;
+		this.parent = Optional.of(parent);
+	}
 
     @Override
     public void onMenuOpenEvent(Player viewer) {
@@ -46,8 +58,12 @@ public abstract class ListMenu extends CacheableMenu {
         Button[] buttons = new Button[maxButtons + 2];
 
         if (page < 1) {
-            buttons[0] = new CloseButton();
-
+			if (this.parent.isPresent()) {
+				String[] back = { "§c§l⬅" };
+				buttons[0] = new LinkedButton(this.parent.get(), Material.MAGENTA_GLAZED_TERRACOTTA, back);
+			} else {
+				buttons[0] = new CloseButton();
+			}
         } else {
             buttons[0] = new PageButton(false);
 

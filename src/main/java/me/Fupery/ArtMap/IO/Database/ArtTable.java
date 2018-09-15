@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.IO.Database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -197,6 +198,10 @@ public final class ArtTable extends SQLiteTable {
                 statement.setInt(2, art.getMapId());
                 statement.setString(3, art.getArtist().toString());
                 statement.setString(4, art.getDate());
+				// log saves to help debug errors
+				String log = MessageFormat.format("DEBUG: Saving Artwork: INSERT INTO " + TABLE + " (title, id, artist, date) VALUES({1},{2},{3},{4});",
+				        art.getTitle(), art.getMapId(), art.getArtist().toString(), art.getDate());
+				ErrorLogger.log(new Exception(log), log);
             }
         }.execute("INSERT INTO " + TABLE + " (title, id, artist, date) VALUES(?,?,?,?);");
     }
