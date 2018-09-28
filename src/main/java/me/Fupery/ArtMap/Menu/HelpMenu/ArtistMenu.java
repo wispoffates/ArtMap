@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +25,11 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public class ArtistMenu extends ListMenu implements ChildMenu {
 
-	private final UUID viewer;
+	private final Player viewer;
 
 	public ArtistMenu(Player viewer) {
 		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), ArtMap.getMenuHandler().MENU.HELP, 0);
-		this.viewer = viewer.getUniqueId();
+		this.viewer = viewer;
 	}
 
 	@Override
@@ -38,8 +39,13 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
 	@Override
 	protected Button[] getListItems() {
-		UUID[] artists = ArtMap.getArtDatabase().listArtists(viewer);
+		UUID[] artists = ArtMap.getArtDatabase().listArtists(this.viewer.getUniqueId());
 		List<Button> buttons = new LinkedList<Button>();
+
+		int notCached = artists.length - Heads.getCacheSize();
+		if (notCached > 1) {
+			this.viewer.sendMessage(MessageFormat.format("ArtMap: {0} artist currently not cached loading the menu might take some time.", notCached));
+		}
 
 		// skip 0 as it is the viewer
 		for (int i = 1; i < artists.length; i++) {
@@ -48,12 +54,12 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 		// sort the list
 		buttons.sort((Button o1, Button o2) -> o1.getItemMeta().getDisplayName().toLowerCase()
 				.compareTo(o2.getItemMeta().getDisplayName().toLowerCase()));
-		buttons.add(0, new ArtworkListButton(viewer)); // add viewer first
+		buttons.add(0, new ArtworkListButton(viewer.getUniqueId())); // add viewer first
 		return buttons.toArray(new Button[0]);
 	}
 
 	public Player getViewer() {
-		return Bukkit.getPlayer(viewer);
+		return Bukkit.getPlayer(this.viewer.getUniqueId());
 	}
 
 	private ArtistMenu getMenu() {
@@ -85,7 +91,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 		public void onClick(Player player, ClickType clickType) {
 			SoundCompat.UI_BUTTON_CLICK.play(player);
 			ArtMap.getMenuHandler().openMenu(player,
-					new ArtistArtworksMenu(getMenu(), artist, player.hasPermission("artmap.admin"), 0));
+			        new ArtistArtworksMenu(getMenu(), this.artist, player.hasPermission("artmap.admin"), 0));
 		}
 	}
 }

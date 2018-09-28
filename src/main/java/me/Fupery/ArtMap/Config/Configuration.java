@@ -15,6 +15,8 @@ public class Configuration {
     public final boolean FORCE_ART_KIT;
     public final boolean HIDE_PREFIX;
 	public final boolean FORCE_GUI;
+	public final boolean	HEAD_PREFETCH;
+	public final long		HEAD_PREFETCH_DELAY;
 
     public Configuration(ArtMap plugin, CompatibilityManager manager) {
         FileConfiguration configuration = plugin.getConfig();
@@ -28,6 +30,8 @@ public class Configuration {
         this.CUSTOM_RECIPES = configuration.getBoolean("customRecipes");
         this.FORCE_ART_KIT = configuration.getBoolean("forceArtKit");
         this.HIDE_PREFIX = configuration.getBoolean("hidePrefix");
-		this.FORCE_GUI = configuration.getBoolean("guiOnly");
+		this.FORCE_GUI = configuration.getBoolean("guiOnly", false);
+		this.HEAD_PREFETCH = configuration.getBoolean("doHeadPrefetch", true);
+		this.HEAD_PREFETCH_DELAY = configuration.getLong("headPrefetchDelay", 0L);
     }
 }

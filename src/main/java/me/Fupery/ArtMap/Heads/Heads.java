@@ -90,6 +90,15 @@ public class Heads {
 		return (SkullMeta) headMeta;
 	}
 
+	/**
+	 * Retrieve the current cache size.
+	 * 
+	 * @return The current cache size.
+	 */
+	public static int getCacheSize() {
+		return textureCache.size();
+	}
+
 	/*
 	 * HTTP Methods
 	 */
