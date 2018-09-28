@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
+import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -141,6 +143,42 @@ public class CommandHandler implements CommandExecutor {
                 });
             }
         });
+		commands.put("lookup", new AsyncCommand("artmap.menu", "/art lookup <id>", true) {
+			@Override
+			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
+				ArtMap.getScheduler().SYNC.run(() -> {
+					if (!sender.hasPermission("artmap.admin")) {
+						Lang.NO_PERM.send(sender);
+						return;
+					}
+					if (args.length != 2) {
+						Lang.COMMAND_LOOKUP.send(sender);
+						return;
+					}
+					int id = Integer.parseInt(args[1]);
+					MapArt art = ArtMap.getArtDatabase().getArtwork((short) id);
+					CompressedMap map = ArtMap.getArtDatabase().getMapTable().getMap((short) id);
+					if (art == null) {
+						sender.sendMessage(ChatColor.RED + "Failed to lookup artwork with id: " + id + ChatColor.RESET);
+					} else {
+						sender.sendMessage("Title: " + art.getTitle());
+						OfflinePlayer player = art.getArtistPlayer();
+						if (player != null) {
+							sender.sendMessage("Artist: " + player.getName());
+						} else {
+							sender.sendMessage("Artist: " + art.getArtist());
+						}
+						sender.sendMessage("Date: " + art.getDate());
+					}
+					if (map != null) {
+						sender.sendMessage("Map data exists in the database.");
+					} else {
+						sender.sendMessage(ChatColor.RED + "Map data is missing from the database!" + ChatColor.RESET);
+					}
+
+				});
+			}
+		});
     }
 
     @Override
