@@ -211,7 +211,7 @@ public class Easel {
         Location location = user.getEyeLocation();
         EaselEffect.START_RIDING.playEffect(location);
 		seat.addPassenger(user);
-		if (seat.getPassengers() == null || seat.getPassengers().contains(user)) {
+		if (seat.getPassengers() == null || !seat.getPassengers().contains(user)) {
 			return false;
 		}
 

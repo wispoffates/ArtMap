@@ -45,9 +45,15 @@ public class ArtSession {
     boolean start(Player player) {
         PlayerMountEaselEvent event = new PlayerMountEaselEvent(player, easel);
         Bukkit.getServer().getPluginManager().callEvent(event);
-        if (event.isCancelled()) return false;
+		if (event.isCancelled()) {
+			return false;
+		}
 
-        easel.seatUser(player);
+		boolean seated = easel.seatUser(player);
+		if (!seated) {
+			return false;
+		}
+
         //Run tasks
         ArtMap.getArtDatabase().restoreMap(map);
         ArtMap.getScheduler().SYNC.runLater(() -> {
