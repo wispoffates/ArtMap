@@ -17,6 +17,8 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public class ToolMenu extends BasicMenu implements ChildMenu {
 
+    private static final char LEFT_ARROW = '\u2B05';
+
     public ToolMenu() {
 		super(ChatColor.DARK_BLUE + Lang.MENU_TOOLS.get(), new MenuType(9));
     }
@@ -28,7 +30,7 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public Button[] getButtons() {
-    	String[] back = {"§c§l⬅"};
+    	String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
         return new Button[]{
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back),
 		        new StaticButton(Material.AIR),

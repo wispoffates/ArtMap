@@ -82,14 +82,13 @@ public enum EaselPart {
 		case SOUTH:
 			return 180;
 
-		case NORTH:
-			return 0;
-
 		case WEST:
 		case EAST:
 			return 90;
+		
+		default: // NORTH et. al.
+		    return 0;
 		}
-		return 0;
 	}
 
 	private EntityType getType() {

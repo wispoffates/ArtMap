@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
@@ -21,8 +22,9 @@ public class ArtPreview extends TimedPreview {
     @Override
     public boolean start(Player player) {
         super.start(player);
-        if (player.getItemInHand() == null) return false;
-        player.setItemInHand(preview);
+        PlayerInventory inventory = player.getInventory();
+        if (inventory.getItemInMainHand() == null) return false;
+        inventory.setItemInMainHand(preview);
         return true;
     }
 

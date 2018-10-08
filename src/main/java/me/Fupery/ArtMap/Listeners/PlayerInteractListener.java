@@ -153,7 +153,6 @@ class PlayerInteractListener implements RegisteredListener {
         });
     }
 
-	@SuppressWarnings("static-access")
 	@Override
     public void unregister() {
         PlayerInteractEvent.getHandlerList().unregister(this);

@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Menu.API;
 
 import java.util.Optional;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -17,6 +18,8 @@ import me.Fupery.ArtMap.Menu.Event.MenuFactory;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public abstract class ListMenu extends CacheableMenu {
+
+    private static final char LEFT_ARROW = '\u2B05', RIGHT_ARROW = '\u27A1';
 
     private final String heading;
     protected int page;
@@ -59,7 +62,7 @@ public abstract class ListMenu extends CacheableMenu {
 
         if (page < 1) {
 			if (this.parent.isPresent()) {
-				String[] back = { "§c§l⬅" };
+				String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
 				buttons[0] = new LinkedButton(this.parent.get(), Material.MAGENTA_GLAZED_TERRACOTTA, back);
 			} else {
 				buttons[0] = new CloseButton();
@@ -108,7 +111,7 @@ public abstract class ListMenu extends CacheableMenu {
         boolean forward;
 
         private PageButton(boolean forward) {
-			super(forward ? Material.MAGENTA_GLAZED_TERRACOTTA : Material.BARRIER, forward ? "§a§l➡" : "§c§l⬅");
+			super(forward ? Material.MAGENTA_GLAZED_TERRACOTTA : Material.BARRIER, forward ? ChatColor.GREEN.toString() + ChatColor.BOLD + RIGHT_ARROW : ChatColor.GREEN.toString() + ChatColor.BOLD + LEFT_ARROW);
             this.forward = forward;
         }
 

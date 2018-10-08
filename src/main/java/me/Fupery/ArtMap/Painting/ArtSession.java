@@ -151,11 +151,11 @@ public class ArtSession {
                 player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
 				inventory = null;
 				return true;
-            } else {
-                player.getInventory().setContents(inventory);
-				inventory = null;
-				return true;
             }
+
+            player.getInventory().setContents(inventory);
+            inventory = null;
+            return true;
         }
 		return false;
     }

@@ -25,6 +25,8 @@ public interface MenuTemplate {
      * Called when the player clicks the menu
      *
      * @param viewer The player viewing the menu
+     * @param slot The clicked slot
+     * @param click The type of click performed
      */
     void onMenuClickEvent(Player viewer, int slot, ClickType click);
 
@@ -32,6 +34,7 @@ public interface MenuTemplate {
      * Called after the player closes the menu
      *
      * @param viewer The player viewing the menu
+     * @param reason The reason the menu was closed
      */
     void onMenuCloseEvent(Player viewer, MenuCloseReason reason);
 
