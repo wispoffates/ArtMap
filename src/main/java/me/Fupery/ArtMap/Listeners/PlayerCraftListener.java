@@ -61,7 +61,7 @@ class PlayerCraftListener implements RegisteredListener {
                 ItemStack slot = event.getWhoClicked().getInventory().getContents()[event.getHotbarButton()];
                 craftSuccess = (slot == null || slot.getType() == Material.AIR);
             }
-            if (craftSuccess) {
+			if (craftSuccess && event.getCursor() != null && event.getCursor().getType() == Material.AIR) {
                 for (ItemStack ingredient : event.getInventory().getMatrix()) {
                     if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
                         ArtDye dye = ArtItem.DyeBucket.getColour(ingredient);
