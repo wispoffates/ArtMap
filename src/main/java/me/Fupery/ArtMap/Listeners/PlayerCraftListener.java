@@ -1,13 +1,5 @@
 package me.Fupery.ArtMap.Listeners;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
-import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
-import me.Fupery.ArtMap.Utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,6 +9,15 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
+
+import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Colour.ArtDye;
+import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
+import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 
 class PlayerCraftListener implements RegisteredListener {
 
@@ -60,7 +61,7 @@ class PlayerCraftListener implements RegisteredListener {
                 ItemStack slot = event.getWhoClicked().getInventory().getContents()[event.getHotbarButton()];
                 craftSuccess = (slot == null || slot.getType() == Material.AIR);
             }
-            if (craftSuccess) {
+			if (craftSuccess && event.getCursor() != null && event.getCursor().getType() == Material.AIR) {
                 for (ItemStack ingredient : event.getInventory().getMatrix()) {
                     if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
                         ArtDye dye = ArtItem.DyeBucket.getColour(ingredient);
