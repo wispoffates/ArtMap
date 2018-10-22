@@ -39,10 +39,10 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
     private static String processTitle(UUID artist) {
         String name = Bukkit.getOfflinePlayer(artist).getName();
-        String title = "§1" + Lang.MENU_ARTWORKS.get();
+        String title = ChatColor.DARK_BLUE + Lang.MENU_ARTWORKS.get();
         String processedName = String.format(title, name);
         if (processedName.length() <= 32) return processedName;
-        else return (name.length() <= 30) ? "§1" + name : "§1" + name.substring(0, 29);
+        return (name.length() <= 30) ? ChatColor.DARK_BLUE + name : ChatColor.DARK_BLUE + name.substring(0, 29);
     }
 
     public static boolean isPreviewItem(ItemStack item) {

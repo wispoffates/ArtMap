@@ -95,7 +95,6 @@ class PlayerCraftListener implements RegisteredListener {
         ItemUtils.giveItem(player, artworkItem);
     }
 
-	@SuppressWarnings("static-access")
 	@Override
     public void unregister() {
         CraftItemEvent.getHandlerList().unregister(this);

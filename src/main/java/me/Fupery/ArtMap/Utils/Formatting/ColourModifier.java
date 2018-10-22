@@ -27,16 +27,16 @@ class ColourModifier implements Modifier {
 
     @Override
     public String apply(String line) {
-        String baseColourCode = "§s" + baseColour.getChar();
+        String baseColourCode = ChatColor.COLOR_CHAR + "s" + baseColour.getChar();
         String string = baseColourCode + line;
         for (Character character : boundColours.keySet()) {
-            String colourCode = "§" + boundColours.get(character).getChar();
+            String colourCode = String.valueOf(ChatColor.COLOR_CHAR) + boundColours.get(character).getChar();
             String key = character != null ? "$" + character : "$(\\w|\\d)?";
             Pattern pattern = Pattern.compile(String.format("\\%s\\{[^\\}]{1,20}\\}", key));
             Matcher matcher = pattern.matcher(string);
             while (matcher.find()) {
                 String group = matcher.group(1);
-                String formattedGroup = group.replace(key, colourCode).replaceAll("\\}", baseColourCode);
+                String formattedGroup = group.replace(key, colourCode).replace("}", baseColourCode);
                 string = string.replaceAll(group, formattedGroup);
             }
         }

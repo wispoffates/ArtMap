@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Config;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,9 @@ public enum Lang implements LangSet<String> {
     DYE_YELLOW, DYE_LIGHT_BLUE, DYE_MAGENTA, DYE_ORANGE, DYE_WHITE, DYE_CREAM, DYE_COFFEE, DYE_GRAPHITE, DYE_GUNPOWDER,
 	DYE_MAROON, DYE_AQUA, DYE_GRASS, DYE_GOLD, DYE_VOID, DYE_COAL, DYE_FEATHER, DYE_ICE, DYE_LEAVES, DYE_SNOW, DYE_BLACK_TERRACOTTA, DYE_RED_TERRACOTTA, DYE_GREEN_TERRACOTTA, DYE_BROWN_TERRACOTTA, DYE_BLUE_TERRACOTTA, DYE_PURPLE_TERRACOTTA, DYE_CYAN_TERRACOTTA, DYE_LIGHT_GRAY_TERRACOTTA, DYE_GRAY_TERRACOTTA, DYE_PINK_TERRACOTTA, DYE_LIME_TERRACOTTA, DYE_YELLOW_TERRACOTTA, DYE_LIGHT_BLUE_TERRACOTTA, DYE_MAGENTA_TERRACOTTA, DYE_ORANGE_TERRACOTTA, DYE_WHITE_TERRACOTTA, DYE_STONE, DYE_LIGHT_GRAY, DYE_BRICK, DYE_LAPIS, DYE_EMERALD, DYE_LIGHT_WOOD, DYE_WATER, DYE_DARK_WOOD;
 
-    public static String PREFIX = "§b[ArtMap] ";
+    public static String PREFIX = ChatColor.AQUA + "[ArtMap] ";
+    private static final char EIGHT_POINTED_STAR = '\u2737';
+    private static final char SIX_PETALLED_FLORETTE = '\u273E';
     private String message = String.format("'%s' NOT FOUND", name());
 
     public static void load(ArtMap plugin, Configuration configuration) {
@@ -31,17 +34,15 @@ public enum Lang implements LangSet<String> {
         for (ActionBar key : ActionBar.values()) {
             String messageString = loader.loadString(key.name());
             if (configuration.DISABLE_ACTION_BAR) {
-                String formattedMessage = PREFIX + messageString.replaceAll("§l", "").replaceAll("§3", "§6")
-                        .replaceAll("§4", "§c").replaceAll("§b", "§6");
-                key.message = new WrappedPacket<String>(formattedMessage) {
-                    @Override
-                    public void send(Player player) {
-                        player.sendMessage(this.rawPacket);
-                    }
-                };
+                String formattedMessage = PREFIX + messageString.replace(ChatColor.BOLD.toString(), "")
+                        .replace(ChatColor.DARK_AQUA.toString(), ChatColor.GOLD.toString())
+                        .replace(ChatColor.AQUA.toString(), ChatColor.GOLD.toString())
+                        .replace(ChatColor.DARK_RED.toString(), ChatColor.RED.toString());
+                key.message = WrappedPacket.raw(formattedMessage, Player::sendMessage);
             } else {
-                String formattedMessage = key.isError ?
-                        "§c§l✷ " + messageString + " §c§l✷" : "§6✾ " + messageString + " §6✾";
+                String formattedMessage = key.isError
+                        ? ChatColor.RED.toString() + ChatColor.BOLD + EIGHT_POINTED_STAR + messageString + ChatColor.RED + ChatColor.BOLD + EIGHT_POINTED_STAR
+                        : ChatColor.GOLD.toString() + SIX_PETALLED_FLORETTE + messageString + ChatColor.GOLD + SIX_PETALLED_FLORETTE;
                 key.message = ArtMap.getProtocolManager().PACKET_SENDER.buildChatPacket(formattedMessage);
             }
         }
@@ -63,11 +64,11 @@ public enum Lang implements LangSet<String> {
         return message;
     }
 
-    public enum ActionBar implements LangSet<WrappedPacket> {
+    public enum ActionBar implements LangSet<WrappedPacket<?>> {
         EASEL_HELP(false), NEED_CANVAS(true), PAINTING(false), SAVE_USAGE(false), ELSE_USING(true),
         NO_PERM_ACTION(true), NO_EDIT_PERM(true), INVALID_POS(true);
 
-        private WrappedPacket message = null;
+        private WrappedPacket<?> message = null;
         private boolean isError;
 
         ActionBar(boolean isErrorMessage) {
@@ -81,7 +82,7 @@ public enum Lang implements LangSet<String> {
         }
 
         @Override
-        public WrappedPacket get() {
+        public WrappedPacket<?> get() {
             return message;
         }
     }

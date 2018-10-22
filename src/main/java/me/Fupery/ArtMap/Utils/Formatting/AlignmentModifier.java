@@ -37,7 +37,7 @@ public class AlignmentModifier implements Modifier {
             case RIGHT:
                 return whitespace(lineLength - string.length()) + string;
             case CENTRE:
-                double space = ((double) lineLength) / 2D;
+                double space = lineLength / 2D;
                 String head = whitespace((int) Math.ceil(space));
                 String tail = whitespace((int) Math.floor(space));
                 return head + string + tail;

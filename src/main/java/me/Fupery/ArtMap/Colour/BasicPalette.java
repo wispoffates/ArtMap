@@ -34,7 +34,6 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.Config.Lang;
 
-@SuppressWarnings("javadoc")
 public class BasicPalette implements Palette {
 	public final ArtDye
 

@@ -122,7 +122,7 @@ public class Heads {
 
 	private static TextureData getSkinUrl(UUID uuid) {
 		try {
-			String id = uuid.toString().replaceAll("\\-", "");
+			String id = uuid.toString().replace("-", "");
 			String json = getContent(API_PROFILE_LINK + id);
 			JsonObject o = parser.parse(json).getAsJsonObject();
 			String name = o.get("name").getAsString();

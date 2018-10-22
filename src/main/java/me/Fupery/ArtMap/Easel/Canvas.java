@@ -41,9 +41,8 @@ public class Canvas {
 		if (item.getItemMeta() != null && item.getItemMeta().getLore() != null
 				&& item.getItemMeta().getLore().contains(ArtItem.COPY_KEY)) {
 			return new CanvasCopy(item);
-		} else {
-			return new Canvas(mapId);
 		}
+        return new Canvas(mapId);
     }
 
 	public ItemStack getDroppedItem() {

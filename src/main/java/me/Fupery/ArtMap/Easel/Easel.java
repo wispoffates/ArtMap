@@ -54,10 +54,9 @@ public class Easel {
             ArtMap.getEasels().put(easel);
             easel.spawned.set(true);
             return easel;
-        } else {
-            easel.breakEasel();
-            return null;
         }
+        easel.breakEasel();
+        return null;
     }
 
     /**
@@ -72,14 +71,13 @@ public class Easel {
 
         if (ArtMap.getEasels().contains(easelLocation)) {
             return ArtMap.getEasels().get(easelLocation);
-        } else {
-            Easel easel = new Easel(easelLocation, true);
+        }
+        Easel easel = new Easel(easelLocation, true);
+        easel.spawned.set(true);
+        if (easel.hasSign() && easel.exists()) {
+            ArtMap.getEasels().put(easel);
             easel.spawned.set(true);
-            if (easel.hasSign() && easel.exists()) {
-                ArtMap.getEasels().put(easel);
-                easel.spawned.set(true);
-                return easel;
-            }
+            return easel;
         }
         return null;
     }
@@ -93,13 +91,11 @@ public class Easel {
     public static boolean checkForEasel(Location location) {
         if (new Easel(location, true).exists()) {
             return true;
-        } else {
-
-            if (ArtMap.getEasels().contains(location)) {
-                ArtMap.getEasels().remove(location);
-            }
-            return false;
         }
+        if (ArtMap.getEasels().contains(location)) {
+            ArtMap.getEasels().remove(location);
+        }
+        return false;
     }
 
     private void place(Location location, BlockFace facing) {
@@ -115,10 +111,9 @@ public class Easel {
         Collection<Entity> entities = getNearbyEntities();
         if (stand.exists(entities) && frame.exists(entities)) {
             return true;
-        } else {
-            spawned.set(false);
-            return false;
         }
+        spawned.set(false);
+        return false;
     }
 
     private boolean hasSign() {
@@ -288,7 +283,7 @@ public class Easel {
             Entity entity = get(entities);
             if (entity != null && entity.isValid()) entity.remove();
             else return false;
-            entityRef = new WeakReference<T>(null);
+            entityRef = new WeakReference<>(null);
             return true;
         }
 

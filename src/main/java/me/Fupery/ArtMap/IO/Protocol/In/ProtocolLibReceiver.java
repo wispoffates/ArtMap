@@ -43,11 +43,7 @@ public class ProtocolLibReceiver extends PacketReceiver {
 
         } else if (packet.getType() == PacketType.Play.Client.USE_ENTITY) {
             EnumWrappers.EntityUseAction action = packet.getEntityUseActions().read(0);
-            if (action == EnumWrappers.EntityUseAction.ATTACK) {
-                return new PacketInteract(InteractType.ATTACK);
-            } else {
-                return new PacketInteract(InteractType.INTERACT);
-            }
+            return new PacketInteract(action == EnumWrappers.EntityUseAction.ATTACK ? InteractType.ATTACK : InteractType.INTERACT);
         }
         return null;
     }

@@ -24,6 +24,8 @@ import me.Fupery.ArtMap.Utils.VersionHandler;
 
 public class RecipeMenu extends BasicMenu implements ChildMenu {
 
+    private static final char LEFT_ARROW = '\u2B05';
+
     private boolean adminMenu;
     private boolean version_1_12 = ArtMap.getBukkitVersion().getVersion().isEqualTo(VersionHandler.BukkitVersion.v1_12);
 
@@ -34,7 +36,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public Button[] getButtons() {
-		String[] back = { "§c§l⬅" };
+		String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
         return new Button[]{
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
 		        new StaticButton(Material.AIR),

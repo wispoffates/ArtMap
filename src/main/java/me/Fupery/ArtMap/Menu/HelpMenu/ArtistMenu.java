@@ -40,7 +40,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	@Override
 	protected Button[] getListItems() {
 		UUID[] artists = ArtMap.getArtDatabase().listArtists(this.viewer.getUniqueId());
-		List<Button> buttons = new LinkedList<Button>();
+		List<Button> buttons = new LinkedList<>();
 
 		int notCached = artists.length - Heads.getCacheSize();
 		if (notCached > 1) {

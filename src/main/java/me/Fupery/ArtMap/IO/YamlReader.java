@@ -35,6 +35,6 @@ public class YamlReader {
         if (config != null) return config;
         File file = new File(plugin.getDataFolder(), fileName);
         if (!ArtMap.instance().writeResource(fileName, file)) return readFromResources();
-        else return YamlConfiguration.loadConfiguration(file);
+        return YamlConfiguration.loadConfiguration(file);
     }
 }

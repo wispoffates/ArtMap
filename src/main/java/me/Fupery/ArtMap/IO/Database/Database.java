@@ -89,10 +89,9 @@ public final class Database {
 						maps.updateMap(map);
 						this.recycleMap(new Map(copy.getMapId())); // recycle the copy
 						return mapArt;
-					} else {
-						Lang.NO_PERM.send(player);
-						return null;
 					}
+                    Lang.NO_PERM.send(player);
+                    return null;
 				}
 			} else {
 				// duplicate name
@@ -121,7 +120,8 @@ public final class Database {
             maps.deleteMap(art.getMapId());
             ArtMap.getScheduler().SYNC.run(() -> art.getMap().setMap(new byte[Map.Size.MAX.value]));
             return true;
-        } else return false;
+        }
+        return false;
     }
 
 	public boolean renameArtwork(MapArt art, String title) {

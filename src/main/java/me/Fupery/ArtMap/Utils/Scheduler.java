@@ -67,7 +67,7 @@ public class Scheduler {
 
     public <T> T callSync(Callable<T> callable) {
         if (!Bukkit.isPrimaryThread()) {
-            final BukkitFuture<T> future = new BukkitFuture<T>(callable);
+            final BukkitFuture<T> future = new BukkitFuture<>(callable);
             future.run();
             synchronized (future.getLock()) {
                 while (!future.isReady()) {
@@ -77,15 +77,15 @@ public class Scheduler {
                     }
                 }
             }
-            return future.get();
 
-        } else {
-            try {
-                return callable.call();
-            } catch (Exception e) {
-                ErrorLogger.log(e, "Error in Callable:");
-                return null;
-            }
+            return future.get();
+        }
+        
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            ErrorLogger.log(e, "Error in Callable:");
+            return null;
         }
     }
 

@@ -90,7 +90,7 @@ public class Reflection {
     public static Object invokeMethod(Object obj, String methodName, Object... parameters)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method;
-        Class[] parameterTypes = new Class[parameters.length];
+        Class<?>[] parameterTypes = new Class[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             parameterTypes[i] = parameters[i].getClass();
         }
@@ -106,9 +106,9 @@ public class Reflection {
 
     public static Object invokeStaticMethod(String className, String methodName, Object... params)
             throws Exception {
-        Class obj = Class.forName(NMS + "." + className);
+        Class<?> obj = Class.forName(NMS + "." + className);
 
-        Class[] paramTypes = new Class[params.length];
+        Class<?>[] paramTypes = new Class[params.length];
         for (int i = 0; i < params.length; i++) paramTypes[i] = params[i].getClass();
 
         Method method;
@@ -155,7 +155,7 @@ public class Reflection {
                     return null;
                 }
 
-                Class enumEntityUseActionType = packetInteractType.getClass();
+                Class<?> enumEntityUseActionType = packetInteractType.getClass();
                 Object[] enumValues = enumEntityUseActionType.getEnumConstants();
                 int i;
 
@@ -230,9 +230,9 @@ public class Reflection {
     }
 
     public static class ChatPacketBuilder {
-        private Constructor packetCons;
+        private Constructor<?> packetCons;
         private Method chatSerializer;
-        private Class chatSerializerClass;
+        private Class<?> chatSerializerClass;
 
         public ChatPacketBuilder() {
             this(NMS);
@@ -244,8 +244,8 @@ public class Reflection {
             String chatSerializerName = chatComponentName + "$ChatSerializer";
 
             try {
-                Class chatPacketClass = Class.forName(packetClassName);
-                Class chatComponentClass = Class.forName(chatComponentName);
+                Class<?> chatPacketClass = Class.forName(packetClassName);
+                Class<?> chatComponentClass = Class.forName(chatComponentName);
                 chatSerializerClass = Class.forName(chatSerializerName);
 
                 packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);

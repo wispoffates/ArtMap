@@ -9,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 
@@ -23,7 +24,8 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().removePlayer(player);
         }
         if (ArtMap.getPreviewManager().isPreviewing(player)) {
-			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
+            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+			if (item != null && item.getType() == Material.FILLED_MAP) {
                 ArtMap.getPreviewManager().endPreview(player);
             }
         }
@@ -38,7 +40,8 @@ class PlayerQuitListener implements RegisteredListener {
             ArtMap.getArtistHandler().removePlayer(player);
         }
         if (ArtMap.getPreviewManager().isPreviewing(player)) {
-			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
+            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+			if (item != null && item.getType() == Material.FILLED_MAP) {
                 ArtMap.getPreviewManager().endPreview(player);
             }
         }
@@ -67,7 +70,8 @@ class PlayerQuitListener implements RegisteredListener {
 			ArtMap.getArtistHandler().removePlayer(player);
 		}
 		if (ArtMap.getPreviewManager().isPreviewing(player)) {
-			if (player.getItemInHand().getType() == Material.FILLED_MAP) {
+            ItemStack item = player.getInventory().getItemInMainHand();
+			if (item != null && item.getType() == Material.FILLED_MAP) {
 				ArtMap.getPreviewManager().endPreview(player);
 			}
 		}
@@ -82,7 +86,8 @@ class PlayerQuitListener implements RegisteredListener {
             }
         }
 		if (ArtMap.getPreviewManager().isPreviewing(event.getPlayer())) {
-			if (event.getPlayer().getItemInHand().getType() == Material.FILLED_MAP) {
+            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+			if (item != null && item.getType() == Material.FILLED_MAP) {
 				ArtMap.getPreviewManager().endPreview(event.getPlayer());
 			}
 		}
