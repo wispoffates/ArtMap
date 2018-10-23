@@ -1,0 +1,218 @@
+#----------------------------------------------------------------------------------------------#
+#                                     ArtMap Language File                                     #
+#----------------------------------------------------------------------------------------------#
+#
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/artmap", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+
+#---------------------------------------[Player Messages]---------------------------------------#
+COMMAND_SAVE: "guardar"
+COMMAND_DELETE: "eliminar"
+COMMAND_PREVIEW: "visualizar"
+COMMAND_RESTORE: "restaurar"
+COMMAND_BACKUP: "cs"
+HELP: "§6/artmap para mostrar los conjuros."
+SAVE_USAGE: "§6Usa §e/artmap save <title> §6para guardar tu obra de arte."
+SAVE_SUCCESS: "§6¡Guardado correctamente '%s'!"
+EASEL_HELP: "§3§lCic-Derecho para empezar a pintar, §b§lAgacharte + Clic-Derecho para romper."
+PAINTING: "§b§lToca el lienzo con Tinta o un Bote de Pintura para pintar."
+DELETED: "§6Eliminado correctamente '%s'."
+PREVIEWING: "§6Previsualizando obra de arte '%s'."
+RECIPE_HEADER: "Receta de §a[%s]"
+NO_CONSOLE: "§cEsto es un conjuro y no puede usarse en consola."
+PLAYER_NOT_FOUND: "§cNo se encuentra el jugador '%s'."
+INVALID_POS: "§4§l¡No puedes colocar aquí el caballete!"
+NO_PERM: "§cNo tienes permiso para hacer esto."
+NO_PERM_ACTION: "§4§lNo tienes permiso para hacer esto."
+ELSE_USING: "§4§l¡Alguien más está usando este lienzo!"
+NOT_RIDING_EASEL: "§cDebes estar sentado en tu caballete para guardar."
+NEED_CANVAS: "§4§lColoca un lienzo en el caballete para pintar. §3§l/artmap §4§lpara más información."
+NOT_YOUR_EASEL: "§c¡No puedes destruir la obra de arte %s!"
+BREAK_CANVAS: "Agáchate + Clic-Derecho contra el lienzo para romperlo."
+MAP_NOT_FOUND: "§cLa obra de arte '%s' no se encuentra."
+NO_ARTWORKS: "§c¡Actualmente no hay obras de arte guardadas!"
+NO_EDIT_PERM: "§4§lNo puedes modificar las obras de arte de otros jugadores"
+NO_CRAFT_PERM: "§cNo puedes copiar las obras de arte de otros jugadores"
+BAD_TITLE: "§cTítulo no válido. Los títulos deben tener de 3 a 16 caracteres de letras y números."
+TITLE_USED: "§cLo siento, este título ya se está usando."
+EMPTY_HAND_PREVIEW: "§cNecesitas tener las manos vacías para ver el Lienzo."
+INVALID_DATA_TABLES: "§cEl plugin no se puede iniciar, la tabla de datos no es válida."
+CANNOT_BUILD_DATABASE: "§cError creando la base de datos de MapArt - el plugin será deshabilitado."
+MAP_ID_MISSING: "§c¡Falta la ID del mapa, asignando una nueva!"
+RESTORED_SUCCESSFULY: "§6¡%s se ha restaurado correctamente con la ID %s!" #The first %s will be the name of an artwork, the second is its id.
+#---------------------------------------[Help menu]---------------------------------------#
+#Menu titles
+MENU_RECIPE: "Elige una Receta"
+MENU_ARTIST: "Clica un Artista"
+MENU_ARTWORKS: "Artista %s" # '%s' will be replaced by the player's name
+MENU_DYES: "Tintes para pintar"
+MENU_HELP: "Selecciona un tema de ayuda"
+MENU_TOOLS: "Pasar para usar" #Hover over a tool to view how it is used
+BUTTON_CLICK: "Clica para ver"
+BUTTON_CLOSE: "Cerrar" #close the menu
+BUTTON_BACK: "Atrás" #go back to previous page
+RECIPE_BUTTON: "Clic-Izquierdo para ver la Receta"
+ADMIN_RECIPE: "Clic-Derecho para obtener el Objeto"
+RECIPE_HELP: "§a/artmap §2para ver la ayuda"
+RECIPE_EASEL_NAME: "Caballete"
+RECIPE_CANVAS_NAME: "Lienzo"
+RECIPE_PAINTBUCKET_NAME: "Bote de Pintura"
+RECIPE_ARTWORK_ARTIST: "por %s" # '%s' is replaced with the name of the artist who created this artwork
+#---------------------------------------[Menu Buttons]---------------------------------------#
+HELP_GETTING_STARTED:
+  - "                 §6§l⊱§e§lEmpecemos§6§l⊰"
+  - "                §3❉§b§o¡Bienvenido/a a ArtMap!§3❉"
+  - ""
+  - "   §a1§2. §7Fabrica tu §6Caballete §7y tu §6Lienzo§7."
+  - "   §a2§2. §7Coloca el Caballete y coloca el Lienzo §7sobre el Caballete."
+  - "   §a3§2. §7Toca el Lienzo con §2Tinta §7y §3Herramientas §7para pintar."
+  - "   §a4§2. §7Cuando termines, usa §e/artmap save§7."
+  - ""
+  - "§7§oObsereva las otras pestañas de este menú para ver más"
+  - "§7§oinformación sobre Recetas, Herramientas, y Colorantes."
+  - ""
+  - "    §8░░░░§e❃§lCommandos §r§e⤸§8░░░░░░░░░░░░░"
+  - "§6•§f/artmap save <title>    §6➯   §7guarda tu obra de arte"
+  - "§6•§f/artmap delete <title>  §6➯ §7elimina tu obra de arte"
+  - "§6•§f/artmap preview <title> §6➯  §7visualiza tu obra de arte"
+HELP_RECIPES:
+  - "             §6§l⊱§e§lRecetas§6§l⊰"
+  - "§7Ver las recetas de todos"
+  - "§7los objetos necesarios para pintar."
+  - "          §a✸§2§oClic para Ver§a✸"
+HELP_TOOLS:
+  - "            §6§l⊱§e§lHerramientas§6§l⊰"
+  - "§7Ver todas las herramientas que"
+  - "§7puedes usar para ayudarte a pintar."
+  - "       §a✸§2§oClic para Ver§a✸"
+HELP_DYES:
+  - "           §6§l⊱§e§lColorante§6§l⊰"
+  - "§7Ver todos los colores que"
+  - "§7puedes utilizar para pintar."
+  - "      §a✸§2§oClic para Ver§a✸"
+HELP_LIST:
+  - "             §6§l⊱§e§lObras de Arte§6§l⊰"
+  - "      §3✺§b§oVer Obras de Arte§3✺"
+  - "§7Ver todas las obras de arte"
+  - "§7agrupadas por artistas."
+  - "          §a✸§2§oClic para observar§a✸"
+HELP_CLOSE:
+  - "    §6§l⊱§e§lAtrás§6§l⊰"
+  - "§4﴾§cCierra el Menú§4﴿"
+INFO_DYES:
+  - "              §6§l⊱§e§lTintes de Colores§6§l⊰"
+  - "§7Clica tu lienzo con alguno"
+  - "§7de estos colorantes para pintar."
+  - ""
+  - "   §a• §7§oClic-Izquierdo para pintar puntos"
+  - "   §a• §7§oClic-Derecho para pintar líneas"
+  - ""
+  - "§7Cualquier colorante colocado en un cubo"
+  - "§7sirve para crear §6Botes de Pintura§7."
+  - "           §b§oSitúate encima para ver el color"
+INFO_RECIPES:
+  - "              §6§l⊱§e§lAyuda de Recetas§6§l⊰"
+  - "§7Usa una obra de arte con un §6mapa en blanco"
+  - "§7para crear una copia. Solo el creador"
+  - "§7de la obra de arte puede hacer copias§7."
+  - "§7"
+  - "        §b§oSitúate encima para ver como se usa"
+INFO_TOOLS:
+  - "              §6§l⊱§e§lAyuda de Herramientas§6§l⊰"
+  - "§7Puedes utilizar estos objetos con cualquier"
+  - "§2tinte §7para ayudarte a pintar."
+  - "       §b§oSitúate encima para ver como se usa"
+TOOL_DYE:
+  - "              §6§l⊱§e§lColorantes§6§l⊰"
+  - " §7Clic-Izquierdo para pintar puntos"
+  - " §7Clic-Derecho para pintar líneas"
+  - "§a✸§2§oClic para ver todos los colores§a✸"
+TOOL_PAINTBUCKET:
+  - "         §6§l⊱§e§lBote de Pintura§6§l⊰"
+  - "§7Clic-Izquierdo para rellenar un área"
+  - "§7del lienzo. Usa el cubo junto con el colorante"
+  - "§7para cambiar el color."
+  - "§7Clic-Derecho para deshacer el ultimo relleno."
+TOOL_COAL:
+  - "              §6§l⊱§e§lCarbón§6§l⊰"
+  - "§7Clic-Izquierdo para oscurecer puntos."
+  - "§7Clic-Derecho para oscurecer líneas."
+TOOL_FEATHER:
+  - "            §6§l⊱§e§lPluma§6§l⊰"
+  - "§7Clic-Izquierdo para aclarar puntos."
+  - "§7Clic-Derecho para aclarar líneas."
+TOOL_COMPASS:
+  - "            §6§l⊱§e§lBrújula§6§l⊰"
+  - "§7Clic-Izquierdo para voltear horizontalmente."
+  - "§7Clic-Derecho para voltear verticalmente."
+RECIPE_EASEL:
+  - "§7Úsalo para crear obras de arte"
+  - "§7Clic derecho para colocar"
+RECIPE_CANVAS:
+  - "§7Úsalo con un §aCaballete"
+  - "§7para empezar a pintar"
+RECIPE_PAINTBUCKET:
+  - "§7Usar con un §aCaballete §7y"
+  - "§7un §aLienzo §7para rellenar"
+  - "§7Clic-Derecho para deshacer"
+CONSOLE_HELP:
+  - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+  - "§3/artmap delete <title> §b: §eEliminar una obra de arte"
+  - "§3/artmap restore <title> §b: §eRestaurar una obra de arte corrupta"
+
+#-------------------------------------------[Dye Names]-------------------------------------------#
+DYE_BLACK: "Negro"
+DYE_RED: "Rojo"
+DYE_GREEN: "Verde"
+DYE_BROWN: "Marrón"
+DYE_BLUE: "Azul"
+DYE_PURPLE: "Morado"
+DYE_CYAN: "Cían"
+DYE_SILVER: "Plateado"
+DYE_GRAY: "Gris"
+DYE_PINK: "Rosa"
+DYE_LIME: "Verde Lima"
+DYE_YELLOW: "Amarillo"
+DYE_LIGHT_BLUE: "Azul Claro"
+DYE_MAGENTA: "Magenta"
+DYE_ORANGE: "Naranja"
+DYE_WHITE: "Blando"
+DYE_CREAM: "Crema"
+DYE_COFFEE: "Café"
+DYE_GRAPHITE: "Grafito"
+DYE_GUNPOWDER: "Pólvora"
+DYE_MAROON: "Granate"
+DYE_AQUA: "Agua"
+DYE_GRASS: "Hierva"
+DYE_GOLD: "Oro"
+DYE_VOID: "Transparente"
+DYE_COAL: "Carbón"
+DYE_FEATHER: "Pluma"
+
+#-------------------------------------[Artwork Title Filter]-------------------------------------#
+#Words in the following list are filtered from artwork titles:
+#
+#You can disable title filtering by setting "swearFilter: false" in your config.yml
+#
+#Filtered words use Regex expressions - you can build and test Regex at [http://regexr.com]
+#You can also add normal words to the list, but note that non-regex words can be easily avoided by players
+ILLEGAL_EXPRESSIONS:
+  - "\\b(f+(\\W|\\d|_)*u+(\\W|\\d|_)*c+(\\W|\\d|_)*k+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*h+(\\W|\\d|_)*i+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(c+(\\W|\\d|_)*u+(\\W|\\d|_)*n+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(r+(\\W|\\d|_)*a+(\\W|\\d|_)*p+(\\W|\\d|_)*(((e+(\\W|\\d|_)*))|i+s+t+))"
+  - "\\b(n+(\\W|\\d|_)*i+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*(e+(\\W|\\d|_)*r+(\\W|\\d|_)*|a+))"
+  - "\\b(w+(\\W|\\d|_)*h+(\\W|\\d|_)*o+(\\W|\\d|_)*r+(\\W|\\d|_)*e+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*l+(\\W|\\d|_)*u+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(f+(\\W|\\d|_)*a+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*o+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
