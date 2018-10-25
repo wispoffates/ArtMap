@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -72,7 +73,7 @@ public class CommandHandler implements CommandExecutor {
 			}
 		});
 		
-		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork|paintbrush}:<title>> [amount]", true) {
+		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork|paintbrush:<title>> [amount]", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 				Player player = Bukkit.getPlayer(args[1]);
@@ -183,20 +184,61 @@ public class CommandHandler implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+		// handle quoted arguements since spigot does not
+		String[] fixedArgs = fixQuotedArgs(args);
 
-        if (args.length > 0) {
+		if (fixedArgs.length > 0) {
 
-            if (commands.containsKey(args[0].toLowerCase())) {
-                commands.get(args[0].toLowerCase()).runPlayerCommand(sender, args);
+			if (commands.containsKey(fixedArgs[0].toLowerCase())) {
+				commands.get(fixedArgs[0].toLowerCase()).runPlayerCommand(sender, fixedArgs);
 
             } else {
                 Lang.HELP.send(sender);
             }
 
         } else {
-            commands.get("help").runPlayerCommand(sender, args);
+			commands.get("help").runPlayerCommand(sender, fixedArgs);
         }
         return true;
     }
+
+	/**
+	 * Combines "" arguments.
+	 * 
+	 * @param args The original args.
+	 * @return The combined args.
+	 */
+	public static String[] fixQuotedArgs(String[] args) {
+		ArrayList<String> newArgs = new ArrayList<>();
+		String combined = null;
+		for (String arg : args) {
+			// handle quoted single word
+			if (arg.startsWith("\"") && arg.endsWith("\"")) {
+				newArgs.add(arg.replaceAll("\"", ""));
+				continue;
+			}
+
+			// start combine
+			if (arg.contains("\"") && combined == null) {
+				combined = arg.replace("\"", "");
+				continue;
+			}
+			// end combine
+			if (arg.contains("\"") && combined != null) {
+				combined += " " + arg.replace("\"", "");
+				newArgs.add(combined);
+				combined = null;
+				continue;
+			}
+
+			// add to combined if its not null otherwise its a lone arg
+			if (combined != null) {
+				combined += " " + arg;
+			} else {
+				newArgs.add(arg);
+			}
+		}
+		return newArgs.toArray(new String[0]);
+	}
 
 }
