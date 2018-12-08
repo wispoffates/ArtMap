@@ -1,8 +1,8 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
-## Spigot 1.13
-PLEASE HAVE BACKUPS! There are major bugs!
-1.13 update is in progress. The 1.13 release will not work with 1.12. I have created a 1.12 branch to continue maintenance of that release. The master branch will be 1.13 only.
+## Spigot 1.13.2
+PLEASE HAVE BACKUPS! There has been a lot of testing at this point and while there are still always bugs to be found it should be free of major problems.
+The 1.13 release will not work with 1.12. I have created a 1.12 branch to continue maintenance of that release. The master branch will be 1.13+ only.
 
 ## Move to Gitlab
 I've moved this project to gitlab https://gitlab.com/BlockStack/ArtMap.  Mirroring has been setup so all commits should be available to fork on github.  But please submit issues on Gitlab.
@@ -20,8 +20,8 @@ User guide at [ArtMap Wiki](https://gitlab.com/BlockStack/ArtMap/wikis/home).
 * List & preview system to view artworks
 
 ### Supported Versions:
-* Spigot 1.13  - Master Branch
-* Spigot 1.8.8 - 1.12 - 1.12 Branch
+* Spigot 1.13.2  - Master Branch
+* Spigot 1.8.8 - 1.12.2 - 1.12 Branch
 
 ### Permissions Nodes
 * artmap.artist - allows players to use artmap

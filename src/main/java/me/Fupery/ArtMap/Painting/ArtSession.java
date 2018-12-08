@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Painting;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -99,17 +98,14 @@ public class ArtSession {
 
     private void addKit(Player player) {
         PlayerInventory inventory = player.getInventory();
-        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
-            inventory.setItemInOffHand(new ItemStack(Material.AIR));
-            if (leftOver != null && leftOver.getType() != Material.AIR) 
-                player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-            this.inventory = inventory.getStorageContents().clone();
-			inventory.setStorageContents(ArtItem.getArtKit(0));
-        } else {
-			this.inventory = inventory.getContents().clone();
-			inventory.setContents(ArtItem.getArtKit(0));
-        }
+		/*
+		 * ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
+		 * inventory.setItemInOffHand(new ItemStack(Material.AIR)); if (leftOver != null
+		 * && leftOver.getType() != Material.AIR)
+		 * player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
+		 */
+		this.inventory = inventory.getContents();
+		inventory.setStorageContents(ArtItem.getArtKit(0));
     }
 
 	public void nextKitPage(Player player) {
@@ -146,12 +142,13 @@ public class ArtSession {
 
 	public boolean removeKit(Player player) {
         if (inventory != null) {
-            if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-                player.getInventory().setStorageContents(inventory);
-                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-				inventory = null;
-				return true;
-            }
+			/*
+			 * if (ArtMap.getBukkitVersion().getVersion() !=
+			 * VersionHandler.BukkitVersion.v1_8) {
+			 * player.getInventory().setStorageContents(inventory);
+			 * player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+			 * inventory = null; return true; }
+			 */
 
             player.getInventory().setContents(inventory);
             inventory = null;
