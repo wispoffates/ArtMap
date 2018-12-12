@@ -15,7 +15,7 @@ public class MapInitializeListener implements RegisteredListener {
 
     @EventHandler
     public void onMapInitialize(MapInitializeEvent event) {
-        short mapId = event.getMap().getId();
+		short mapId = (short) event.getMap().getId();
         Bukkit.getLogger().info("Map initialize: " + mapId);//TODO remove logging
         ArtMap.getScheduler().ASYNC.run(() -> {
             if (!ArtMap.getArtDatabase().getMapTable().containsMap(mapId)) return;

@@ -18,7 +18,7 @@ public class CompressedMap extends MapId {
     }
 
     public static CompressedMap compress(MapView mapView) {
-        return compress(mapView.getId(), Reflection.getMap(mapView));
+		return compress((short) mapView.getId(), Reflection.getMap(mapView));
     }
 
     public static CompressedMap compress(short mapId, byte[] map) {
