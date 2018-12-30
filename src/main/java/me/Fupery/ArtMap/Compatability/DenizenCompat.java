@@ -21,6 +21,9 @@ public class DenizenCompat implements ReflectionHandler {
     DenizenCompat() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");
         loaded = (plugin != null && plugin.isEnabled());
+        if(!loaded){
+            return;
+        }
 		// Add denizen objects for use in scripts
         ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
         ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
