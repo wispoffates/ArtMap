@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,17 @@ class InventoryInteractListener implements RegisteredListener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
 		checkPreviewing((Player) event.getWhoClicked(), event);
-		checkArtKitPagination(((Player) event.getWhoClicked()), event.getCurrentItem(), event);
+        checkArtKitPagination(((Player) event.getWhoClicked()), event.getCurrentItem(), event);
+        
+        //prevent Artkit items from going into inventories they shouldn't like
+        //ender chest and crafting table
+        if(event.getInventory().getType() != InventoryType.PLAYER && 
+            event.getInventory().getType() != InventoryType.CRAFTING &&
+            event.getInventory().getType() != InventoryType.CREATIVE) {
+            if(isKitDrop((Player) event.getWhoClicked(), event.getCurrentItem(), event)) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
