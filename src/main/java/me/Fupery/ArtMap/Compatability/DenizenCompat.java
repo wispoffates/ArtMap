@@ -16,17 +16,15 @@ import net.aufdemrand.denizencore.objects.ObjectFetcher;
 
 public class DenizenCompat implements ReflectionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
 
     DenizenCompat() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Denizen");
         loaded = (plugin != null && plugin.isEnabled());
 		// Add denizen objects for use in scripts
-		if (loaded) {
-			ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
-			ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
-			ObjectFetcher.registerWithObjectFetcher(ArtMapArtists.class);
-		}
+        ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
+        ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
+        ObjectFetcher.registerWithObjectFetcher(ArtMapArtists.class);
     }
 
     //don't ask.

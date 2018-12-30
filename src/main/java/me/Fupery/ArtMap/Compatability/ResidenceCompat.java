@@ -13,14 +13,10 @@ import org.bukkit.entity.Player;
 
 class ResidenceCompat implements RegionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
     private Residence plugin;
 
     public ResidenceCompat() {
-        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("Residence")) {
-            loaded = false;
-            return;
-        }
         plugin = ((Residence) Bukkit.getPluginManager().getPlugin("Residence"));
         Version version = new Version(plugin);
         if (version.isLessThan(4, 5, 13, 0)) {

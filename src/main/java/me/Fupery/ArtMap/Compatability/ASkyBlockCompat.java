@@ -1,12 +1,12 @@
 package me.Fupery.ArtMap.Compatability;
 
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.askyblock.Island;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import com.wasteofplastic.askyblock.Island;
 
 import me.Fupery.ArtMap.Easel.EaselEvent;
 
@@ -15,7 +15,6 @@ class ASkyBlockCompat implements RegionHandler {
     private final boolean loaded;
 
     public ASkyBlockCompat() {
-        ASkyBlockAPI.getInstance();
         loaded = Bukkit.getPluginManager().isPluginEnabled("ASkyBlock");
     }
 

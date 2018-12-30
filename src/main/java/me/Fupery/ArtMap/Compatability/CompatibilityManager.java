@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 
 public class CompatibilityManager implements RegionHandler {
@@ -17,14 +18,17 @@ public class CompatibilityManager implements RegionHandler {
 
     public CompatibilityManager(JavaPlugin plugin) {
         regionHandlers = new ArrayList<>();
-        loadRegionHandler(WorldGuardCompat.class);
-		loadRegionHandler(FactionsCompat.class);
-        loadRegionHandler(GriefPreventionCompat.class);
-		loadRegionHandler(RedProtectCompat.class);
-		loadRegionHandler(LandlordCompat.class);
-		loadRegionHandler(ASkyBlockCompat.class);
-		loadRegionHandler(PlotSquaredCompat.class);
-		loadRegionHandler(ResidenceCompat.class);
+        loadRegionHandler("WorldGuard",WorldGuardCompat.class);
+		loadRegionHandler("Factions",FactionsCompat.class);
+        loadRegionHandler("GriefPrevention",GriefPreventionCompat.class);
+		loadRegionHandler("RedProtect",RedProtectCompat.class);
+		loadRegionHandler("Landlord",LandlordCompat.class);
+        loadRegionHandler("ASkyBlock",ASkyBlockCompat.class);
+        loadRegionHandler("uSkyBlock",USkyBlockCompat.class);
+        loadRegionHandler("BentoBox",BentoBoxCompat.class);
+		loadRegionHandler("PlotSquared",PlotSquaredCompat.class);
+        loadRegionHandler("Residence",ResidenceCompat.class);
+        loadRegionHandler("Towny",TownyCompat.class);
         reflectionHandler = loadReflectionHandler();
         if (!(reflectionHandler instanceof VanillaReflectionHandler))
             plugin.getLogger().info(String.format("%s reflection handler enabled.",
@@ -75,11 +79,19 @@ public class CompatibilityManager implements RegionHandler {
         return new VanillaReflectionHandler();
     }
 
-    private void loadRegionHandler(Class<? extends RegionHandler> handlerClass) {
+    private void loadRegionHandler(String pluginName, Class<? extends RegionHandler> handlerClass) {
         try {
-            RegionHandler handler = handlerClass.newInstance();
-            if (handler.isLoaded()) regionHandlers.add(handler);
-        } catch (Exception | NoClassDefFoundError ignored) {
+            if (Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+                RegionHandler handler = handlerClass.newInstance();
+                if (handler.isLoaded()) {
+                    regionHandlers.add(handler);
+                }
+            } else {
+                ArtMap.instance().getLogger().info(pluginName + " not detected.  Hooks skipped.");
+            }
+        } catch (Exception | NoClassDefFoundError exception) {
+            ArtMap.instance().getLogger().severe("Exception loading region handler for " + pluginName);
+            exception.printStackTrace();
         }
     }
 

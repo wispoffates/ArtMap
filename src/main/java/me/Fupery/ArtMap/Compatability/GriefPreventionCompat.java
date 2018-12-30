@@ -1,18 +1,18 @@
 package me.Fupery.ArtMap.Compatability;
 
-import me.Fupery.ArtMap.Easel.EaselEvent;
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import me.Fupery.ArtMap.Easel.EaselEvent;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
+
 public class GriefPreventionCompat implements RegionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
 
     public GriefPreventionCompat() {
-        GriefPrevention.instance.getName();
         loaded = true;
     }
 

@@ -1,16 +1,22 @@
 package me.Fupery.ArtMap.Utils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 public class Version implements Comparable<Version> {
     private final int[] numbers;
 
-    public Version(JavaPlugin plugin) {
+    public Version(Plugin plugin) {
         String[] strings = plugin.getDescription().getVersion().split("\\.");
+        
         int[] numbers = new int[strings.length];
         for (int i = 0; i < strings.length; i++) {
-            numbers[i] = Integer.parseInt(strings[i]);
+            //chop anything like -SNAPSHOT off the version number.
+            String str = strings[i];
+            if(str.contains("-")) {
+                str = str.substring(0, str.indexOf("-"));
+            }
+            numbers[i] = Integer.parseInt(str);
         }
         this.numbers = numbers;
     }

@@ -17,9 +17,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 class LandlordCompat implements RegionHandler {
 
-    final boolean loaded;
-    private final String BUILD_FLAG_KEY;
-    private final String INTERACT_FLAG_KEY;
+    private boolean loaded = false;
+    private String BUILD_FLAG_KEY;
+    private String INTERACT_FLAG_KEY;
 
     public LandlordCompat() {
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("Landlord");

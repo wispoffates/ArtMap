@@ -3,23 +3,20 @@ package me.Fupery.ArtMap.Compatability;
 import com.intellectualcrafters.plot.api.PlotAPI;
 import com.intellectualcrafters.plot.flag.BooleanFlag;
 import com.intellectualcrafters.plot.object.Plot;
-import me.Fupery.ArtMap.Easel.EaselEvent;
-import org.bukkit.Bukkit;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import me.Fupery.ArtMap.Easel.EaselEvent;
+
 class PlotSquaredCompat implements RegionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
     private final BooleanFlag place = new BooleanFlag("artmap-place");
     private final BooleanFlag use = new BooleanFlag("artmap-use");
 
     public PlotSquaredCompat() {
-        if (!Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) {
-            loaded = false;
-            return;
-        }
         PlotAPI api = new PlotAPI();
         api.addFlag(place);
         api.addFlag(use);

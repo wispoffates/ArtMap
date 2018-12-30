@@ -1,10 +1,8 @@
 package me.Fupery.ArtMap.Compatability;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
@@ -12,15 +10,12 @@ import me.Fupery.ArtMap.Easel.EaselEvent;
 
 class RedProtectCompat implements RegionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
 	private RedProtectAPI api;
 
     RedProtectCompat() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("RedProtect");
-        loaded = plugin != null && plugin.isEnabled();
-		if (loaded) {
-			this.api = new RedProtectAPI();
-		}
+       this.api = new RedProtectAPI();
+       this.loaded = true;
     }
 
     @Override

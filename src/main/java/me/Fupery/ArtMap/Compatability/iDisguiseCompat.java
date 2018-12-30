@@ -1,14 +1,15 @@
 package me.Fupery.ArtMap.Compatability;
 
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import io.netty.channel.Channel;
+import me.Fupery.ArtMap.Utils.Reflection;
+
 public class iDisguiseCompat implements ReflectionHandler {
 
-    private final boolean loaded;
+    private boolean loaded = false;
 
     public iDisguiseCompat() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("iDisguise");
