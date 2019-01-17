@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.0.3</version>
+	<version>3.0.4</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -103,6 +103,10 @@
 		<repository>
 			<id>codemc-repo</id>
 			<url>https://repo.codemc.org/repository/maven-public/</url>
+		</repository>
+		<repository>
+			<id>plotsquared-repo</id>
+			<url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
 		</repository>
 		<!-- My Repo with all the things I couldn't find in the other repos -->
 		<repository>
@@ -217,8 +221,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.plotsquared</groupId>
-			<artifactId>PlotSquared-Bukkit</artifactId>
-			<version>18.07.06</version>
+			<artifactId>plotsquared-api</artifactId>
+			<version>4.110-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

@@ -1,8 +1,8 @@
 package me.Fupery.ArtMap.Compatability;
 
-import com.intellectualcrafters.plot.api.PlotAPI;
-import com.intellectualcrafters.plot.flag.BooleanFlag;
-import com.intellectualcrafters.plot.object.Plot;
+import com.github.intellectualsites.plotsquared.api.PlotAPI;
+import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -25,8 +25,7 @@ class PlotSquaredCompat implements RegionHandler {
 
     @Override
     public boolean checkBuildAllowed(Player player, Location location) {
-        PlotAPI API = new PlotAPI();
-        Plot plot = API.getPlot(location);
+        Plot plot = Plot.getPlot(this.locationWrapper(location));
 
         return plot == null
                 || plot.isAdded(player.getUniqueId())
@@ -35,8 +34,7 @@ class PlotSquaredCompat implements RegionHandler {
 
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, EaselEvent.ClickType click) {
-        PlotAPI API = new PlotAPI();
-        Plot plot = API.getPlot(entity.getLocation());
+        Plot plot = Plot.getPlot(this.locationWrapper(entity.getLocation()));
         return plot == null
                 || plot.isAdded(player.getUniqueId())
                 || (!plot.isDenied(player.getUniqueId()) && plot.getFlag(use, false));
@@ -45,5 +43,9 @@ class PlotSquaredCompat implements RegionHandler {
     @Override
     public boolean isLoaded() {
         return loaded;
+    }
+
+    private com.github.intellectualsites.plotsquared.plot.object.Location locationWrapper(Location loc) {
+        return new com.github.intellectualsites.plotsquared.plot.object.Location(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(),loc.getBlockZ());
     }
 }
