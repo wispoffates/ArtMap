@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapArt;
 
@@ -58,7 +60,7 @@ public final class ArtTable extends SQLiteTable {
         int id = set.getInt("id");
         UUID artist = UUID.fromString(set.getString("artist"));
         String date = set.getString("date");
-        return new MapArt((short) id, title, artist, date);
+        return new MapArt((short) id, title, artist, Bukkit.getOfflinePlayer(artist).getName(),date);
     }
 
 
@@ -175,7 +177,25 @@ public final class ArtTable extends SQLiteTable {
     }
 
 	public UUID[] listArtists() {
-		return this.listArtists(null);
+		return new QueuedQuery<UUID[]>() {
+
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
+            }
+
+            @Override
+			protected UUID[] read(ResultSet results) throws SQLException {
+                ArrayList<UUID> artists = new ArrayList<>();
+                try {
+                    while (results.next()) {
+                        artists.add(UUID.fromString(results.getString("artist")));
+                    }
+                } catch (SQLException e) {
+                    ErrorLogger.log(e, sqlError);
+                }
+                return artists.toArray(new UUID[artists.size()]);
+            }
+        }.execute("SELECT DISTINCT artist FROM " + TABLE + " ORDER BY artist;");
 	}
 
     public void updateMapID(MapArt art) {

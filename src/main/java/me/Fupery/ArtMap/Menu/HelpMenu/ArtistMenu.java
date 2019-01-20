@@ -44,7 +44,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
 		int notCached = artists.length - Heads.getCacheSize();
 		if (notCached > 1) {
-			this.viewer.sendMessage(MessageFormat.format("ArtMap: {0} artist currently not cached loading the menu might take some time.", notCached));
+			this.viewer.sendMessage(MessageFormat.format("ArtMap: {0} artist(s) currently not cached loading the menu might take some time.", notCached));
 		}
 
 		// skip 0 as it is the viewer
@@ -69,6 +69,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	public class ArtworkListButton extends Button {
 
 		final UUID artist;
+		String artistName;
 
 		public ArtworkListButton(UUID artist) {
 			super(Material.PLAYER_HEAD);
@@ -79,6 +80,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
 			if (head != null) {
 				meta = head.clone();
+				artistName = head.getDisplayName();
 			} else {
 				meta.setDisplayName(artist.toString());
 			}
@@ -91,7 +93,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 		public void onClick(Player player, ClickType clickType) {
 			SoundCompat.UI_BUTTON_CLICK.play(player);
 			ArtMap.getMenuHandler().openMenu(player,
-			        new ArtistArtworksMenu(getMenu(), this.artist, player.hasPermission("artmap.admin"), 0));
+			        new ArtistArtworksMenu(getMenu(), this.artist, this.artistName, player.hasPermission("artmap.admin"), 0));
 		}
 	}
 }

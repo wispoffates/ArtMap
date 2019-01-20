@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.IO.Database;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -100,7 +101,7 @@ public final class Database {
 			}
 		}
 		// new artwork
-		mapArt = new MapArt(art.getMapId(), title, player);
+		mapArt = new MapArt(art.getMapId(), title, player.getUniqueId(),player.getName(),new Date());
 		MapView mapView = getMap(art.getMapId());
 		CompressedMap map = CompressedMap.compress(mapView);
 		boolean success = artworks.addArtwork(mapArt);
@@ -210,7 +211,8 @@ public final class Database {
             }
         }
 		if (mapView == null) {
-			ArtMap.instance().getLogger().severe("MapView creation Failed! id=" + id);
+            ArtMap.instance().getLogger().severe("MapView creation Failed! id=" + id);
+            return null;
 		}
         Reflection.setWorldMap(mapView, Map.BLANK_MAP);
         return new Map(mapView);

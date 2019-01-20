@@ -9,6 +9,9 @@ import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -222,5 +225,19 @@ public class ArtMap extends JavaPlugin {
 
 	public Reader getTextResourceFile(String fileName) {
 		return getTextResource(fileName);
+	}
+
+	/**
+	 * Retrieve primed gson instance.
+	 * 
+	 * @param pretty Enable pretty print.
+	 * @return GSON instance.
+	 */
+	public static Gson getGson(boolean pretty) {
+		GsonBuilder builder = new GsonBuilder();
+		if (pretty) {
+			builder.setPrettyPrinting();
+		}
+		return builder.create();
 	}
 }

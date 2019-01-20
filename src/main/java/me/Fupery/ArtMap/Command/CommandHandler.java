@@ -41,6 +41,10 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("preview", new CommandPreview());
 
+		commands.put("import", new CommandImport());
+
+		commands.put("export", new CommandExport());
+
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {

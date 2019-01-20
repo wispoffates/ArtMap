@@ -67,7 +67,7 @@ public class FlatDatabaseConverter {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
                     continue;
                 }
-                MapArt artwork = new MapArt(mapIDValue, title, player, date);
+                MapArt artwork = new MapArt(mapIDValue, title, player.getUniqueId(), player.getName(), date);
                 if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
                     plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {

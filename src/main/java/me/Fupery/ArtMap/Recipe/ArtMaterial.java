@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.Recipe;
 
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
@@ -48,8 +47,8 @@ public enum ArtMaterial {
         return null;
     }
 
-    public static ArtItem.ArtworkItem getMapArt(short id, String title, OfflinePlayer player, String date) {
-        return new ArtItem.ArtworkItem(id, title, player, date);
+    public static ArtItem.ArtworkItem getMapArt(short id, String title, String playerName, String date) {
+        return new ArtItem.ArtworkItem(id, title, playerName, date);
     }
 
     public Material getType() {

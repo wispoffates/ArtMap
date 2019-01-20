@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -154,12 +153,12 @@ public class ArtItem {
     }
 
     public static class ArtworkItem extends CustomItem {
-        public ArtworkItem(short id, String title, OfflinePlayer player, String date) {
+        public ArtworkItem(short id, String title, String artistName, String date) {
 			super(new ItemStack(Material.FILLED_MAP), ARTWORK_TAG);
 			MapMeta meta = (MapMeta) this.stack.get().getItemMeta();
 			meta.setMapId(id);
 			this.stack.get().setItemMeta(meta);
-            String name = player != null ? player.getName() : "Player";
+            String name = artistName;
             name(title);
             String artist = GOLD + String.format(RECIPE_ARTWORK_ARTIST.get(), (YELLOW + name));
             tooltip(artist, DARK_GREEN + "" + ITALIC + date);

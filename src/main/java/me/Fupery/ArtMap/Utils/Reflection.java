@@ -200,8 +200,10 @@ public class Reflection {
 
         try {
             Object worldMap = getField(mapView, "worldMap");
-            centerX = (int) getField(worldMap, "centerX");
-            centerZ = (int) getField(worldMap, "centerZ");
+            //centerX = (int) getField(worldMap, "centerX");
+            //centerZ = (int) getField(worldMap, "centerZ");
+            centerX = mapView.getCenterX();
+            centerZ = mapView.getCenterZ();
 			// map = (byte) getField(worldMap, "map");
 
         } catch (NoSuchFieldException | SecurityException
@@ -215,10 +217,13 @@ public class Reflection {
 
     public static void setWorldMap(MapView mapView, byte[] colors) {
         try {
+            mapView.setCenterX(-999999);
+            mapView.setCenterZ(-999999);
+            
             Object worldMap = getField(mapView, "worldMap");
-            setField(worldMap, "centerX", -999999);
-            setField(worldMap, "centerZ", -999999);
-			// setField(worldMap, "map", (byte) 5);
+            //setField(worldMap, "centerX", -999999);
+            //setField(worldMap, "centerZ", -999999);
+			//setField(worldMap, "map", (byte) 5); //probably was the dimension? which is DimensionManager now
             setField(worldMap, "colors", colors);
 
         } catch (NoSuchFieldException | SecurityException

@@ -141,7 +141,7 @@ public class OldDatabaseConverter {
             short id = (short) set.getInt("id");
             UUID artist = UUID.fromString(set.getString("artist"));
             String date = set.getString("date");
-            MapArt art = new MapArt(id, title, artist, date);
+            MapArt art = new MapArt(id, title, artist, Bukkit.getOfflinePlayer(artist).getName(), date);
             byte[] map = new f32x32().readBLOB(set.getBytes("map"));
             CompressedMap data = CompressedMap.compress(id, map);
             return new RichMapArt(art, data);

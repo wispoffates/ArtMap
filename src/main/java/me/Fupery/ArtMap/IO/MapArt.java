@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -18,24 +19,19 @@ public class MapArt {
     private final short id;
     private final String title;
     private final UUID artist;
+    private final String artistName;
     private final String date;
 
-    public MapArt(short mapIDValue, String title, OfflinePlayer artist) {
-        this(mapIDValue, title, artist, DATE_FORMAT.format(new Date()));
+    public MapArt(short mapIDValue, String title, UUID artist, String artistName, Date date) {
+        this(mapIDValue, title, artist, artistName, DATE_FORMAT.format(date));
     }
 
-    public MapArt(short id, String title, UUID artist, String date) {
+    public MapArt(short id, String title, UUID artist, String artistName, String date) {
         this.id = id;
         this.title = title;
         this.artist = artist;
         this.date = date;
-    }
-
-    public MapArt(short mapIDValue, String title, OfflinePlayer artist, String date) {
-        this.id = mapIDValue;
-        this.title = title;
-        this.artist = artist.getUniqueId();
-        this.date = date;
+        this.artistName = artistName;
     }
 
     public OfflinePlayer getArtistPlayer() {
@@ -66,8 +62,13 @@ public class MapArt {
         return obj instanceof MapArt && equals(((MapArt) obj), false);
     }
 
+    @Override
+    public String toString() {
+        return MessageFormat.format("Artwork #{0} created by {1} named {2} on {3}", this.id,this.artist,this.title,this.date);
+    }
+
     public ItemStack getMapItem() {
-        return new ArtItem.ArtworkItem(id, title, getArtistPlayer(), date).toItemStack();
+        return new ArtItem.ArtworkItem(id, title, artistName, date).toItemStack();
     }
 
     public short getMapId() {
@@ -82,16 +83,24 @@ public class MapArt {
         return artist;
     }
 
+    public String getArtistName() {
+        return artistName;
+    }
+
     public String getDate() {
         return date;
     }
 
+    public MapArt setAristName(String name) {
+        return new MapArt(this.id, title, this.artist, name, this.date);
+    }
+
     public MapArt updateMapId(short newID) {
-        return new MapArt(newID, title, artist, date);
+        return new MapArt(newID, title, artist, artistName, date);
     }
 
 	public MapArt setTitle(String title) {
-		return new MapArt(this.id, title, this.artist, this.date);
+		return new MapArt(this.id, title, this.artist, this.artistName, this.date);
 	}
 
     public Map getMap() {

@@ -3,15 +3,14 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
+import com.github.Fupery.InvMenu.Utils.SoundCompat;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
-
-import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
@@ -27,21 +26,24 @@ import me.Fupery.ArtMap.Utils.VersionHandler;
 
 public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     private final UUID artist;
+    private final String artistName;
     private ArtistMenu parent;
     private boolean adminViewing;
 
-    public ArtistArtworksMenu(ArtistMenu parent, UUID artist, boolean adminViewing, int page) {
-        super(processTitle(artist), page);
+    public ArtistArtworksMenu(ArtistMenu parent, UUID artist, String artistName, boolean adminViewing, int page) {
+        super(processTitle(artistName), page);
         this.parent = parent;
         this.adminViewing = adminViewing;
         this.artist = artist;
+        this.artistName = artistName;
     }
 
-    private static String processTitle(UUID artist) {
-        String name = Bukkit.getOfflinePlayer(artist).getName();
+    private static String processTitle(String artistName) {
+        String name = artistName;
         String title = ChatColor.DARK_BLUE + Lang.MENU_ARTWORKS.get();
         String processedName = String.format(title, name);
-        if (processedName.length() <= 32) return processedName;
+        if (processedName.length() <= 32)
+            return processedName;
         return (name.length() <= 30) ? ChatColor.DARK_BLUE + name : ChatColor.DARK_BLUE + name.substring(0, 29);
     }
 
@@ -73,6 +75,9 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
             buttons = new Button[artworks.length];
 
             for (int i = 0; i < artworks.length; i++) {
+                if(artworks[i].getArtistName() == null) {
+                    artworks[i] = artworks[i].setAristName(this.artistName);
+                }
                 buttons[i] = new PreviewButton(this, artworks[i], adminViewing);
             }
 
