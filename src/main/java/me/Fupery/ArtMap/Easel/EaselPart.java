@@ -110,7 +110,7 @@ public enum EaselPart {
 		} else {
 			Location partPos = getPartPos(easelLocation, facing);
 
-			if (this == SEAT || this == MARKER || partPos.getBlock().getType() == Material.AIR) {
+			if (this == SEAT || this == MARKER || partPos.getBlock().isEmpty()) {
 				Entity entity = easelLocation.getWorld().spawnEntity(partPos, getType());
 
 				switch (this) {

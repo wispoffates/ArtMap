@@ -84,9 +84,9 @@ class PlayerInteractListener implements RegisteredListener {
         BlockFace facing = getFacing(player);
         Location frameBlock = new LocationHelper(easelLocation).shiftTowards(facing);
 
-        if (easelLocation.getBlock().getType() != Material.AIR
-                || baseLocation.getBlock().getType() != Material.AIR
-                || frameBlock.getBlock().getType() != Material.AIR
+        if (easelLocation.getBlock().isEmpty()
+                || baseLocation.getBlock().isEmpty()
+                || frameBlock.getBlock().isEmpty()
                 || Easel.checkForEasel(easelLocation)) {
             Lang.ActionBar.INVALID_POS.send(player);
             EaselEffect.USE_DENIED.playEffect(baseLocation);
