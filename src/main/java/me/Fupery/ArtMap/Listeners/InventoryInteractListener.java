@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Listeners;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -27,8 +28,9 @@ class InventoryInteractListener implements RegisteredListener {
         checkArtKitPagination(((Player) event.getWhoClicked()), event.getCurrentItem(), event);
         
         //prevent Artkit items from going into inventories they shouldn't like
-        //ender chest and crafting table
-        if(event.getInventory().getType() != InventoryType.PLAYER && 
+        //ender chest and crafting table but allow it in creative mode
+        if( event.getWhoClicked().getGameMode() != GameMode.CREATIVE &&
+            event.getInventory().getType() != InventoryType.PLAYER && 
             event.getInventory().getType() != InventoryType.CRAFTING &&
             event.getInventory().getType() != InventoryType.CREATIVE) {
             if(isKitDrop((Player) event.getWhoClicked(), event.getCurrentItem(), event)) {

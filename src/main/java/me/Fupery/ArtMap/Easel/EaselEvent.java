@@ -70,7 +70,7 @@ public final class EaselEvent {
 						MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(itemInHand));
 					ArtMap.getScheduler().SYNC.run(() -> {
 						if (art != null) {
-							if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
+							if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId()) && !player.hasPermission("artmap.admin")) {
 								Lang.ActionBar.NO_EDIT_PERM.send(player);
 								easel.playEffect(EaselEffect.USE_DENIED);
 								return;
