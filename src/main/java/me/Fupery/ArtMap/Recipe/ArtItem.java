@@ -121,7 +121,7 @@ public class ArtItem {
             tooltip(RECIPE_PAINTBUCKET.get());
             flag(ItemFlag.HIDE_ENCHANTS);
             enchant(Enchantment.LUCK, 1);
-			recipe(new SimpleRecipe.Shapeless(dye.rawName().replaceAll(" ", "_") + "_bucket")
+			recipe(new SimpleRecipe.Shapeless(dye.englishName().replaceAll(" ", "_") + "_bucket")
                     .add(Material.BUCKET)
                     .add(new Ingredient.WrappedItem(dye.toItem())));
         }

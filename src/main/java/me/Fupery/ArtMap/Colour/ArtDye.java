@@ -11,7 +11,8 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Painting.Pixel;
 
 public abstract class ArtDye {
-    private final String name;
+    private final String localizedName;
+    private final String englishName;   //Minecraft servers do not like localized names as recipe keys
     private final ChatColor chatColour;
     private Material material;
     private short durability;
@@ -19,19 +20,20 @@ public abstract class ArtDye {
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-    protected ArtDye(String name, ChatColor chatColor, Material material, int durability) {
-		if (name == null) {
+    protected ArtDye(String localizedName, String englishName, ChatColor chatColor, Material material, int durability) {
+		if (localizedName == null) {
 			ArtMap.instance().getLogger().log(Level.SEVERE,
 					"Dye with material: " + material + " does not have a name set!");
 		}
-        this.name = name;
+        this.localizedName = localizedName;
+        this.englishName = englishName;
         this.chatColour = chatColor;
         this.material = material;
         this.durability = (short) durability;
     }
 
-    protected ArtDye(String name, ChatColor chatColour, Material material) {
-        this(name, chatColour, material, -1);
+    protected ArtDye(String name, String englishName, ChatColor chatColour, Material material) {
+        this(name, englishName, chatColour, material, -1);
     }
 
     public abstract void apply(Pixel pixel);
@@ -39,11 +41,15 @@ public abstract class ArtDye {
     public abstract byte getDyeColour(byte currentPixelColour);
 
     public String name() {
-        return chatColour + name;
+        return chatColour + localizedName;
     }
 
     public String rawName() {
-        return name.toUpperCase();
+        return localizedName;
+    }
+
+    public String englishName() {
+        return englishName.toUpperCase();
     }
 
     public ChatColor getDisplayColour() {
@@ -61,7 +67,7 @@ public abstract class ArtDye {
     public ItemStack toItem() {
         ItemStack item = new ItemStack(material, 1, getDurability());
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(chatColour + name);
+        meta.setDisplayName(chatColour + localizedName);
         item.setItemMeta(meta);
         return item;
     }

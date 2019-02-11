@@ -48,6 +48,8 @@ public enum EaselPart {
 			return stand.isVisible() ? STAND : (stand.isSmall() ? MARKER : SEAT);
 		case ITEM_FRAME:
 			return FRAME;
+		default:
+			break;
 		}
 		return null;
 	}
@@ -94,6 +96,8 @@ public enum EaselPart {
 		case WEST:
 		case EAST:
 			return 90;
+		default:
+			break;
 		}
 		return 0;
 	}
@@ -154,6 +158,8 @@ public enum EaselPart {
 					marker.setRemoveWhenFarAway(true);
 					marker.setSmall(true);
 					return marker;
+				default:
+					break;
 				}
 			}
 		}
@@ -188,6 +194,8 @@ public enum EaselPart {
 			if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
 				x += .031;
 			}
+			break;
+		default:
 			break;
 		}
 

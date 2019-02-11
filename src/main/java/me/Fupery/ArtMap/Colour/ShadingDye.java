@@ -9,8 +9,8 @@ public class ShadingDye extends ArtDye {
 
     private final boolean darken;
 
-    protected ShadingDye(String name, boolean darken, ChatColor chatColour, Material material) {
-        super(name, chatColour, material);
+    protected ShadingDye(String localizedName, String englishName, boolean darken, ChatColor chatColour, Material material) {
+        super(localizedName, englishName, chatColour, material);
         this.darken = darken;
     }
 

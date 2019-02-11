@@ -129,7 +129,7 @@ public class Heads {
 			 */
 			return new TextureData(name, jsonBase64);
 		} catch (Exception e) {
-			ArtMap.instance().getLogger().info("Failed to parse JSON for id:" + uuid);
+			//ArtMap.instance().getLogger().info("Failed to parse JSON for user id:" + uuid);
 		}
 		return null;
 	}

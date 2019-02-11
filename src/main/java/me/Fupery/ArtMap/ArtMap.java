@@ -164,7 +164,6 @@ public class ArtMap extends JavaPlugin {
 		this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
 			this.initHeadCache();
 		});
-
 		disabled = false;
 	}
 
@@ -197,6 +196,9 @@ public class ArtMap extends JavaPlugin {
 			} catch (InterruptedException e) {
 				// Do not care
 			}
+		}
+		if(loaded == 0 && artists.length>0) {
+			this.getLogger().warning("Could not preload any player heads! Is the server in offline mode and not behind a Bungeecord?");
 		}
 		this.getLogger().info(MessageFormat.format("Async loaded {0} of {1} artists.", loaded, artists.length - 1));
 	}
