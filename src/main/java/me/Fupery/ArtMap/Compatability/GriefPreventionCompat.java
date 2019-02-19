@@ -24,6 +24,9 @@ public class GriefPreventionCompat implements RegionHandler {
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, EaselEvent.ClickType click) {
         Claim claim = GriefPrevention.instance.dataStore.getClaimAt(entity.getLocation(), false, null);
+        if(claim==null) {
+            return true;
+        }
         return (claim.allowAccess(player) == null);
     }
 
