@@ -146,6 +146,7 @@ public enum EaselPart {
 					marker.setRemoveWhenFarAway(true);
 					marker.setSmall(true);
 					return marker;
+				default:
 				}
 			}
 		}
@@ -181,6 +182,7 @@ public enum EaselPart {
 				x += .031;
 			}
 			break;
+		default:
 		}
 
 		if (this.centred) {

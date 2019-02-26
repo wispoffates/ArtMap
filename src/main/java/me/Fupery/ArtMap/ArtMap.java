@@ -204,7 +204,11 @@ public class ArtMap extends JavaPlugin {
 				// Do not care
 			}
 		}
-		this.getLogger().info(MessageFormat.format("Async loaded {0} of {1} artists.", loaded, artists.length - 1));
+		if(loaded == 0 && artists.length>0) {
+			this.getLogger().warning("Could not preload any player heads! Is the server in offline mode and not behind a Bungeecord?");
+		} else {
+			this.getLogger().info(MessageFormat.format("Async loaded {0} of {1} artists.", loaded, artists.length - 1));
+		}
 	}
 
 	public boolean writeResource(String resourcePath, File destination) {

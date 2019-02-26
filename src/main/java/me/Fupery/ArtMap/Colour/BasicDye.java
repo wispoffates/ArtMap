@@ -12,8 +12,8 @@ public class BasicDye extends ArtDye {
     /**
      * Durability value of -1 indicates that items of any durability will be accepted
      */
-	protected BasicDye(String name, int colour, ChatColor chatColor, Material material) {
-		super(name, chatColor, material);
+	protected BasicDye(String localizedName, String englishName, int colour, ChatColor chatColor, Material material) {
+		super(localizedName, englishName, chatColor, material);
         this.colour = (byte) colour;
 
     }
