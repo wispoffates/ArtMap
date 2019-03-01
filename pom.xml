@@ -152,6 +152,13 @@
 			<artifactId>worldguard</artifactId>
 			<version>6.1.1-SNAPSHOT</version>
 			<scope>provided</scope>
+			<!-- Exclude old bukkit versions -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.massivecraft</groupId>
