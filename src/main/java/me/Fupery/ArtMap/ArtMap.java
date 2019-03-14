@@ -161,9 +161,13 @@ public class ArtMap extends JavaPlugin {
 		menuHandler = new MenuHandler(this);
 		getCommand("art").setExecutor(new CommandHandler());
 		// load the artist button cache
-		this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-			this.initHeadCache();
-		});
+		ArtMap.instance();
+		if (ArtMap.getConfiguration().HEAD_PREFETCH) {
+			this.getServer().getScheduler().runTaskLaterAsynchronously(this, () -> {
+				this.initHeadCache();
+			}, ArtMap.getConfiguration().HEAD_PREFETCH_DELAY);
+		}
+
 		disabled = false;
 	}
 

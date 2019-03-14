@@ -29,3 +29,12 @@ hidePrefix: false
 
 #Force use of the GUI and disable most slash commands for a bit more immersive feel
 guiOnly: false
+
+#Do head prefetch - Setting this to false will cause the first load of the artist menu to take a long time.
+headPrefetch: true
+
+#Head prefetch delay - Delay the head prefetch by the provided number of server ticks (20 ticks per second)
+headPrefetchDelay: 0
+
+#If the head is not available in the server cache try and get it from Mojang.
+doHeadRemoteFetch: true
