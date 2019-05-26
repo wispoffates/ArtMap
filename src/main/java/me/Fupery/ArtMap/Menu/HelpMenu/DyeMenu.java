@@ -23,7 +23,7 @@ public class DyeMenu extends ListMenu {
 	protected Button[] getListItems() {
 		List<Button> buttons = new ArrayList<>();
         ArtDye[] dyes = ArtMap.getDyePalette().getDyes(DyeType.DYE);
-		buttons.add(new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get()));
+		buttons.add(new StaticButton(Material.OAK_SIGN, Lang.Array.INFO_DYES.get()));
 		// buttons[53] = new CloseButton();
 
 		for (ArtDye dye : dyes) {

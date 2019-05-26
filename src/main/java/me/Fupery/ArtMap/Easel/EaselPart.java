@@ -98,7 +98,7 @@ public enum EaselPart {
 	public Entity spawn(Location easelLocation, BlockFace facing) {
 
 		if (this == SIGN) {
-			easelLocation.getBlock().setType(Material.WALL_SIGN);
+			easelLocation.getBlock().setType(Material.OAK_WALL_SIGN);
 			WallSign bd = (WallSign) easelLocation.getBlock().getBlockData();
 			bd.setFacing(getSignFacing(facing));
 			easelLocation.getBlock().setBlockData(bd, false);

@@ -140,7 +140,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
     private boolean checkSignBreak(Block block, Cancellable event) {
 
-        if (block.getType() == Material.WALL_SIGN) {
+        if (block.getType() == Material.OAK_WALL_SIGN) {
             Sign sign = ((Sign) block.getState());
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
