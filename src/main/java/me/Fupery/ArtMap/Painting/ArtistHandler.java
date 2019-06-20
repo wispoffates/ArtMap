@@ -51,7 +51,7 @@ public class ArtistHandler {
 					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
 				// handle click with paint brush in main hand causes save
 				if (sender.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(sender)) {
-					ArtMap.getScheduler().ASYNC.run(() -> {
+					ArtMap.getScheduler().SYNC.run(() -> {
 						new AnvilGUI(ArtMap.instance(), sender, "Title?", (player, title) -> {
 							TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
 							if (!filter.check(title)) {
