@@ -50,7 +50,7 @@ public class BasicPalette implements Palette {
 			COFFEE = new BasicDye(DYE_COFFEE.get(), "COFFEE", 10, ChatColor.DARK_RED, Material.MELON_SEEDS),
 			STONE = new BasicDye(Lang.DYE_STONE.get(), "STONE", 11, ChatColor.DARK_GRAY, Material.GHAST_TEAR), // new
 			WATER = new BasicDye(Lang.DYE_WATER.get(), "WATER", 12, ChatColor.DARK_BLUE, Material.LAPIS_BLOCK), // new
-			DARK_WOOD = new BasicDye(Lang.DYE_DARK_WOOD.get(), "DARK_WOOD", 13, ChatColor.GREEN, Material.WOOD, 1), // new
+			DARK_WOOD = new BasicDye(Lang.DYE_DARK_WOOD.get(), "DARK_WOOD", 13, ChatColor.GREEN, Material.LOG_2, 1), // new
 			WHITE = new BasicDye(DYE_WHITE.get(), "WHITE", 14, ChatColor.WHITE, Material.INK_SACK, 15),
 			ORANGE = new BasicDye(DYE_ORANGE.get(), "ORANGE", 15, ChatColor.GOLD, Material.INK_SACK, 14),
 			MAGENTA = new BasicDye(DYE_MAGENTA.get(), "MAGENTA", 16, ChatColor.LIGHT_PURPLE, Material.INK_SACK, 13),

@@ -106,6 +106,9 @@ public class ArtistHandler {
 	}
 
 	public boolean containsPlayer(Player player) {
+		if(player == null) {
+			return false;
+		}
 		return (artists.containsKey(player.getUniqueId()));
 	}
 
