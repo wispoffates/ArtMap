@@ -1,7 +1,5 @@
 package me.Fupery.ArtMap.IO.ColourMap;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +22,14 @@ class Compressor {
     static byte[] decompress(byte[] contentBytes) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(contentBytes)), out);
+            GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(contentBytes));
+            byte[] buffer = new byte[128];
+            int read = gzipInputStream.read(buffer);
+            while(read >= 0) {
+                out.write(buffer, 0, read);
+                read = gzipInputStream.read(buffer);
+            }   
+            gzipInputStream.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

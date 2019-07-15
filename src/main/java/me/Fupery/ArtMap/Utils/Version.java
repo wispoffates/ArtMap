@@ -16,6 +16,10 @@ public class Version implements Comparable<Version> {
             if(str.contains("-")) {
                 str = str.substring(0, str.indexOf("-"));
             }
+            //also wierdness like version: "7.0.0;02b731f"
+            if(str.contains(";")) {
+                str = str.substring(0, str.indexOf(";"));
+            }
             numbers[i] = Integer.parseInt(str);
         }
         this.numbers = numbers;

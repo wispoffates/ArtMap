@@ -28,7 +28,7 @@ public class MapInitializeListener implements RegisteredListener {
 					ItemStack item = player.getInventory().getItemInMainHand();
 					if (item.getType() == Material.FILLED_MAP && mapId == event.getMap().getId()) {
                         Bukkit.getLogger().info("   ItemMatches!");//TODO remove logging
-						MapMeta meta = (MapMeta) item.getItemMeta();
+                        MapMeta meta = (MapMeta) item.getItemMeta();
 						meta.setMapId(Bukkit.createMap(player.getWorld()).getId());
 						item.setItemMeta(meta);
 						player.getInventory().setItemInMainHand(item);

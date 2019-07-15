@@ -40,7 +40,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
         return new Button[]{
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
 		        new StaticButton(Material.AIR),
-                new StaticButton(Material.SIGN, Lang.Array.INFO_RECIPES.get()),
+                new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
                 new RecipeButton(ArtMaterial.PAINT_BUCKET),

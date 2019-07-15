@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Easel;
 
+import me.Fupery.ArtMap.ArtMap;
 import static me.Fupery.ArtMap.ArtMap.getBukkitVersion;
 import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
 import static org.bukkit.entity.EntityType.ARMOR_STAND;
@@ -98,7 +99,7 @@ public enum EaselPart {
 	public Entity spawn(Location easelLocation, BlockFace facing) {
 
 		if (this == SIGN) {
-			easelLocation.getBlock().setType(Material.WALL_SIGN);
+			easelLocation.getBlock().setType(ArtMap.getBukkitVersion().getVersion().getWallSign());
 			WallSign bd = (WallSign) easelLocation.getBlock().getBlockData();
 			bd.setFacing(getSignFacing(facing));
 			easelLocation.getBlock().setBlockData(bd, false);

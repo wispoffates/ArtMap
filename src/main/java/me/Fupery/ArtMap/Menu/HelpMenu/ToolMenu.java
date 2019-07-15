@@ -34,8 +34,8 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
         return new Button[]{
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back),
 		        new StaticButton(Material.AIR),
-                new StaticButton(Material.SIGN, Lang.Array.INFO_TOOLS.get()),
-		        new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, Material.ROSE_RED, Lang.Array.TOOL_DYE.get()),
+                new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_TOOLS.get()),
+		        new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, ArtMap.getBukkitVersion().getVersion().getRedDye(), Lang.Array.TOOL_DYE.get()),
                 new StaticButton(Material.BUCKET, Lang.Array.TOOL_PAINTBUCKET.get()),
                 new StaticButton(Material.COAL, Lang.Array.TOOL_COAL.get()),
                 new StaticButton(Material.FEATHER, Lang.Array.TOOL_FEATHER.get()),

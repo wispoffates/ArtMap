@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Command;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,7 +24,7 @@ abstract class AsyncCommand {
         }
 		String[] args = usage.replace("/art ", "").split("\\s+");
         maxArgs = args.length;
-        minArgs = maxArgs - StringUtils.countMatches(usage, "[");
+        minArgs = maxArgs - (usage.split("\\[").length-1);
         this.usage = usage;
     }
 

@@ -3,6 +3,8 @@ package me.Fupery.ArtMap.Utils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.bukkit.Material;
+
 public class VersionHandler {
 
 
@@ -19,8 +21,9 @@ public class VersionHandler {
         else if (version.isLessThan(1, 11)) return BukkitVersion.v1_10;
         else if (version.isLessThan(1, 12)) return BukkitVersion.v1_11;
         else if (version.isLessThan(1, 13)) return BukkitVersion.v1_12;
+        else if (version.isLessThan(1, 14)) return BukkitVersion.v1_13;
 		else
-			return BukkitVersion.V1_13;
+			return BukkitVersion.v1_14;
     }
 
     public static BukkitVersion getLatest() {
@@ -33,7 +36,7 @@ public class VersionHandler {
     }
 
     public enum BukkitVersion {
-		UNKNOWN, v1_8, v1_9, v1_10, v1_11, v1_12, V1_13;
+		UNKNOWN, v1_8, v1_9, v1_10, v1_11, v1_12, v1_13, v1_14;
 
         public boolean isGreaterThan(BukkitVersion version) {
             return ordinal() > version.ordinal();
@@ -85,6 +88,46 @@ public class VersionHandler {
 
         public double getSeatYOffset() {
             return this == v1_8 ? -2.22 : -2.24979;
+        }
+
+        public Material getWallSign() {
+            if( this == v1_14) {
+                return Material.getMaterial("OAK_WALL_SIGN", false);
+            } else {
+                return Material.getMaterial("WALL_SIGN", false);
+            }
+        }
+
+        public Material getSign() {
+            if( this == v1_14) {
+                return Material.getMaterial("OAK_SIGN", false);
+            } else {
+                return Material.getMaterial("SIGN", false);
+            }
+        }
+
+        public Material getRedDye() {
+            if( this == v1_14) {
+                return Material.getMaterial("RED_DYE", false);
+            } else {
+                return Material.getMaterial("ROSE_RED", false);
+            }
+        }
+
+        public Material getGreenDye() {
+            if( this == v1_14) {
+                return Material.getMaterial("GREEN_DYE", false);
+            } else {
+                return Material.getMaterial("CACTUS_GREEN", false);
+            }
+        }
+
+        public Material getYellowDye() {
+            if( this == v1_14) {
+                return Material.getMaterial("YELLOW_DYE", false);
+            } else {
+                return Material.getMaterial("DANDELION_YELLOW", false);
+            }
         }
 
     }

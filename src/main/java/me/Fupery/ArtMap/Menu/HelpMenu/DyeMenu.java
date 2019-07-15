@@ -3,8 +3,6 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Material;
-
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.DyeType;
@@ -23,7 +21,7 @@ public class DyeMenu extends ListMenu {
 	protected Button[] getListItems() {
 		List<Button> buttons = new ArrayList<>();
         ArtDye[] dyes = ArtMap.getDyePalette().getDyes(DyeType.DYE);
-		buttons.add(new StaticButton(Material.SIGN, Lang.Array.INFO_DYES.get()));
+		buttons.add(new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_DYES.get()));
 		// buttons[53] = new CloseButton();
 
 		for (ArtDye dye : dyes) {

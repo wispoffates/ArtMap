@@ -8,6 +8,7 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -80,14 +81,7 @@ class CommandImport extends AsyncCommand {
         sender.sendMessage(MessageFormat.format("{0} artworks available for import.", artToImport.size()));
         switch (args[1]) {
         case "-all":
-            for (ArtworkExport artImport : artToImport) {
-                try {
-                    artImport.importArtwork();
-                    sender.sendMessage("Successfully imported: " + artImport.toString());
-                } catch (Exception e) {
-                    sender.sendMessage("Failed imported: " + e.getMessage());
-                }
-            }
+            this.delayedImport(sender,artToImport);
             break;
         case "-artist":
             if (args.length < 4) {
@@ -96,16 +90,10 @@ class CommandImport extends AsyncCommand {
                 return;
             }
             UUID id = Bukkit.getPlayer(args[2]).getUniqueId();
-            artToImport.stream().filter(art -> {
+            List<ArtworkExport> byArtist = artToImport.stream().filter(art -> {
                 return art.getArtist().equals(id);
-            }).forEach(art -> {
-                try {
-                    art.importArtwork();
-                    sender.sendMessage("Successfully imported: " + art.toString());
-                } catch (Exception e) {
-                    sender.sendMessage("Failed imported: " + e.getMessage());
-                }
-            });
+            }).collect(Collectors.toList());
+            this.delayedImport(sender,byArtist);
             break;
         case "-title":
             if (args.length < 4) {
@@ -114,21 +102,29 @@ class CommandImport extends AsyncCommand {
                 return;
             }
             String title = args[2];
-            artToImport.stream().filter(art -> {
+            List<ArtworkExport> byTitle = artToImport.stream().filter(art -> {
                 return art.getTitle().equals(title);
-            }).forEach(art -> {
-                try {
-                    art.importArtwork();
-                    sender.sendMessage("Successfully imported: " + art.toString());
-                } catch (Exception e) {
-                    sender.sendMessage("Failed imported: " + e.getMessage());
-                }
-            });
+            }).collect(Collectors.toList());
+            this.delayedImport(sender,byTitle);
             break;
         default:
             // TODO: need usage
             msg.message = Lang.COMMAND_EXPORT.get();
         }
         sender.sendMessage("Import complete.");
+    }
+
+    //Slows the import down a bit to keep from lagging the main thread (10 per second)
+    private void delayedImport(CommandSender sender,List<ArtworkExport> arts) {
+        Bukkit.getScheduler().runTaskAsynchronously(ArtMap.instance(), () -> {
+            arts.forEach(art -> {
+                try {
+                    art.importArtwork(sender);
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // don't care
+                }
+            });
+        });
     }
 }

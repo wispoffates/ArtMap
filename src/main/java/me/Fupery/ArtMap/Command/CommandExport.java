@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +14,6 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -157,31 +157,42 @@ class CommandExport extends AsyncCommand {
             this.date = artwork.getDate();
 
             this.hash = map.getHash();
-            this.mapData = Base64.encodeBase64String(map.getCompressedMap());
+            this.mapData = Base64.getEncoder().encodeToString(map.getCompressedMap());
         }
 
         /**
          * Import this artwork in the database.
          * 
-         * @throws Exception If an artwork all ready exists in the database.
          */
-        public void importArtwork() throws Exception {
-            Map map = ArtMap.getArtDatabase().createMap();
-            CompressedMap cMap = new CompressedMap(map.getMapId(), this.hash, Base64.decodeBase64(this.mapData));
-            map.setMap(cMap.decompressMap(), true);
-            MapArt check = ArtMap.getArtDatabase().getArtwork(this.title);
-            if(check != null) {
-                //art with this title all ready exists see if its the same artwork (artist,and hash) otherwise increment name by 1
-                if(check.getArtist().equals(this.artist) && check.getMap().compress().getHash().equals(this.hash)) {
-                    //TODO: Find a better exception to use then base exception.
-                    throw new Exception("Artwork all ready in database. " + this.toString());
+        public void importArtwork(CommandSender sender) {
+            //1.14 requires create map to be run on the main thread!
+            Bukkit.getScheduler().runTask(ArtMap.instance(), ()->{
+                try {
+                    Map map = ArtMap.getArtDatabase().createMap();
+                    CompressedMap cMap = new CompressedMap(map.getMapId(), this.hash, Base64.getDecoder().decode(this.mapData));
+                    map.setMap(cMap.decompressMap(), true);
+                    MapArt check = ArtMap.getArtDatabase().getArtwork(this.title);
+                    if(check != null) {
+                        //art with this title all ready exists see if its the same artwork (artist,and hash) otherwise increment name by 1
+                        if(check.getArtist().equals(this.artist) && check.getMap().compress().getHash().equals(this.hash)) {
+                            throw new Exception("Artwok all ready in database");
+                        } 
+                        this.title = this.title + "_1";
+                    }
+                    //null artistname since its dropped when importing into the database. 
+                    MapArt mapArt = new MapArt(map.getMapId(), this.title, this.artist, null, this.date);
+                    ArtMap.getArtDatabase().getMapTable().addMap(cMap);
+                    ArtMap.getArtDatabase().getArtTable().addArtwork(mapArt);
+                    if(sender != null){
+                        sender.sendMessage(this.title + " :: Import Successful!");
+                    }
+                } catch(Exception e) {
+                    if(sender != null) {
+                        sender.sendMessage(this.title + " :: Import Failed! :: " + e.getMessage());
+                    }
+                    ArtMap.instance().getLogger().warning(this.title + " :: Import Failed! :: " + e.getMessage());
                 } 
-                this.title = this.title + "_1";
-            }
-            //null artistname since its dropped when importing into the database. 
-            MapArt mapArt = new MapArt(map.getMapId(), this.title, this.artist, null, this.date);
-            ArtMap.getArtDatabase().getMapTable().addMap(cMap);
-            ArtMap.getArtDatabase().getArtTable().addArtwork(mapArt);
+            });
         }
 
         @Override
