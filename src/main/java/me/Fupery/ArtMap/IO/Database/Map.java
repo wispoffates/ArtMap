@@ -74,7 +74,16 @@ public class Map {
 
     public void setRenderer(MapRenderer renderer) {
         MapView mapView = getMap();
-        mapView.getRenderers().forEach(mapView::removeRenderer);
+        if(mapView == null) {
+            ArtMap.instance().getLogger().warning("MapView is null! :: " + this.getMapId());
+            return;
+        }
+        if(mapView.getRenderers() != null) {
+            mapView.getRenderers().forEach(mapView::removeRenderer);
+        } else {
+            ArtMap.instance().getLogger().warning("MapView has no renderers! :: " + this.getMapId());
+        }
+        
         if (renderer != null) mapView.addRenderer(renderer);
     }
 
