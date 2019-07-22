@@ -17,34 +17,12 @@ class PlayerQuitListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-
-        if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
-            ArtMap.getArtistHandler().removePlayer(player);
-        }
-        if (ArtMap.getPreviewManager().isPreviewing(player)) {
-            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-			if (item != null && item.getType() == Material.FILLED_MAP) {
-                ArtMap.getPreviewManager().endPreview(player);
-            }
-        }
+        endPlayerArtSession(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
-        Player player = event.getPlayer();
-
-        if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
-            ArtMap.getArtistHandler().removePlayer(player);
-        }
-        if (ArtMap.getPreviewManager().isPreviewing(player)) {
-            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-			if (item != null && item.getType() == Material.FILLED_MAP) {
-                ArtMap.getPreviewManager().endPreview(player);
-            }
-        }
+        endPlayerArtSession(event.getPlayer());
     }
 
 	@EventHandler
@@ -53,10 +31,7 @@ class PlayerQuitListener implements RegisteredListener {
             return;
         }
         Player player = event.getEntity();
-        if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            ArtMap.getArtistHandler().removePlayer(player);
-        }
-        ArtMap.getPreviewManager().endPreview(player);
+        endPlayerArtSession(player);
     }
 
 	@EventHandler
@@ -65,32 +40,12 @@ class PlayerQuitListener implements RegisteredListener {
 			return;
 		}
 		Player player = Player.class.cast(event.getEntity());
-		if (ArtMap.getArtistHandler().containsPlayer(player)) {
-			ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
-			ArtMap.getArtistHandler().removePlayer(player);
-		}
-		if (ArtMap.getPreviewManager().isPreviewing(player)) {
-            ItemStack item = player.getInventory().getItemInMainHand();
-			if (item != null && item.getType() == Material.FILLED_MAP) {
-				ArtMap.getPreviewManager().endPreview(player);
-			}
-		}
+		endPlayerArtSession(player);
 	}
 
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
-        if (ArtMap.getArtistHandler().containsPlayer(event.getPlayer())) {
-            if (event.getPlayer().isInsideVehicle()) {
-				ArtMap.getArtistHandler().getCurrentSession(event.getPlayer()).removeKit(event.getPlayer());
-                ArtMap.getArtistHandler().removePlayer(event.getPlayer());
-            }
-        }
-		if (ArtMap.getPreviewManager().isPreviewing(event.getPlayer())) {
-            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-			if (item != null && item.getType() == Material.FILLED_MAP) {
-				ArtMap.getPreviewManager().endPreview(event.getPlayer());
-			}
-		}
+        endPlayerArtSession(event.getPlayer());
     }
 
     @Override
@@ -98,5 +53,24 @@ class PlayerQuitListener implements RegisteredListener {
         PlayerQuitEvent.getHandlerList().unregister(this);
         PlayerDeathEvent.getHandlerList().unregister(this);
         PlayerTeleportEvent.getHandlerList().unregister(this);
+    }
+
+    /**
+     * Convience method to end a players art sessions including removing artkit and previews.
+     * @param player The player who's session is ending.
+     */
+    public static void endPlayerArtSession(Player player) {
+        if (ArtMap.getArtistHandler().containsPlayer(player)) {
+            if (player.isInsideVehicle()) {
+				ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
+                ArtMap.getArtistHandler().removePlayer(player);
+            }
+        }
+		if (ArtMap.getPreviewManager().isPreviewing(player)) {
+            ItemStack item = player.getInventory().getItemInMainHand();
+			if (item != null && item.getType() == Material.FILLED_MAP) {
+				ArtMap.getPreviewManager().endPreview(player);
+			}
+		}
     }
 }

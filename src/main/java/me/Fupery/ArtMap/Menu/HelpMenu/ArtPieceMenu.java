@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -29,7 +30,6 @@ import net.wesjd.anvilgui.AnvilGUI;
 public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	private ArtistArtworksMenu parent;
 	private Player				viewer;
-	private boolean				adminViewing	= false;
 	private MapArt artwork;
 
 	public ArtPieceMenu(ArtistArtworksMenu parent, MapArt artwork, Player viewer) {
@@ -37,9 +37,6 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		this.parent = parent;
 		this.artwork = artwork;
 		this.viewer = viewer;
-		if (this.viewer.hasPermission("artmap.admin")) {
-			this.adminViewing = true;
-		}
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
@@ -66,10 +63,10 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	@Override
 	protected Button[] getListItems() {
 		List<Button> buttons = new ArrayList<>();
-		buttons.add(new PreviewButton(this, this.artwork, adminViewing));
-		if (this.adminViewing || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
-			buttons.add(new DeleteButton(this.parent, this.artwork, adminViewing));
-			buttons.add(new RenameButton(this.parent, this.artwork, adminViewing));
+		buttons.add(new PreviewButton(this, this.artwork, viewer));
+		if (this.viewer.hasPermission("artmap.admin") || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
+			buttons.add(new DeleteButton(this.parent, this.artwork));
+			buttons.add(new RenameButton(this.parent, this.artwork));
 		}
 
 		return buttons.toArray(new Button[0]);
@@ -80,14 +77,17 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private final MapArt artwork;
 		private final ArtPieceMenu artworkMenu;
 
-		private PreviewButton(ArtPieceMenu menu, MapArt artwork, boolean adminButton) {
+		private PreviewButton(ArtPieceMenu menu, MapArt artwork, Player player) {
 			super(Material.FILLED_MAP);
 			MapMeta meta = (MapMeta) artwork.getMapItem().getItemMeta();
 			meta.setMapId(artwork.getMapId());
 			List<String> lore = meta.getLore();
 			lore.add(HelpMenu.CLICK);
-			if (adminButton)
+			if (player.hasPermission("artmap.admin")) {
 				lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
+			} else if(artwork.getArtistPlayer().equals(player)){ 
+				lore.add(ChatColor.GOLD+Lang.RECIPE_PLAYER_MAP_COPY.get());
+			}
 			meta.setLore(lore);
 			setItemMeta(meta);
 			this.artwork = artwork;
@@ -118,7 +118,17 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 				if (player.hasPermission("artmap.admin")) {
 					SoundCompat.BLOCK_CLOTH_FALL.play(player);
 					ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
-				} else if (adminViewing) {
+				} else if (artwork.getArtistPlayer().equals(player)) {
+					if(player.getInventory().contains(Material.MAP)) {
+						//remove a map from the player
+						HashMap<Integer,? extends ItemStack> maps = player.getInventory().all(Material.MAP);
+						ItemStack map = maps.entrySet().iterator().next().getValue();
+						map.setAmount(map.getAmount()-1);
+						ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+					} else {
+						player.sendMessage(Lang.RECIPE_PLAYER_MAP_COPY_MISSING.get());
+					}
+				} else {
 					Lang.NO_PERM.send(player);
 				}
 			}
@@ -130,7 +140,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private final MapArt artwork;
 		private final ArtistArtworksMenu parent;
 
-		private DeleteButton(ArtistArtworksMenu parent, MapArt artwork, boolean adminButton) {
+		private DeleteButton(ArtistArtworksMenu parent, MapArt artwork) {
 			super(Material.REDSTONE);
 			ItemMeta meta = new ItemStack(Material.REDSTONE).getItemMeta();
 			meta.setDisplayName(HelpMenu.DELETE_NAME);
@@ -161,7 +171,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private final MapArt artwork;
 		private final ArtistArtworksMenu artworkMenu;
 
-		private RenameButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
+		private RenameButton(ArtistArtworksMenu menu, MapArt artwork) {
 			super(Material.WRITABLE_BOOK);
 			ItemMeta meta = new ItemStack(Material.REDSTONE).getItemMeta();
 			meta.setDisplayName(HelpMenu.RENAME_NAME);

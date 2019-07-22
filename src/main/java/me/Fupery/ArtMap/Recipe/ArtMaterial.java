@@ -4,14 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Config.Lang;
 
 public enum ArtMaterial {
 
-	EASEL, CANVAS, MAP_ART, PAINT_BUCKET, PAINT_BRUSH;
+	EASEL, CANVAS, MAP_ART, PAINT_BRUSH, COMPASS, COAL, FEATHER, PAINTBUCKET, SPONGE;
 
     private CustomItem artItem;
 
@@ -25,17 +22,28 @@ public enum ArtMaterial {
 
         MAP_ART.artItem = new ArtItem.ArtworkItem((short) -1, "Artwork", null, null);
 
-        PAINT_BUCKET.artItem = new ArtItem.DyeBucket(null) {
-            @Override
-            public void addRecipe() {
-                for (ArtDye d : ArtMap.getDyePalette().getDyes(DyeType.ALL)) {
-                    new ArtItem.DyeBucket(d).addRecipe();
-                }
-            }
-        };
-
 		PAINT_BRUSH.artItem = new ArtItem.CraftableItem("PAINT_BRUSH", Material.REDSTONE_TORCH, ArtItem.PAINT_BRUSH)
-				.name(Lang.RECIPE_PAINT_BRUSH_NAME).tooltip(Lang.Array.RECIPE_PAINT_BRUSH);
+                .name(Lang.RECIPE_PAINT_BRUSH_NAME).tooltip(Lang.Array.RECIPE_PAINT_BRUSH);
+                
+        COMPASS.artItem = new ArtItem.KitItem(Material.COMPASS, "COMPASS")
+                .name(Lang.ITEM_NAME_COMPASS)
+                .tooltip(Lang.Array.TOOL_COMPASS);
+
+        COAL.artItem = new ArtItem.KitItem(Material.COAL, "COAL")
+                .name(Lang.ITEM_NAME_COAL)
+                .tooltip(Lang.Array.TOOL_COAL);
+
+        FEATHER.artItem = new ArtItem.KitItem(Material.FEATHER, "FEATHER")
+                .name(Lang.ITEM_NAME_FEATHER)
+                .tooltip(Lang.Array.TOOL_FEATHER);
+
+        PAINTBUCKET.artItem = new ArtItem.KitItem(Material.BUCKET, "PAINTBUCKET")
+                .name(Lang.ITEM_NAME_PAINTBUCKET)
+                .tooltip(Lang.Array.TOOL_PAINTBUCKET);
+
+        SPONGE.artItem = new ArtItem.KitItem(Material.SPONGE, "SPONGE")
+                .name(Lang.ITEM_NAME_SPONGE)
+                .tooltip(Lang.Array.TOOL_SPONGE);
 
         for (ArtMaterial material : values()) material.artItem.addRecipe();
     }

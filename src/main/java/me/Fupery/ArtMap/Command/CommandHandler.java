@@ -37,6 +37,8 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("save", new CommandSave());
 
+		commands.put("break", new CommandBreak());
+
 		commands.put("delete", new CommandDelete());
 
 		commands.put("preview", new CommandPreview());

@@ -1,8 +1,6 @@
 package me.Fupery.ArtMap.Recipe;
 
 import static me.Fupery.ArtMap.Config.Lang.RECIPE_ARTWORK_ARTIST;
-import static me.Fupery.ArtMap.Config.Lang.RECIPE_PAINTBUCKET_NAME;
-import static me.Fupery.ArtMap.Config.Lang.Array.RECIPE_PAINTBUCKET;
 import static org.bukkit.ChatColor.DARK_GREEN;
 import static org.bukkit.ChatColor.GOLD;
 import static org.bukkit.ChatColor.ITALIC;
@@ -15,8 +13,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
@@ -25,7 +21,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Colour.Palette;
-import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
 public class ArtItem {
@@ -33,13 +28,12 @@ public class ArtItem {
     public static final String ARTWORK_TAG = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Player Artwork";
     public static final String CANVAS_KEY = ChatColor.AQUA.toString() + ChatColor.ITALIC + "ArtMap Canvas";
     public static final String EASEL_KEY = ChatColor.AQUA.toString() + ChatColor.ITALIC + "ArtMap Easel";
-    public static final String PAINT_BUCKET_KEY = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Paint Bucket";
     public static final String KIT_KEY = ChatColor.DARK_GRAY + "[ArtKit]";
     public static final String PREVIEW_KEY = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Preview Artwork";
     public static final String COPY_KEY = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Artwork Copy";
 	public static final String PAINT_BRUSH = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Paint Brush";
 
-	private static final char BULLET_POINT = '\u2022';
+	//private static final char BULLET_POINT = '\u2022';
 
 	private static WeakReference<List<ItemStack[]>> kitReference = new WeakReference<>(new LinkedList<>());
 
@@ -84,11 +78,12 @@ public class ArtItem {
 				itemStack[35] = next;
 			}
 
-			itemStack[29] = new KitItem(Material.FEATHER, ChatColor.BOLD + "Feather").toItemStack();
-			itemStack[30] = new KitItem(Material.COAL, ChatColor.GRAY.toString() + ChatColor.BOLD + "Coal").toItemStack();
-			itemStack[31] = new KitItem(Material.COMPASS, ChatColor.GOLD.toString() + ChatColor.BOLD + "Compass").toItemStack();
+			itemStack[29] = ArtMaterial.FEATHER.getItem();
+			itemStack[30] = ArtMaterial.COAL.getItem();
+			itemStack[31] = ArtMaterial.COMPASS.getItem();
 			itemStack[32] = ArtMaterial.PAINT_BRUSH.getItem();
-			itemStack[33] = ItemUtils.addKey(new DyeBucket(palette.getDefaultColour()).toItemStack(), KIT_KEY);
+			itemStack[33] = ArtMaterial.PAINTBUCKET.getItem();
+			itemStack[34] = ArtMaterial.SPONGE.getItem();
 			kitReference.get().add(itemStack);
 		}
 
@@ -102,53 +97,12 @@ public class ArtItem {
     static class CraftableItem extends CustomItem {
 
         public CraftableItem(String itemName, Material material, String uniqueKey) {
-            super(material, uniqueKey);
+            super(material, KIT_KEY, uniqueKey);
             try {
                 recipe(ArtMap.getRecipeLoader().getRecipe(itemName.toUpperCase()));
             } catch (RecipeLoader.InvalidRecipeException e) {
                 e.printStackTrace();
             }
-        }
-
-        @Override
-        public CustomItem name(Lang name) {
-            return super.name(ChatColor.YELLOW.toString() + BULLET_POINT + ChatColor.GOLD + ChatColor.BOLD + name.get() + ChatColor.YELLOW + BULLET_POINT);
-        }
-    }
-
-    public static class DyeBucket extends CustomItem {
-        DyeBucket(ArtDye dye) {
-            super(Material.BUCKET, bucketKey(dye));
-            if (dye == null) dye = ArtMap.getDyePalette().getDefaultColour();
-            name(bucketName(dye));
-            tooltip(RECIPE_PAINTBUCKET.get());
-            flag(ItemFlag.HIDE_ENCHANTS);
-            enchant(Enchantment.LUCK, 1);
-			recipe(new SimpleRecipe.Shapeless(dye.englishName().replace(" ", "_") + "_bucket")
-                    .add(Material.BUCKET)
-                    .add(new Ingredient.WrappedItem(dye.toItem())));
-        }
-
-        public static ArtDye getColour(ItemStack bucket) {
-            if (bucket.getType() == Material.BUCKET && bucket.hasItemMeta() && bucket.getItemMeta().hasLore()) {
-                ItemMeta meta = bucket.getItemMeta();
-                String key = meta.getLore().get(0);
-
-                for (ArtDye dye : ArtMap.getDyePalette().getDyes(DyeType.ALL)) {
-                    if (key.equals(bucketKey(dye))) {
-                        return dye;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private static String bucketKey(ArtDye dye) {
-            return dye == null ? PAINT_BUCKET_KEY : PAINT_BUCKET_KEY + ChatColor.GRAY + " [" + dye.rawName() + "]";
-        }
-
-        private static String bucketName(ArtDye dye) {
-            return String.format(ChatColor.YELLOW.toString() + BULLET_POINT + "%s" + ChatColor.BOLD + "%s" + ChatColor.YELLOW + BULLET_POINT, dye.getDisplayColour(), RECIPE_PAINTBUCKET_NAME.get());
         }
     }
 

@@ -1,18 +1,24 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
 import me.Fupery.ArtMap.Painting.Brush;
+import me.Fupery.ArtMap.Painting.CachedPixel;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class Flip extends Brush {
-    public Flip(CanvasRenderer canvas) {
-        super(canvas);
+    public Flip(CanvasRenderer canvas, Player player) {
+        super(canvas, player);
         cooldownMilli = 750;
     }
 
     @Override
-    public void paint(BrushAction action, ItemStack brush, long strokeTime) {
+    public List<CachedPixel> paint(BrushAction action, ItemStack brush, long strokeTime) {
         byte[][] buffer = getPixelBuffer();
 
         byte[][] matrix = new byte[buffer.length][];
@@ -36,6 +42,7 @@ public class Flip extends Brush {
                 }
             }
         }
+        return new ArrayList<CachedPixel>(); //since flip is reversible no need to worry about the undo buffer
     }
 
     @Override

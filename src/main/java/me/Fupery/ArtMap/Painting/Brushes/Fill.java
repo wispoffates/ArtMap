@@ -1,38 +1,47 @@
 package me.Fupery.ArtMap.Painting.Brushes;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Painting.Brush;
+import me.Fupery.ArtMap.Painting.CachedPixel;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 
 public class Fill extends Brush {
     private final ArrayList<CachedPixel> lastFill;
     private int axisLength;
+    private Dropper dropper;
 
-    public Fill(CanvasRenderer renderer) {
-        super(renderer);
+    public Fill(CanvasRenderer renderer, Player player, Dropper dropper) {
+        super(renderer, player);
         lastFill = new ArrayList<>();
         this.axisLength = getAxisLength();
+        this.dropper = dropper;
         cooldownMilli = 350;
     }
 
     @Override
-    public void paint(BrushAction action, ItemStack bucket, long strokeTime) {
+    public List<CachedPixel> paint(BrushAction action, ItemStack bucket, long strokeTime) {
 
         if (action == BrushAction.LEFT_CLICK) {
-            ItemMeta meta = bucket.getItemMeta();
+            ArtDye colour =ArtMap.getDyePalette().getDye(this.player.getInventory().getItemInOffHand());
 
-            if (!meta.hasLore()) {
-                return;
+            //handle fill with sponge in offhand
+            if(colour == null) {
+                ItemStack offhand = this.player.getInventory().getItemInOffHand();
+                if(offhand != null && dropper.checkMaterial(offhand) && dropper.getColour() != null) {
+                    clean();
+                    fillPixel(dropper.getColour());
+                    return this.lastFill;
+                }
             }
-            ArtDye colour = ArtItem.DyeBucket.getColour(bucket);
-
+            
             if (colour != null) {
                 clean();
                 fillPixel(colour);
@@ -40,14 +49,15 @@ public class Fill extends Brush {
 
         } else if (lastFill.size() > 0) {
             for (CachedPixel cachedPixel : lastFill) {
-                addPixel(cachedPixel.x, cachedPixel.y, cachedPixel.colour);
+                addPixel(cachedPixel.x, cachedPixel.y, cachedPixel.dye);
             }
         }
+        return this.lastFill;
     }
 
     @Override
     public boolean checkMaterial(ItemStack bucket) {
-        return ArtItem.DyeBucket.getColour(bucket) != null;
+        return bucket.getType() == Material.BUCKET;
     }
 
     @Override
@@ -63,6 +73,19 @@ public class Fill extends Brush {
             final boolean[][] coloured = new boolean[axisLength][axisLength];
             final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour.getDyeColour(clickedColour);
+
+            ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
+        }
+    }
+
+    private void fillPixel(byte colour) {
+        final byte[] pixel = getCurrentPixel();
+
+        if (pixel != null) {
+
+            final boolean[][] coloured = new boolean[axisLength][axisLength];
+            final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
+            final byte setColour = colour;
 
             ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
@@ -91,28 +114,5 @@ public class Fill extends Brush {
         fillBucket(coloured, x + 1, y, sourceColour, newColour);
         fillBucket(coloured, x, y - 1, sourceColour, newColour);
         fillBucket(coloured, x, y + 1, sourceColour, newColour);
-    }
-
-    private static class CachedPixel {
-        final int x, y;
-        final byte colour;
-
-        CachedPixel(int x, int y, byte colour) {
-            this.x = x;
-            this.y = y;
-            this.colour = colour;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof CachedPixel)) return false;
-            CachedPixel cachedPixel = (CachedPixel) obj;
-            return cachedPixel.x == x && cachedPixel.y == y && cachedPixel.colour == colour;
-        }
-
-		@Override
-		public int hashCode() {
-			return super.hashCode();
-		}
     }
 }

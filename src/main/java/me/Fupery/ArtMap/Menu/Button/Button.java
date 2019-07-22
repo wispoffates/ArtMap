@@ -40,7 +40,13 @@ public abstract class Button extends ItemStack {
 		ItemMeta meta = getItemMeta();
 		meta.setDisplayName(text);
 		setItemMeta(meta);
-	}
+    }
+    
+    public Button(ItemStack item) {
+        super(item.getType());
+        setItemMeta(item.getItemMeta());
+    }
+    
     public abstract void onClick(Player player, ClickType clickType);
 
 }

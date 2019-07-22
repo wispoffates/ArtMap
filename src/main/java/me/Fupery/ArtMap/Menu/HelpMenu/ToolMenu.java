@@ -14,6 +14,7 @@ import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.LinkedButton;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
 
 public class ToolMenu extends BasicMenu implements ChildMenu {
 
@@ -36,10 +37,11 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
 		        new StaticButton(Material.AIR),
                 new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_TOOLS.get()),
 		        new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, ArtMap.getBukkitVersion().getVersion().getRedDye(), Lang.Array.TOOL_DYE.get()),
-                new StaticButton(Material.BUCKET, Lang.Array.TOOL_PAINTBUCKET.get()),
-                new StaticButton(Material.COAL, Lang.Array.TOOL_COAL.get()),
-                new StaticButton(Material.FEATHER, Lang.Array.TOOL_FEATHER.get()),
-                new StaticButton(Material.COMPASS, Lang.Array.TOOL_COMPASS.get())
+                new StaticButton(ArtMaterial.PAINTBUCKET.getItem()),
+                new StaticButton(ArtMaterial.COAL.getItem()),
+                new StaticButton(ArtMaterial.FEATHER.getItem()),
+                new StaticButton(ArtMaterial.COMPASS.getItem()),
+                new StaticButton(ArtMaterial.SPONGE.getItem())
         };
     }
 }

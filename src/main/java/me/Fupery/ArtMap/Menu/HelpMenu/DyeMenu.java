@@ -3,6 +3,9 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.DyeType;
@@ -25,8 +28,31 @@ public class DyeMenu extends ListMenu {
 		// buttons[53] = new CloseButton();
 
 		for (ArtDye dye : dyes) {
-			buttons.add(new StaticButton(dye.toItem()));
+			buttons.add(new DyeButton(dye));
         }
 		return buttons.toArray(new Button[0]);
-    }
+	}
+
+	private static class DyeButton extends Button {
+
+		private ArtDye dye;
+
+		public DyeButton(ArtDye dye) {
+			super(dye.toItem());
+			this.dye = dye;
+		}
+
+		@Override
+		public void onClick(Player player, ClickType clickType) {
+			if(!player.hasPermission("artmap.admin")) {
+				return;
+			}
+			if(clickType.isRightClick()) {
+				player.getInventory().addItem(dye.toItem());
+			} else {
+				player.getOpenInventory().setCursor(dye.toItem());
+			}
+		}
+		
+	}
 }

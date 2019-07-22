@@ -199,20 +199,15 @@ public class Reflection {
 		int centerX, centerZ;
 
         try {
-            Object worldMap = getField(mapView, "worldMap");
-            //centerX = (int) getField(worldMap, "centerX");
-            //centerZ = (int) getField(worldMap, "centerZ");
             centerX = mapView.getCenterX();
             centerZ = mapView.getCenterZ();
-			// map = (byte) getField(worldMap, "map");
 
-        } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
+        } catch (SecurityException
+                | IllegalArgumentException  e) {
             return false;
         }
         return (centerX == -999999
 		        && centerZ == -999999);
-		// && map == 5);
     }
 
     public static void setWorldMap(MapView mapView, byte[] colors) {
@@ -221,9 +216,6 @@ public class Reflection {
             mapView.setCenterZ(-999999);
             
             Object worldMap = getField(mapView, "worldMap");
-            //setField(worldMap, "centerX", -999999);
-            //setField(worldMap, "centerZ", -999999);
-			//setField(worldMap, "map", (byte) 5); //probably was the dimension? which is DimensionManager now
             setField(worldMap, "colors", colors);
 
         } catch (NoSuchFieldException | SecurityException

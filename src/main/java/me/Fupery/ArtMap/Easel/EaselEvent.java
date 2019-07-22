@@ -91,8 +91,9 @@ public final class EaselEvent {
 
 		case SHIFT_RIGHT_CLICK:
 			if (easel.hasItem()) {
-					ArtMap.getArtDatabase().recycleMap(new Map(ItemUtils.getMapID(easel.getItem())));
-				easel.removeItem();
+				this.player.sendMessage(Lang.SAVE_ARTWORK.get());
+				this.player.sendMessage(Lang.SAVE_ARTWORK_2.get());
+				return;
 			}
 			easel.breakEasel();
 		}

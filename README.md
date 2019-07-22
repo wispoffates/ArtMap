@@ -4,6 +4,35 @@
 PLEASE HAVE BACKUPS! 1.14 support required some changes around how Art is stored so please, please have Art.db backed up.
 Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+).
 
+## Release 3.3.0
+### Warning
+* Artmap is not compatible with 1.14.4 yet!
+    - Everything looks to work but saving with the paint brush will crash the server!
+    - I will make another release when anvil gui fixes compatibility.
+
+### Major Changes
+* Paint Bukkit is no longer craftable.  
+    - Instead use a regular bukkit in the main hand the dye you want to fill with in the offhand.
+    - There have been too many exploits with the crafting of paint bukkets and duplicating items this neatly removes that problem.
+    - Now allows players in creative mode to more easily use paint buckets without leaving the easel to craft them.
+* Added Eye Dropper Tool.
+    - Using a sponge left click the colour you would like to pick up. Then right click to draw with the color.
+    - Allows easy copy of shades.
+    - Usable with the paint bucket to fill with a shade.
+* Admin's can now right click dyes in the dye menu to receive a copy of the dye.
+* Players can now obtain a copy of their own artwork by right clicking on it in the preview menu.  It cost them one empty map just like using a crafting table would.
+
+### Minor Changes
+* Lots of cleanup to the English Language file.
+    - Try to make sure tooltips won't go off screen even on huge GUI configurations.
+    - Made more text able to be changed via the language files.
+    - If you are using a custom lang.yml I suggest comparing to the new lang.yml to pickup changes.
+    - If anyone has updates to the other languages files please sumbit an issue and I will have the updated or added as soon as possible.
+* Fixed help menu back buttons sometimes being invisible.
+* Fixed a few duplication and stealing from artkit bugs.
+* Add '/art break' if a player really wants to break and easel and reset the artwork.
+    - Prevents accidental easel breaks.
+
 ## Move to Gitlab
 I've moved this project to gitlab https://gitlab.com/BlockStack/ArtMap.  Mirroring has been setup so all commits should be available to fork on github.  But please submit issues on Gitlab.
 
@@ -26,10 +55,7 @@ User guide at [ArtMap Wiki](https://gitlab.com/BlockStack/ArtMap/wikis/home).
 ### Permissions Nodes
 * artmap.artist - allows players to use artmap
 * artmap.admin - grants administrative override/deletion priveleges
-
-### Config
-The following values are configurable
-* Canvas resolution
+* artmap.artkit - Will give players access to all dyes when seated at an easel and the config option forceartkit is set to true.
 
 ### NOTE
 Use a plugin manager to reload your server whenever you update ArtMap - the Spigot reload command will freak out and throw a bunch of exceptions.

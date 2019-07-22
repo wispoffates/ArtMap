@@ -12,6 +12,7 @@ commands:
       aliases: artmap
       usage:  |
         <command> save <title> : Save your artwork
+        <command> break : Remove current artwork and break easel
         <command> delete <title> : Remove your artwork
         <command> preview <title> : Preview an artwork
         <command> help : Display help

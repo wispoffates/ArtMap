@@ -71,7 +71,7 @@ public abstract class ListMenu extends CacheableMenu {
             buttons[0] = new PageButton(false);
 
             if (page > 0) {
-                buttons[0].setAmount(page - 1);
+                buttons[0].setAmount(page);
             }
         }
         if (listItems == null || listItems.length < 1) return buttons;

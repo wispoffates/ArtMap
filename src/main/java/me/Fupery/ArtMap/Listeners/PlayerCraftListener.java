@@ -1,22 +1,16 @@
 package me.Fupery.ArtMap.Listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.Event.PlayerCraftArtMaterialEvent;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
 class PlayerCraftListener implements RegisteredListener {
@@ -42,41 +36,7 @@ class PlayerCraftListener implements RegisteredListener {
                     event.setCancelled(true);
                 }
             }
-            //return the old dye from a crafted paintbucket
-        } else if (ArtMaterial.PAINT_BUCKET.isValidMaterial(result)) {
-            PlayerCraftArtMaterialEvent craftEvent = new PlayerCraftArtMaterialEvent(event, ArtMaterial.PAINT_BUCKET);
-            Bukkit.getPluginManager().callEvent(craftEvent);
-            if (craftEvent.isCancelled()) return;
-            boolean kitItem = false;
-
-            //check if any items involved are from an ArtKit - if so, tag the results of the craft
-            for (ItemStack ingredient : event.getInventory().getMatrix()) {
-                if (ItemUtils.hasKey(ingredient, ArtItem.KIT_KEY)) {
-                    kitItem = true;
-                    break;
-                }
-            }
-            boolean craftSuccess = true;
-            if (event.getClick() == ClickType.NUMBER_KEY) {
-                ItemStack slot = event.getWhoClicked().getInventory().getContents()[event.getHotbarButton()];
-                craftSuccess = (slot == null || slot.getType() == Material.AIR);
-            }
-			if (craftSuccess && event.getCursor() != null && event.getCursor().getType() == Material.AIR) {
-                for (ItemStack ingredient : event.getInventory().getMatrix()) {
-                    if (ArtMaterial.PAINT_BUCKET.isValidMaterial(ingredient)) {
-                        ArtDye dye = ArtItem.DyeBucket.getColour(ingredient);
-                        if (dye == null) continue;
-                        ItemStack previousDye = dye.toItem();
-                        if (kitItem) previousDye = ItemUtils.addKey(previousDye, ArtItem.KIT_KEY);
-                        ItemUtils.giveItem((Player) event.getWhoClicked(), previousDye);
-                    }
-                }
-            }
-            if (kitItem) {
-                ItemStack newResult = ItemUtils.addKey(result, ArtItem.KIT_KEY);
-                event.setCurrentItem(newResult);
-            }
-        }
+        } 
     }
 
     private void onShiftClick(ItemStack artworkItem, Player player, CraftItemEvent event) {

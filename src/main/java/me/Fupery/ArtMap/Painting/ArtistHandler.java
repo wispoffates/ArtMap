@@ -91,7 +91,7 @@ public class ArtistHandler {
 	}
 
 	public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset) {
-		ArtSession session = new ArtSession(easel, map, yawOffset);
+		ArtSession session = new ArtSession(player, easel, map, yawOffset);
 		if (session.start(player) && ArtMap.getProtocolManager().PACKET_RECIEVER.injectPlayer(player)) {
 			artists.put(player.getUniqueId(), session);
 			session.setActive(true);

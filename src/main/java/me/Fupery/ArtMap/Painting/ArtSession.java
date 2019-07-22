@@ -10,6 +10,7 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
 import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.Painting.Brushes.Dropper;
 import me.Fupery.ArtMap.Painting.Brushes.Dye;
 import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
@@ -21,6 +22,7 @@ public class ArtSession {
     private final Brush DYE;
     private final Brush FILL;
     private final Brush FLIP;
+    private final Brush DROPPER;
     private final Easel easel;
     private final Map map;
     private Brush currentBrush;
@@ -30,14 +32,15 @@ public class ArtSession {
     private boolean dirty = true;
 	private int artkitPage = 0;
 
-    ArtSession(Easel easel, Map map, int yawOffset) {
+    ArtSession(Player player, Easel easel, Map map, int yawOffset) {
         this.easel = easel;
         canvas = new CanvasRenderer(map, yawOffset);
         currentBrush = null;
         lastStroke = System.currentTimeMillis();
-        DYE = new Dye(canvas);
-        FILL = new Fill(canvas);
-        FLIP = new Flip(canvas);
+        DYE = new Dye(canvas,player);
+        DROPPER = new Dropper(canvas,player);
+        FILL = new Fill(canvas,player, (Dropper) DROPPER);
+        FLIP = new Flip(canvas,player);
         this.map = map;
     }
 
@@ -83,7 +86,7 @@ public class ArtSession {
     }
 
     private Brush getBrushType(ItemStack item) {
-        for (Brush brush : new Brush[]{DYE, FILL, FLIP}) {
+        for (Brush brush : new Brush[]{DYE, FILL, FLIP, DROPPER}) {
             if (brush.checkMaterial(item)) {
                 return brush;
             }
@@ -149,7 +152,10 @@ public class ArtSession {
 			 * player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
 			 * inventory = null; return true; }
 			 */
-
+            //clear item on cursor
+            if(player.getOpenInventory() != null) {
+                player.getOpenInventory().setCursor(null);
+            }
             player.getInventory().setContents(inventory);
             inventory = null;
             return true;

@@ -63,7 +63,7 @@ public class BasicPalette implements Palette {
 	        GUNPOWDER	= new BasicDye(DYE_GUNPOWDER.get(), "GUNPOWDER", 22, ChatColor.GRAY, Material.GUNPOWDER),
 	        CYAN 		= new BasicDye(DYE_CYAN.get(), "CYAN", 23, ChatColor.DARK_AQUA, Material.CYAN_DYE),
 	        PURPLE 		= new BasicDye(DYE_PURPLE.get(), "PURPLE", 24, ChatColor.DARK_PURPLE, Material.PURPLE_DYE),
-	        BLUE 		= new BasicDye(DYE_BLUE.get(), "BLUE", 25, ChatColor.DARK_BLUE, Material.LAPIS_LAZULI),
+	        BLUE 		= new BasicDye(DYE_BLUE.get(), "BLUE", 25, ChatColor.BLUE, Material.LAPIS_LAZULI),
 	        BROWN 		= new BasicDye(DYE_BROWN.get(), "BROWN", 26, ChatColor.DARK_RED, Material.COCOA_BEANS),
 	        GREEN 		= new BasicDye(DYE_GREEN.get(), "GREEN", 27, ChatColor.DARK_GREEN, ArtMap.getBukkitVersion().getVersion().getGreenDye()),
 			BRICK		= new BasicDye(Lang.DYE_BRICK.get(), "BRICK", 28, ChatColor.RED, Material.BRICK), // new
@@ -85,7 +85,7 @@ public class BasicPalette implements Palette {
 			LIGHT_GRAY_TERRACOTTA = new BasicDye(Lang.DYE_LIGHT_GRAY_TERRACOTTA.get(), "LIGHT_GRAY_TERRACOTTA", 44, ChatColor.DARK_GRAY, Material.BROWN_MUSHROOM), // new
 			CYAN_TERRACOTTA 	= new BasicDye(Lang.DYE_CYAN_TERRACOTTA.get(), "CYAN_TERRACOTTA", 45, ChatColor.AQUA, Material.IRON_NUGGET), // new
 			PURPLE_TERRACOTTA 	= new BasicDye(Lang.DYE_PURPLE_TERRACOTTA.get(), "PURPLE_TERRACOTTA", 46, ChatColor.LIGHT_PURPLE, Material.CHORUS_FRUIT), // new
-			BLUE_TERRACOTTA 	= new BasicDye(Lang.DYE_BLUE_TERRACOTTA.get(), "BLUE_TERRACOTTA", 47, ChatColor.DARK_BLUE, Material.PURPUR_BLOCK), // new
+			BLUE_TERRACOTTA 	= new BasicDye(Lang.DYE_BLUE_TERRACOTTA.get(), "BLUE_TERRACOTTA", 47, ChatColor.LIGHT_PURPLE, Material.PURPUR_BLOCK), // new
 	        BROWN_TERRACOTTA 	= new BasicDye(Lang.DYE_BROWN_TERRACOTTA.get(), "BROWN_TERRACOTTA", 48, ChatColor.DARK_GRAY, Material.COARSE_DIRT),									// new
 			GREEN_TERRACOTTA 	= new BasicDye(Lang.DYE_GREEN_TERRACOTTA.get(), "GREEN_TERRACOTTA", 49, ChatColor.GREEN, Material.POISONOUS_POTATO), // new
 			RED_TERRACOTTA 		= new BasicDye(Lang.DYE_RED_TERRACOTTA.get(), "RED_TERRACOTTA", 50, ChatColor.RED, Material.APPLE), // new
