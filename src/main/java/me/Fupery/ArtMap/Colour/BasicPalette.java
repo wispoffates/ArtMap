@@ -86,7 +86,7 @@ public class BasicPalette implements Palette {
 			CYAN_TERRACOTTA 	= new BasicDye(Lang.DYE_CYAN_TERRACOTTA.get(), "CYAN_TERRACOTTA", 45, ChatColor.AQUA, Material.IRON_NUGGET), // new
 			PURPLE_TERRACOTTA 	= new BasicDye(Lang.DYE_PURPLE_TERRACOTTA.get(), "PURPLE_TERRACOTTA", 46, ChatColor.LIGHT_PURPLE, Material.CHORUS_FRUIT), // new
 			BLUE_TERRACOTTA 	= new BasicDye(Lang.DYE_BLUE_TERRACOTTA.get(), "BLUE_TERRACOTTA", 47, ChatColor.LIGHT_PURPLE, Material.PURPUR_BLOCK), // new
-	        BROWN_TERRACOTTA 	= new BasicDye(Lang.DYE_BROWN_TERRACOTTA.get(), "BROWN_TERRACOTTA", 48, ChatColor.DARK_GRAY, Material.COARSE_DIRT),									// new
+	        BROWN_TERRACOTTA 	= new BasicDye(Lang.DYE_BROWN_TERRACOTTA.get(), "BROWN_TERRACOTTA", 48, ChatColor.DARK_GRAY, Material.PODZOL),									// new
 			GREEN_TERRACOTTA 	= new BasicDye(Lang.DYE_GREEN_TERRACOTTA.get(), "GREEN_TERRACOTTA", 49, ChatColor.GREEN, Material.POISONOUS_POTATO), // new
 			RED_TERRACOTTA 		= new BasicDye(Lang.DYE_RED_TERRACOTTA.get(), "RED_TERRACOTTA", 50, ChatColor.RED, Material.APPLE), // new
 	        BLACK_TERRACOTTA 	= new BasicDye(Lang.DYE_BLACK_TERRACOTTA.get(), "BLACK_TERRACOTTA", 51, ChatColor.DARK_GRAY, Material.CHARCOAL),										// new
@@ -126,6 +126,16 @@ public class BasicPalette implements Palette {
 			return concatenate(dyes, tools);
 		else
 			return null;
+	}
+
+	public ArtDye getDye(byte colour) {
+		for(ArtDye dye : dyes) {
+			byte base = ((BasicDye)dye).getColour();
+			if(colour>=(base-1) && colour<=(base+2)) {
+				return dye;
+			}
+		}
+		return getDefaultColour();
 	}
 
 	public ArtDye[] concatenate(ArtDye[] a, ArtDye[] b) {

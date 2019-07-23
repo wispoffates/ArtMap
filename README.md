@@ -4,12 +4,19 @@
 PLEASE HAVE BACKUPS! 1.14 support required some changes around how Art is stored so please, please have Art.db backed up.
 Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+) along with continued 1.13 support.
 
-## Release 3.3.0
-### Warning
+## Warning
 * Artmap is not compatible with 1.14.4 yet!
     - Everything looks to work but saving with the paint brush will crash the server!
     - I will make another release when anvil gui fixes compatibility.
 
+## Release 3.3.1
+* Artkit now saves hotbar during current login session.
+    - This works across different easels.
+    - Clears on logout or server restart in case something breaks.
+* Eye Dropper now prints out base dye plus the byte code for easier shade matching on other eisels.
+* Fixed mismatch by making Coarse Dirt -> Podzol.
+
+## Release 3.3.0
 ### Major Changes
 * Paint Bukkit is no longer craftable.  
     - Instead use a regular bukkit in the main hand the dye you want to fill with in the offhand.

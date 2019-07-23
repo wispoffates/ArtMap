@@ -1,10 +1,14 @@
 package me.Fupery.ArtMap.Painting;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
@@ -28,6 +32,8 @@ public class ArtSession {
     private Brush currentBrush;
     private long lastStroke;
     private ItemStack[] inventory;
+    private static final HashMap<UUID,ItemStack[]> artkitHotbars = new HashMap<>(); 
+    
     private boolean active = false;
     private boolean dirty = true;
 	private int artkitPage = 0;
@@ -108,7 +114,15 @@ public class ArtSession {
 		 * player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
 		 */
 		this.inventory = inventory.getContents();
-		inventory.setStorageContents(ArtItem.getArtKit(0));
+        inventory.setStorageContents(ArtItem.getArtKit(0));
+        //restore hotbar
+        if(artkitHotbars.containsKey(player.getUniqueId())) {
+            ItemStack[] hotbar = artkitHotbars.get(player.getUniqueId());
+            for(int i=0;i<9;i++) {
+                player.getInventory().setItem(i,hotbar[i]);
+            }
+            player.getInventory().setItemInOffHand(hotbar[9]);
+        }
     }
 
 	public void nextKitPage(Player player) {
@@ -152,6 +166,13 @@ public class ArtSession {
 			 * player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
 			 * inventory = null; return true; }
 			 */
+            //save hotbar + offhand
+            ItemStack[] hotbar = new ItemStack[10];
+            for(int i=0;i<9;i++) {
+                hotbar[i] = player.getInventory().getItem(i);
+            }
+            hotbar[9] = player.getInventory().getItemInOffHand();
+            artkitHotbars.put(player.getUniqueId(), hotbar);
             //clear item on cursor
             if(player.getOpenInventory() != null) {
                 player.getOpenInventory().setCursor(null);
@@ -161,6 +182,14 @@ public class ArtSession {
             return true;
         }
 		return false;
+    }
+
+    /**
+     * Clear a players hotbar save.  For instance on logout.
+     * @param player The player to remove.
+     */
+    public static void clearHotbar(Player player) {
+        artkitHotbars.remove(player.getUniqueId());
     }
 
 	/**

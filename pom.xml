@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.3.0</version>
+	<version>3.3.1</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -152,7 +152,7 @@
 		<dependency>
 			<groupId>net.wesjd</groupId>
 			<artifactId>anvilgui</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>1.2.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--COMPATABILITY DEPENDENCIES -->

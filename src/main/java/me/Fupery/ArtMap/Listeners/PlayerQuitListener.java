@@ -12,17 +12,20 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Painting.ArtSession;
 
 class PlayerQuitListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         endPlayerArtSession(event.getPlayer());
+        ArtSession.clearHotbar(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
         endPlayerArtSession(event.getPlayer());
+        ArtSession.clearHotbar(event.getPlayer());
     }
 
 	@EventHandler
