@@ -9,6 +9,10 @@ Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+) 
     - Everything looks to work but saving with the paint brush will crash the server!
     - I will make another release when anvil gui fixes compatibility.
 
+## Release 3.3.2
+* Fixed user disconnect on Dropper tool use.
+* Removed NMS dependency which should make compiling a bit easier
+
 ## Release 3.3.1
 * Artkit now saves hotbar during current login session.
     - This works across different easels.
