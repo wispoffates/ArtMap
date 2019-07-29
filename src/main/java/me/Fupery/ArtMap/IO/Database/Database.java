@@ -54,12 +54,13 @@ public final class Database {
         database = new SQLiteDatabase(new File(plugin.getDataFolder(), "Art.db"));
         if (!database.initialize(artworks = new ArtTable(database), maps = new MapTable(database))) return null;
         Database db = new Database(plugin, database, artworks, maps);
+        /*
         try {
             db.loadArtworks();
         } catch (Exception e) {
             ErrorLogger.log(e, "Error Loading ArtMap Database");
             return null;
-        }
+        }*/
         return db;
     }
 
@@ -67,7 +68,7 @@ public final class Database {
         return artworks.getArtwork(title);
     }
 
-    public MapArt getArtwork(short id) {
+    public MapArt getArtwork(int id) {
         return artworks.getArtwork(id);
     }
 
@@ -170,7 +171,7 @@ public final class Database {
 		return art;
 	}
 
-
+    /*
     private void loadArtworks() {
         ArtMap.getScheduler().runSafely(() -> {
             int artworksRestored = 0;
@@ -182,6 +183,7 @@ public final class Database {
 				        .info(artworksRestored + " corrupted artworks were restored. More info at https://gitlab.com/BlockStack/ArtMap/wikis/Common-Errors");
         });
     }
+    */
 
     public ArtTable getArtTable() {
         return artworks;
@@ -197,7 +199,7 @@ public final class Database {
     }
 
     public Map createMap() {
-        Short id = idQueue.poll();
+        Integer id = idQueue.poll();
         MapView mapView = null;
         if (id != null && getArtwork(id) == null) {
             mapView = getMap(id);
@@ -232,6 +234,7 @@ public final class Database {
             int oldMapHash = Arrays.hashCode(data);
             if (maps.containsMap(map.getMapId())
                     && maps.getHash(map.getMapId()) != oldMapHash) {
+                ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
                 map.setMap(data);
             }
         });
@@ -244,7 +247,7 @@ public final class Database {
 			// spicy map necromancy
 			ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is missing! Restoring data file...");
 
-			short topMapId = Map.getNextMapId();
+			int topMapId = Map.getNextMapId();
 			if (topMapId == -1 || topMapId < mapId.getId()) {
 				ArtMap.instance().getLogger()
 						.warning(String.format(
@@ -287,7 +290,7 @@ public final class Database {
         });
     }
 
-    public MapView getMap(short mapId) {
+    public MapView getMap(int mapId) {
         return Bukkit.getMap(mapId);
     }
 

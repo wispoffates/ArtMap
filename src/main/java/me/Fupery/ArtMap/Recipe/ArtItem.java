@@ -107,7 +107,7 @@ public class ArtItem {
     }
 
     public static class ArtworkItem extends CustomItem {
-        public ArtworkItem(short id, String title, String artistName, String date) {
+        public ArtworkItem(int id, String title, String artistName, String date) {
 			super(new ItemStack(Material.FILLED_MAP), ARTWORK_TAG);
 			MapMeta meta = (MapMeta) this.stack.get().getItemMeta();
 			meta.setMapId(id);

@@ -41,7 +41,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET id=? WHERE id=?;");
     }
 
-    public boolean deleteMap(short mapId) {
+    public boolean deleteMap(int mapId) {
         return new QueuedStatement() {
 
             @Override
@@ -51,7 +51,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
     }
 
-    public boolean containsMap(short mapId) {
+    public boolean containsMap(int mapId) {
         return new QueuedQuery<Boolean>() {
             @Override
             protected void prepare(PreparedStatement statement) throws SQLException {
@@ -76,7 +76,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET hash=?, map=? WHERE id=?;");
     }
 
-    public CompressedMap getMap(short mapId) {
+    public CompressedMap getMap(int mapId) {
         return new QueuedQuery<CompressedMap>() {
 
             @Override
@@ -87,7 +87,7 @@ public final class MapTable extends SQLiteTable {
             @Override
 			protected CompressedMap read(ResultSet set) throws SQLException {
                 if (!set.next()) return null;
-                short id = (short) set.getInt("id");
+                int id = set.getInt("id");
                 int hash = set.getInt("hash");
                 byte[] map = set.getBytes("map");
                 return new CompressedMap(id, hash, map);
@@ -95,7 +95,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
     }
 
-    public Integer getHash(short mapId) {
+    public Integer getHash(int mapId) {
         return new QueuedQuery<Integer>() {
 
             @Override
@@ -122,7 +122,7 @@ public final class MapTable extends SQLiteTable {
 			protected List<MapId> read(ResultSet set) throws SQLException {
                 List<MapId> mapHashes = new ArrayList<>();
                 while (set.next()) {
-                    mapHashes.add(new MapId((short) set.getInt("id"), set.getInt("hash")));
+                    mapHashes.add(new MapId(set.getInt("id"), set.getInt("hash")));
                 }
                 return mapHashes;
             }

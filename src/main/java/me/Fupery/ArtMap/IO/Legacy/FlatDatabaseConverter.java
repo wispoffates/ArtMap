@@ -54,7 +54,7 @@ public class FlatDatabaseConverter {
         for (String title : artworks.getKeys(false)) {
             ConfigurationSection map = artworks.getConfigurationSection(title);
             if (map != null) {
-                short mapIDValue = (short) map.getInt("mapID");
+                int mapIDValue = map.getInt("mapID");
                 OfflinePlayer player = (map.contains("artist")) ?
                         Bukkit.getOfflinePlayer(UUID.fromString(map.getString("artist"))) : null;
                 String date = map.getString("date");

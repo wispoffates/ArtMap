@@ -120,7 +120,7 @@ class CommandImport extends AsyncCommand {
             arts.forEach(art -> {
                 try {
                     art.importArtwork(sender);
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     // don't care
                 }

@@ -42,12 +42,12 @@ public class ItemUtils {
 	 * @param item The Map Item to get the id of.
 	 * @return The ID of the map or -1 if something went wrong.
 	 */
-	public static short getMapID(ItemStack item) {
+	public static int getMapID(ItemStack item) {
 		if (item.getType() != Material.FILLED_MAP) {
 			return -1;
 		}
 
 		MapMeta meta = (MapMeta) item.getItemMeta();
-		return (short) meta.getMapId();
+		return meta.getMapId();
 	}
 }

@@ -22,13 +22,13 @@ import me.Fupery.ArtMap.Utils.ItemUtils;
  */
 public class Canvas {
 
-	protected short mapId;
+	protected int mapId;
 
     public Canvas(Map map) {
 		this(map.getMapId());
     }
 
-	protected Canvas(short mapId) {
+	protected Canvas(int mapId) {
 		this.mapId = mapId;
     }
 
@@ -37,7 +37,7 @@ public class Canvas {
 			return null;
 
 		MapMeta meta = (MapMeta) item.getItemMeta();
-		short mapId = (short) meta.getMapId();
+		int mapId = meta.getMapId();
 		if (item.getItemMeta() != null && item.getItemMeta().getLore() != null
 				&& item.getItemMeta().getLore().contains(ArtItem.COPY_KEY)) {
 			return new CanvasCopy(item);
@@ -57,7 +57,7 @@ public class Canvas {
 		return mapItem;
 	}
 
-	public short getMapId() {
+	public int getMapId() {
 		return this.mapId;
     }
 
@@ -100,7 +100,7 @@ public class Canvas {
 		/**
 		 * @return The original map id.
 		 */
-		public short getOriginalId() {
+		public int getOriginalId() {
 			return this.original.getMapId();
 		}
     }

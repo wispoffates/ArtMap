@@ -138,7 +138,7 @@ public class OldDatabaseConverter {
 
         private RichMapArt readArtwork(ResultSet set) throws SQLException {
             String title = set.getString("title");
-            short id = (short) set.getInt("id");
+            int id = set.getInt("id");
             UUID artist = UUID.fromString(set.getString("artist"));
             String date = set.getString("date");
             MapArt art = new MapArt(id, title, artist, Bukkit.getOfflinePlayer(artist).getName(), date);

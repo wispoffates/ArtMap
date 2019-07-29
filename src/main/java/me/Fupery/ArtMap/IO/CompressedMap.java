@@ -12,16 +12,16 @@ import me.Fupery.ArtMap.Utils.Reflection;
 public class CompressedMap extends MapId {
     private byte[] compressedMap;
 
-    public CompressedMap(short id, int hash, byte[] compressedMap) {
+    public CompressedMap(int id, int hash, byte[] compressedMap) {
         super(id, hash);
         this.compressedMap = compressedMap;
     }
 
     public static CompressedMap compress(MapView mapView) {
-		return compress((short) mapView.getId(), Reflection.getMap(mapView));
+		return compress(mapView.getId(), Reflection.getMap(mapView));
     }
 
-    public static CompressedMap compress(short mapId, byte[] map) {
+    public static CompressedMap compress(int mapId, byte[] map) {
         byte[] compressed;
         try {
             compressed = new f32x32().generateBLOB(map);
@@ -32,7 +32,7 @@ public class CompressedMap extends MapId {
         return new CompressedMap(mapId, Arrays.hashCode(map), compressed);
     }
 
-	public static CompressedMap compress(short newId, MapView mapView) {
+	public static CompressedMap compress(int newId, MapView mapView) {
 		byte[] compressed;
 		try {
 			compressed = new f32x32().generateBLOB(Reflection.getMap(mapView));

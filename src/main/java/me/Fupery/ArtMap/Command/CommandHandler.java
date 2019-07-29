@@ -47,6 +47,8 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("export", new CommandExport());
 
+		commands.put("test", new CommandTest());
+
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -163,8 +165,8 @@ public class CommandHandler implements CommandExecutor {
 						return;
 					}
 					int id = Integer.parseInt(args[1]);
-					MapArt art = ArtMap.getArtDatabase().getArtwork((short) id);
-					CompressedMap map = ArtMap.getArtDatabase().getMapTable().getMap((short) id);
+					MapArt art = ArtMap.getArtDatabase().getArtwork(id);
+					CompressedMap map = ArtMap.getArtDatabase().getMapTable().getMap(id);
 					if (art == null) {
 						sender.sendMessage(ChatColor.RED + "Failed to lookup artwork with id: " + id + ChatColor.RESET);
 					} else {

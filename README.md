@@ -9,6 +9,11 @@ Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+) 
     - Everything looks to work but saving with the paint brush will crash the server!
     - I will make another release when anvil gui fixes compatibility.
 
+## Release 3.3.3
+* Fixed an issue where a server with over 32768 maps would cause a short overflow and try and load negative map IDs which would fail.
+* Removed initial artwork checks from startup as they were slow on large numbers of artwork
+    - Those checks now run on map load so keep an eye on timings of MapInitializeEvent
+
 ## Release 3.3.2
 * Fixed user disconnect on Dropper tool use.
 * Removed NMS dependency which should make compiling a bit easier

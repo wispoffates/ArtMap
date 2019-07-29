@@ -20,7 +20,7 @@ public enum ArtMaterial {
 				.name(Lang.RECIPE_CANVAS_NAME)
 				.tooltip(Lang.Array.RECIPE_CANVAS);
 
-        MAP_ART.artItem = new ArtItem.ArtworkItem((short) -1, "Artwork", null, null);
+        MAP_ART.artItem = new ArtItem.ArtworkItem(-1, "Artwork", null, null);
 
 		PAINT_BRUSH.artItem = new ArtItem.CraftableItem("PAINT_BRUSH", Material.REDSTONE_TORCH, ArtItem.PAINT_BRUSH)
                 .name(Lang.RECIPE_PAINT_BRUSH_NAME).tooltip(Lang.Array.RECIPE_PAINT_BRUSH);
@@ -55,7 +55,7 @@ public enum ArtMaterial {
         return null;
     }
 
-    public static ArtItem.ArtworkItem getMapArt(short id, String title, String playerName, String date) {
+    public static ArtItem.ArtworkItem getMapArt(int id, String title, String playerName, String date) {
         return new ArtItem.ArtworkItem(id, title, playerName, date);
     }
 

@@ -11,7 +11,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 
 public class ArtMapArt implements dObject {
 	protected String prefix = "artmapart";
-	protected short artId;
+	protected int artId;
 
 	/////////////////////
 	// OBJECT FETCHER
@@ -28,7 +28,7 @@ public class ArtMapArt implements dObject {
 
 		string = string.replace("artmapart@", "");
 		try {
-			return new ArtMapArt(Short.parseShort(string));
+			return new ArtMapArt(Integer.parseInt(string));
 		} catch (IllegalArgumentException e) {
 			// not a uuid so it should be a name.
 		}
@@ -43,7 +43,7 @@ public class ArtMapArt implements dObject {
 	/////////////////////
 	// STATIC CONSTRUCTORS
 	/////////////////
-	public ArtMapArt(Short artId) {
+	public ArtMapArt(int artId) {
 		this.artId = artId;
 		ArtMap.getArtDatabase().getArtwork(this.artId);
 	}

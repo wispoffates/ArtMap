@@ -21,16 +21,16 @@ public class Map {
 
     public static final byte[] BLANK_MAP = getBlankMap();
 
-    private final short mapId;
+    private final int mapId;
     private MapView mapView;
 
-    public Map(short mapId) {
+    public Map(int mapId) {
         this.mapId = mapId;
         this.mapView = null;
     }
 
     public Map(MapView mapView) {
-		this.mapId = (short) mapView.getId();
+		this.mapId = mapView.getId();
         this.mapView = mapView;
     }
 
@@ -46,8 +46,8 @@ public class Map {
         return new File(rootDir + File.separator + ArtMap.getConfiguration().WORLD + File.separator + "data");                               //Navigate to this world's data folder);
     }
 
-    public static short getNextMapId() {
-        short nextMapId = -1;
+    public static int getNextMapId() {
+        int nextMapId = -1;
         File file = new File(getMapDataFolder(), "idcounts.dat");
         if (file.exists()) {
             byte[] data = new byte[((int) file.length())];
@@ -59,7 +59,7 @@ public class Map {
                 ErrorLogger.log(e, "Error reading idcounts.dat.");
                 return -1;
             }
-            nextMapId = (short) (data[9] << 8 | data[10] & 0xFF);//The short is stored at index 9-10
+            nextMapId = (data[9] << 8 | data[10] & 0xFF);//The short is stored at index 9-10
         }
         return nextMapId;
     }
@@ -127,7 +127,7 @@ public class Map {
         ArtMap.getScheduler().runSafely(() -> player.sendMap(getMap()));
     }
 
-    public short getMapId() {
+    public int getMapId() {
         return mapId;
     }
 

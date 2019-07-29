@@ -40,7 +40,7 @@ public final class ArtTable extends SQLiteTable {
     }
 
 
-    public MapArt getArtwork(short mapData) {
+    public MapArt getArtwork(int mapData) {
         return new QueuedQuery<MapArt>() {
 
             @Override
@@ -60,7 +60,7 @@ public final class ArtTable extends SQLiteTable {
         int id = set.getInt("id");
         UUID artist = UUID.fromString(set.getString("artist"));
         String date = set.getString("date");
-        return new MapArt((short) id, title, artist, Bukkit.getOfflinePlayer(artist).getName(),date);
+        return new MapArt(id, title, artist, Bukkit.getOfflinePlayer(artist).getName(),date);
     }
 
 
@@ -82,7 +82,7 @@ public final class ArtTable extends SQLiteTable {
     }
 
 
-    public boolean containsMapID(short mapID) {
+    public boolean containsMapID(int mapID) {
         return new QueuedQuery<Boolean>() {
 
             @Override
@@ -119,7 +119,7 @@ public final class ArtTable extends SQLiteTable {
 		}.execute("UPDATE " + TABLE + " SET title=? WHERE id=?;");
 	}
 
-    public boolean deleteArtwork(short mapId) {
+    public boolean deleteArtwork(int mapId) {
         return new QueuedStatement() {
 
             @Override

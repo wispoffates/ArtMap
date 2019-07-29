@@ -16,17 +16,17 @@ import me.Fupery.ArtMap.Recipe.ArtItem;
 
 public class MapArt {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-    private final short id;
+    private final int id;
     private final String title;
     private final UUID artist;
     private final String artistName;
     private final String date;
 
-    public MapArt(short mapIDValue, String title, UUID artist, String artistName, Date date) {
+    public MapArt(int mapIDValue, String title, UUID artist, String artistName, Date date) {
         this(mapIDValue, title, artist, artistName, DATE_FORMAT.format(date));
     }
 
-    public MapArt(short id, String title, UUID artist, String artistName, String date) {
+    public MapArt(int id, String title, UUID artist, String artistName, String date) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -71,7 +71,7 @@ public class MapArt {
         return new ArtItem.ArtworkItem(id, title, artistName, date).toItemStack();
     }
 
-    public short getMapId() {
+    public int getMapId() {
         return id;
     }
 
@@ -95,7 +95,7 @@ public class MapArt {
         return new MapArt(this.id, title, this.artist, name, this.date);
     }
 
-    public MapArt updateMapId(short newID) {
+    public MapArt updateMapId(int newID) {
         return new MapArt(newID, title, artist, artistName, date);
     }
 
