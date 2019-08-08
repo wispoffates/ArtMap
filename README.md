@@ -4,10 +4,8 @@
 PLEASE HAVE BACKUPS! 1.14 support required some changes around how Art is stored so please, please have Art.db backed up.
 Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+) along with continued 1.13 support.
 
-## Warning
-* Artmap is not compatible with 1.14.4 yet!
-    - Everything looks to work but saving with the paint brush will crash the server!
-    - I will make another release when anvil gui fixes compatibility.
+## Release 3.3.4
+* Updated anvilgui - Brush for saving artwork will now work on 1.14.4
 
 ## Release 3.3.3
 * Fixed an issue where a server with over 32768 maps would cause a short overflow and try and load negative map IDs which would fail.

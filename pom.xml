@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.3.3</version>
+	<version>3.3.4</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -53,7 +53,7 @@
 								<includes>
 									<include>com.github.Fupery:*</include>
 									<include>me.Fupery:DataTables:*</include>
-									<include>net.wesjd:anvilgui:*</include>
+									<include>com.github.wispoffates.AnvilGUI:anvilgui:*</include>
 								</includes>
 								<excludes>
 									<exclude>org.spigotmc:*</exclude>
@@ -92,14 +92,12 @@
 			<id>robingrether-repo</id>
 			<url>http://repo.robingrether.de/</url>
 		</repository>
-		<repository>
-			<id>wesjd-repo</id>
-			<url>https://nexus.wesjd.net/repository/thirdparty/</url>
-		</repository>
+		<!--
 		<repository>
 			<id>citizen</id>
 			<url>http://repo.citizensnpcs.co</url>
 		</repository>
+		-->
 		<repository>
 			<id>uSkyBlock-mvn-repo</id>
 			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
@@ -139,13 +137,13 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.14.3-R0.1-SNAPSHOT</version>
+			<version>1.14.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.wesjd</groupId>
-			<artifactId>anvilgui</artifactId>
-			<version>1.2.3-SNAPSHOT</version>
+			<groupId>com.github.wispoffates</groupId>
+	    	<artifactId>AnvilGUI</artifactId>
+			<version>eb964dadcb</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--  Mojang dependency -->
