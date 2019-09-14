@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.3.5</version>
+	<version>3.3.6</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -142,7 +142,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.WesJD</groupId>
-	    	        <artifactId>AnvilGUI</artifactId>
+	    	<artifactId>AnvilGUI</artifactId>
 			<version>4b7a469d7e</version>
 			<scope>compile</scope>
 		</dependency>

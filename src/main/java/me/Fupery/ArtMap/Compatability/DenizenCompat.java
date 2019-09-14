@@ -24,10 +24,13 @@ public class DenizenCompat implements ReflectionHandler {
         if(!loaded){
             return;
         }
-		// Add denizen objects for use in scripts
-        ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
-        ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
-        ObjectFetcher.registerWithObjectFetcher(ArtMapArtists.class);
+        // Add denizen objects for use in scripts
+        Plugin dipenizen = Bukkit.getPluginManager().getPlugin("Dipenizen");
+        if(dipenizen != null && dipenizen.isEnabled()) {
+            ObjectFetcher.registerWithObjectFetcher(ArtMapArt.class);
+            ObjectFetcher.registerWithObjectFetcher(ArtMapArtist.class);
+            ObjectFetcher.registerWithObjectFetcher(ArtMapArtists.class);
+        }
     }
 
     //don't ask.
