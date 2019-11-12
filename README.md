@@ -1,8 +1,8 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
-## Spigot 1.14.3
-PLEASE HAVE BACKUPS! 1.14 support required some changes around how Art is stored so please, please have Art.db backed up.
-Spigot and Paper 1.14.3 are now supported by the Master Branch (Version 3.2.0+) along with continued 1.13 support.
+## Release 3.3.7
+* Fix cartography table integration
+
 
 ## Release 3.3.6
 * Fix incorrect assumption that Denizen includes Depenizen classed causing a ClassNotFoundException on startup.

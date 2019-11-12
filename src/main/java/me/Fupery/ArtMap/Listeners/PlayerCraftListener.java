@@ -6,12 +6,15 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.CartographyInventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion;
 
 class PlayerCraftListener implements RegisteredListener {
 
@@ -38,6 +41,34 @@ class PlayerCraftListener implements RegisteredListener {
             }
         } 
     }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        //one check this if 1.14+
+        if(ArtMap.getBukkitVersion().getVersion().isLessThan(BukkitVersion.v1_14)) {
+            return;
+        }
+        //exit if not a cartogaphy inventory
+        if(!(event.getInventory() instanceof CartographyInventory)) {
+            return;
+        }
+		ItemStack result = event.getCurrentItem();
+        // Disallow players from copying ArtMap maps in the crafting table
+		if (result.getType() == Material.FILLED_MAP) {
+			MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+            if (art != null) {
+                if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
+                    ItemStack artworkItem = art.getMapItem();
+                    result.setItemMeta(artworkItem.getItemMeta());
+                } else {
+                    Lang.NO_CRAFT_PERM.send(event.getWhoClicked());
+                    event.setResult(Event.Result.DENY);
+                    event.setCancelled(true);
+                }
+            }
+        } 
+    }
+
 
     private void onShiftClick(ItemStack artworkItem, Player player, CraftItemEvent event) {
         event.setCancelled(true);
