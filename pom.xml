@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.3.7</version>
+	<version>3.3.8</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -143,7 +143,7 @@
 		<dependency>
 			<groupId>com.github.WesJD</groupId>
 	    	<artifactId>AnvilGUI</artifactId>
-			<version>4b7a469d7e</version>
+			<version>478e0c196e</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--  Mojang dependency -->
@@ -168,8 +168,8 @@
 		<!--COMPATABILITY DEPENDENCIES -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib-API</artifactId>
-			<version>4.4.0-SNAPSHOT</version>
+			<artifactId>ProtocolLib</artifactId>
+			<version>4.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
