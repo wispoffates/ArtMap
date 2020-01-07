@@ -1,8 +1,12 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
+## Release 3.3.8
+* 1.15 support
+* Fix compilation problem caused by protocol lib 4.4.0
+* Update AnvilGui dependency for 1.15 support
+
 ## Release 3.3.7
 * Fix cartography table integration
-
 
 ## Release 3.3.6
 * Fix incorrect assumption that Denizen includes Depenizen classed causing a ClassNotFoundException on startup.
