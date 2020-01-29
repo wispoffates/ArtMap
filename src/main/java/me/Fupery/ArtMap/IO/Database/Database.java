@@ -26,8 +26,6 @@ public final class Database {
     private final String DATABASE_ACCESS_ERROR = "Error accessing database, try using /artmap reload.";
     private final ArtTable artworks;
     private final MapTable maps;
-    private final SQLiteDatabase database;
-    private final MapIDQueue idQueue;
     private final BukkitRunnable AUTO_SAVE = new BukkitRunnable() {
         @Override
         public void run() {
@@ -38,13 +36,10 @@ public final class Database {
     };
 
     public Database(JavaPlugin plugin, SQLiteDatabase database, ArtTable artworks, MapTable maps) {
-        this.database = database;
         this.artworks = artworks;
         this.maps = maps;
-        idQueue = new MapIDQueue(plugin);
         int delay = ArtMap.getConfiguration().ARTWORK_AUTO_SAVE;
         AUTO_SAVE.runTaskTimerAsynchronously(plugin, delay, delay);
-        idQueue.loadIds();
     }
 
     public static Database build(JavaPlugin plugin) {
@@ -194,26 +189,23 @@ public final class Database {
     }
 
     public void close() {
-        idQueue.saveIds();
         AUTO_SAVE.cancel();
     }
 
-    public Map createMap() {
-        Integer id = idQueue.poll();
+    //Not assuming that createMap is threadsafe
+    public synchronized Map createMap() {
+        //This is where you would lookup unused map ids
         MapView mapView = null;
-        if (id != null && getArtwork(id) == null) {
-            mapView = getMap(id);
+        World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
+        if (world != null) {
+            mapView = Bukkit.createMap(world);
         } else {
-        	World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
-            if (world != null) {
-                mapView = Bukkit.createMap(world);
-			} else {
-				ArtMap.instance().getLogger()
-				        .severe("MapView creation Failed! World is null! Please check that the world: option is set correctly in config.yml");
-            }
+            ArtMap.instance().getLogger()
+                    .severe("MapView creation Failed! World is null! Please check that the world: option is set correctly in config.yml");
         }
+        
 		if (mapView == null) {
-            ArtMap.instance().getLogger().severe("MapView creation Failed! id=" + id);
+            ArtMap.instance().getLogger().severe("MapView creation Failed!");
             return null;
 		}
         Reflection.setWorldMap(mapView, Map.BLANK_MAP);
@@ -286,7 +278,7 @@ public final class Database {
         map.setMap(Map.BLANK_MAP);
         accessSQL(() -> {
             maps.deleteMap(map.getMapId());
-            idQueue.offer(map.getMapId());
+            //idQueue.offer(map.getMapId());
         });
     }
 

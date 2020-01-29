@@ -1,5 +1,9 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
+## Release 3.3.9
+* Disable Map reuse as it might be causing map collisions and blank maps.
+* Add some logging around map initialize to see if it is having problems.
+
 ## Release 3.3.8
 * 1.15 support
 * Fix compilation problem caused by protocol lib 4.4.0
