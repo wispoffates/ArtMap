@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -33,7 +34,7 @@ class InventoryInteractListener implements RegisteredListener {
             event.getInventory().getType() != InventoryType.PLAYER && 
             event.getInventory().getType() != InventoryType.CRAFTING &&
             event.getInventory().getType() != InventoryType.CREATIVE) {
-            if(isKitDrop((Player) event.getWhoClicked(), event.getCurrentItem(), event)) {
+            if(isKitDrop((Player) event.getWhoClicked(), event.getCurrentItem())) {
                 event.setCancelled(true);
             }
         }
@@ -47,8 +48,20 @@ class InventoryInteractListener implements RegisteredListener {
 				event.getItemDrop().remove();
 			}
 		}
-        if (isKitDrop(event.getPlayer(), event.getItemDrop().getItemStack(), event)) {
+        if (isKitDrop(event.getPlayer(), event.getItemDrop().getItemStack())) {
             event.getItemDrop().remove();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerPickup(EntityPickupItemEvent e) {
+        if(e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            if (ArtMap.getArtistHandler().getCurrentSession(player) != null) {
+                if (ArtMap.getArtistHandler().getCurrentSession(player).isInArtKit()) {
+                    e.setCancelled(true);
+                }
+            }
         }
     }
 
@@ -69,7 +82,7 @@ class InventoryInteractListener implements RegisteredListener {
 		}
 	}
 
-    private boolean isKitDrop(Player player, ItemStack itemStack, Cancellable event) {
+    private boolean isKitDrop(Player player, ItemStack itemStack) {
         if (ArtMap.getArtistHandler().containsPlayer(player)) {
 			if (ItemUtils.hasKey(itemStack, ArtItem.KIT_KEY) || ItemUtils.hasKey(itemStack, "Artkit:Next")
 					|| ItemUtils.hasKey(itemStack, "Artkit:Back")) {

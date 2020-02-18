@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.3.9</version>
+	<version>3.3.10</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>

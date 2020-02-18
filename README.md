@@ -1,5 +1,8 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
+## Release 3.3.10
+* Prevent players in artkit from picking up items. Prevents loss of items thrown to a player while they are using artkit.
+
 ## Release 3.3.9
 * Disable Map reuse as it might be causing map collisions and blank maps.
 * Add some logging around map initialize to see if it is having problems.
