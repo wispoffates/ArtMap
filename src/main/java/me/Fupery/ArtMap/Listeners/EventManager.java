@@ -20,11 +20,13 @@ public class EventManager {
         listeners.add(new PlayerCraftListener());
         listeners.add(new InventoryInteractListener());
         listeners.add(new MapInitializeListener());
-        if (version.getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            listeners.add(new PlayerSwapHandListener());
-            listeners.add(new PlayerDismountListener());
-        }
+        listeners.add(new PlayerSwapHandListener());
+        listeners.add(new PlayerDismountListener());
         PluginManager manager = Bukkit.getServer().getPluginManager();
+        //MarriageMaster
+        if(manager.isPluginEnabled("MarriageMaster")) {
+            listeners.add(new MarriageMasterListener());
+        }
         for (RegisteredListener listener : listeners) manager.registerEvents(listener, plugin);
     }
 

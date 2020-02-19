@@ -3,7 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depend: [ProtocolLib]
-softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock, Residence]
+softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock, Residence, MarriageMaster]
 author: [Wispoffates,(Original) Fupery]
 api-version: 1.13
 

@@ -1,5 +1,8 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
+## Release 3.3.11
+* MarriageMaster integration - Prevent players from using gift wen in the Artkit.
+
 ## Release 3.3.10
 * Prevent players in artkit from picking up items. Prevents loss of items thrown to a player while they are using artkit.
 
