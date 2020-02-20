@@ -75,10 +75,12 @@
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
+		<!-- Something wrong with protocollib maven cert
 		<repository>
 			<id>dmulloy2-repo</id>
-			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+			<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
 		</repository>
+		-->
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
