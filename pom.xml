@@ -303,4 +303,11 @@
 		<system>gitlab</system>
 		<url>https://gitlab.com/BlockStack/ArtMap/issues</url>
 	</issueManagement>
+	<distributionManagement>
+		<repository>
+			<id>BlockStack</id>
+			<name>BlockStack</name>
+			<url>https://nexus.troytech.info/repository/BlockStack/</url>
+		</repository>
+	</distributionManagement>
 </project>

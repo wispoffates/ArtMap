@@ -47,6 +47,6 @@ verify:jdk8:
 deploy:jdk8:
   stage: deploy
   script:
-    - 'mvn $MAVEN_CLI_OPTS install'
+    - 'mvn $MAVEN_CLI_OPTS deploy'
   only:
     - master
