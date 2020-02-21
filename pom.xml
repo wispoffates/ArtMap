@@ -72,10 +72,12 @@
 			<id>sk89q-repo</id>
 			<url>http://maven.sk89q.com/repo/</url>
 		</repository>
+		<!-- Causing cert problems
 		<repository>
 			<id>dmulloy2-repo</id>
 			<url>http://repo.dmulloy2.net/content/groups/public/</url>
 		</repository>
+		-->
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
@@ -143,8 +145,8 @@
 		<!--COMPATABILITY DEPENDENCIES -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib-API</artifactId>
-			<version>4.3.0-SNAPSHOT</version>
+			<artifactId>ProtocolLib</artifactId>
+			<version>4.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
