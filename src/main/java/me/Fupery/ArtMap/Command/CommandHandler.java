@@ -49,6 +49,8 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("test", new CommandTest());
 
+		commands.put("convert", new CommandConvert());
+
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -152,42 +154,6 @@ public class CommandHandler implements CommandExecutor {
                 });
             }
         });
-		commands.put("lookup", new AsyncCommand("artmap.menu", "/art lookup <id>", true) {
-			@Override
-			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-				ArtMap.getScheduler().SYNC.run(() -> {
-					if (!sender.hasPermission("artmap.admin")) {
-						Lang.NO_PERM.send(sender);
-						return;
-					}
-					if (args.length != 2) {
-						Lang.COMMAND_LOOKUP.send(sender);
-						return;
-					}
-					int id = Integer.parseInt(args[1]);
-					MapArt art = ArtMap.getArtDatabase().getArtwork(id);
-					CompressedMap map = ArtMap.getArtDatabase().getMapTable().getMap(id);
-					if (art == null) {
-						sender.sendMessage(ChatColor.RED + "Failed to lookup artwork with id: " + id + ChatColor.RESET);
-					} else {
-						sender.sendMessage("Title: " + art.getTitle());
-						OfflinePlayer player = art.getArtistPlayer();
-						if (player != null) {
-							sender.sendMessage("Artist: " + player.getName());
-						} else {
-							sender.sendMessage("Artist: " + art.getArtist());
-						}
-						sender.sendMessage("Date: " + art.getDate());
-					}
-					if (map != null) {
-						sender.sendMessage("Map data exists in the database.");
-					} else {
-						sender.sendMessage(ChatColor.RED + "Map data is missing from the database!" + ChatColor.RESET);
-					}
-
-				});
-			}
-		});
     }
 
     @Override

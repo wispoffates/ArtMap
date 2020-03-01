@@ -1,13 +1,12 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
+import me.Fupery.ArtMap.Command.CommandExport.ArtworkExport;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.Database.SQLiteDatabase;
 import me.Fupery.ArtMap.IO.Database.SQLiteTable;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -19,60 +18,64 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class OldDatabaseConverter {
+public class V2DatabaseConverter extends DatabaseConverter {
 
     private JavaPlugin plugin;
 
-    public OldDatabaseConverter(JavaPlugin plugin) {
+    public V2DatabaseConverter(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public boolean convertDatabase() {
-        if (new FlatDatabaseConverter(plugin).convertDatabase()) return true;
+    @Override
+    public boolean isNeeded() {
         String dbFileName = "ArtMap.db";
+        File databaseFile = new File(plugin.getDataFolder(), dbFileName);
+        return databaseFile.exists();
+    }
+
+    @Override
+    public boolean canBeForced() {
+        String dbFileName = "ArtMap.db.off";
+        File databaseFile = new File(plugin.getDataFolder(), dbFileName);
+        return databaseFile.exists();
+    }
+
+    @Override
+    public boolean createExport(boolean force) throws Exception {
+        String dbFileName = "ArtMap.db";
+        if(force) {
+            dbFileName = "ArtMap.db.off";
+        }
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
         if (!databaseFile.exists()) return false;
 
-        plugin.getLogger().info("Old 'ArtMap.db' database found! Converting to new format ...");
-        plugin.getLogger().info("(This may take a while, but only needs to run once)");
+        sendMessage("Old 'ArtMap.db' database found! Converting to new format ...");
+        sendMessage("(This may take a while, but only needs to run once)");
 
-        ArtList artList = readArtworks();
-        artList.addArtworks();
+        List<ArtworkExport> artList = readArtworks(dbFileName);
+        String message = this.export(artList);
+        sendMessage(message);
 
-        if (!databaseFile.renameTo(new File(plugin.getDataFolder(), dbFileName + ".off"))) {
-            plugin.getLogger().info("Error disabling ArtMap.db! Delete this file manually.");
-            return true;
+        if(dbFileName.equals("ArtMap.db")) {
+            if (!databaseFile.renameTo(new File(plugin.getDataFolder(), dbFileName + ".off"))) {
+                sendMessage("Failed to move old ArtMap.db to ArtMap.db.off pleae do it manually.");
+                return true;
+            }
         }
-        plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
-                "ArtMap.db has been disabled.", artList.getArtworks().size()));
 
         return true;
     }
 
-    private ArtList readArtworks() {
-        ArtList artList = new ArtList();
-        OldDatabase database = new OldDatabase(plugin);
+    private List<ArtworkExport> readArtworks(String filename) {
+        List<ArtworkExport> artList = new ArrayList<>();
+        OldDatabase database = new OldDatabase(plugin, filename);
         OldDatabaseTable table = new OldDatabaseTable(database);
         if (!database.initialize(table)) return artList;
 
         for (RichMapArt artwork : table.readArtworks()) {
             String title = artwork.getArt().getTitle();
-            if (Bukkit.getMap(artwork.getArt().getMapId()) == null) {
-                plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
-                continue;
-            }
-            OfflinePlayer player = artwork.getArt().getArtistPlayer();
-            if (player == null || !player.hasPlayedBefore()) {
-                plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
-                continue;
-            }
-            if (ArtMap.getArtDatabase().containsArtwork(artwork.getArt(), true)) {
-                plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
-                continue;
-            }
-            plugin.getLogger().info(String.format("    Converting '%s' ...", title));
-            artList.getArtworks().add(artwork.getArt());
-            artList.getMaps().add(artwork.getMap());
+            sendMessage(String.format("    Converting '%s' ...", title));
+            artList.add(new ArtworkExport(artwork.getArt(), artwork.getMap()));
         }
         return artList;
     }
@@ -97,8 +100,8 @@ public class OldDatabaseConverter {
 
     private class OldDatabase extends SQLiteDatabase {
 
-        OldDatabase(JavaPlugin plugin) {
-            super(new File(plugin.getDataFolder(), "ArtMap.db"));
+        OldDatabase(JavaPlugin plugin, String filename) {
+            super(new File(plugin.getDataFolder(), filename));
         }
 
         private boolean initialize(OldDatabaseTable table) {

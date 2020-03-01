@@ -1,3 +1,7 @@
+## Release 3.4.0
+* Rework of database conversion
+* Internal command cleanup
+
 ## Release 3.3.11
 * MarriageMaster integration - Prevent players from using gift wen in the Artkit.
 

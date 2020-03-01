@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Command.CommandExport.ArtworkExport;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.IO.MapArt;
 import org.bukkit.Bukkit;
@@ -12,40 +13,57 @@ import org.bukkit.map.MapView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class FlatDatabaseConverter {
+public class FlatDatabaseConverter extends DatabaseConverter {
 
     private JavaPlugin plugin;
 
-    FlatDatabaseConverter(JavaPlugin plugin) {
+    public FlatDatabaseConverter(JavaPlugin plugin)  {
         this.plugin = plugin;
     }
 
-    boolean convertDatabase() {
+    @Override
+    public boolean isNeeded() {
         String dbFileName = "mapList.yml";
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
-        if (!databaseFile.exists()) return false;
-        plugin.getLogger().info("Old 'mapList.yml' database found! Converting to new format ...");
-        plugin.getLogger().info("(This may take a while, but only needs to run once)");
-        ArtList artworks = readArtworks(databaseFile);
+        return databaseFile.exists();
+    }
 
-        if (!artworks.isEmpty()) {
-            ArtMap.getScheduler().ASYNC.run(artworks::addArtworks);
+    @Override
+    public boolean canBeForced() {
+        String dbFileName = "mapList.yml.off";
+        File databaseFile = new File(plugin.getDataFolder(), dbFileName);
+        return databaseFile.exists();
+    }
+
+    @Override
+    public boolean createExport(boolean force) throws Exception {
+        String dbFileName = "mapList.yml";
+        if(force) {
+            dbFileName = "mapList.yml.off";
         }
+        File databaseFile = new File(plugin.getDataFolder(), dbFileName);
+        if (!databaseFile.exists()) return false;
+        sendMessage("Old 'mapList.yml' database found! Converting to new format ...");
+        sendMessage("(This may take a while, but only needs to run once)");
+        List<ArtworkExport> artList = readArtworks(databaseFile);
+        String msg = this.export(artList);
+        sendMessage(msg);
+
 
         File disabledDatabaseFile = new File(plugin.getDataFolder(), dbFileName + ".off");
         if (!databaseFile.renameTo(disabledDatabaseFile)) {
-            plugin.getLogger().info("Error disabling mapList.yml! Delete this file manually.");
+            sendMessage("Error disabling mapList.yml! Delete this file manually.");
             return false;
         }
-        plugin.getLogger().info(String.format("Conversion completed! %s artworks converted. " +
-                "mapList.yml has been disabled.", artworks.getArtworks().size()));
         return true;
     }
 
-    private ArtList readArtworks(File databaseFile) {
-        ArtList artList = new ArtList();
+    private List<ArtworkExport> readArtworks(File databaseFile) {
+        List<ArtworkExport> artList = new ArrayList<>();
         FileConfiguration database = YamlConfiguration.loadConfiguration(databaseFile);
         ConfigurationSection artworks = database.getConfigurationSection("artworks");
 
@@ -60,20 +78,15 @@ public class FlatDatabaseConverter {
                 String date = map.getString("date");
                 MapView mapView = Bukkit.getMap(mapIDValue);
                 if (mapView == null) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (failed to access map data) ...", title));
-                    continue;
-                }
-                if (player == null || !player.hasPlayedBefore()) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (artist UUID is invalid) ...", title));
+                    sendMessage(String.format("    Ignoring '%s' (failed to access map data) ...", title));
                     continue;
                 }
                 MapArt artwork = new MapArt(mapIDValue, title, player.getUniqueId(), player.getName(), date);
                 if (ArtMap.getArtDatabase().containsArtwork(artwork, true)) {
-                    plugin.getLogger().info(String.format("    Ignoring '%s' (already exists in database) ...", title));
+                    sendMessage(String.format("    Ignoring '%s' (already exists in database) ...", title));
                 } else {
-                    plugin.getLogger().info(String.format("    Converting '%s' ...", title));
-                    artList.getArtworks().add(artwork);
-                    artList.getMaps().add(new Map(mapView).compress());
+                    sendMessage(String.format("    Converting '%s' ...", title));
+                    artList.add(new ArtworkExport(artwork, new Map(mapView).compress()));
                 }
             }
         }

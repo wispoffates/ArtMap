@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -27,7 +28,9 @@ import me.Fupery.ArtMap.Heads.Heads;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Database.Database;
-import me.Fupery.ArtMap.IO.Legacy.OldDatabaseConverter;
+import me.Fupery.ArtMap.IO.Legacy.DatabaseConverter;
+import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
+import me.Fupery.ArtMap.IO.Legacy.V2DatabaseConverter;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
 import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Listeners.EventManager;
@@ -58,6 +61,7 @@ public class ArtMap extends JavaPlugin {
 	private Palette							dyePalette;
 	private boolean							recipesLoaded	= false;
 	private boolean							disabled;
+	private boolean							dbUpgradeNeeded;
 
 	public static Database getArtDatabase() {
 		return instance().database;
@@ -126,6 +130,10 @@ public class ArtMap extends JavaPlugin {
 		return instance().disabled;
 	}
 
+	public static boolean isDBUpgradeNeeded() {
+		return instance().dbUpgradeNeeded;
+	}
+
 	public void setColourPalette(Palette palette) {
 		this.dyePalette = palette;
 	}
@@ -147,7 +155,7 @@ public class ArtMap extends JavaPlugin {
 			getPluginLoader().disablePlugin(this);
 			return;
 		}
-		new OldDatabaseConverter(this).convertDatabase();
+		dbUpgradeNeeded = this.checkIfDatabaseUpgradeNeeded();
 		if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
 			getLogger().warning(Lang.INVALID_DATA_TABLES.get());
 			getPluginLoader().disablePlugin(this);
@@ -187,6 +195,20 @@ public class ArtMap extends JavaPlugin {
 		pluginInstance = null;
 	}
 
+	private boolean checkIfDatabaseUpgradeNeeded() {
+		DatabaseConverter flatDatabaseConverter = new FlatDatabaseConverter(instance());
+		DatabaseConverter v2DatabaseConverter = new V2DatabaseConverter(instance());
+		if(flatDatabaseConverter.isNeeded()) {
+			instance().getLogger().log(Level.WARNING,"Flat Database Coversion needed! Pleae run '/artmap convert'");
+			return true;
+		}
+		if(v2DatabaseConverter.isNeeded()) {
+			instance().getLogger().log(Level.WARNING,"V2 Database Coversion needed! Please run '/art convert'");
+			return true;
+		}
+		return false;
+	}
+
 	private void initHeadCache() {
 		UUID[] artists = ArtMap.getArtDatabase().listArtists(UUID.randomUUID());
 		this.getLogger().info(MessageFormat.format("Async load of {0} artists started.", artists.length - 1));
@@ -204,7 +226,7 @@ public class ArtMap extends JavaPlugin {
 				// Do not care
 			}
 		}
-		if(loaded == 0 && artists.length>0) {
+		if(loaded == 0 && artists.length>1) {
 			this.getLogger().warning("Could not preload any player heads! Is the server in offline mode and not behind a Bungeecord?");
 		} else {
 			this.getLogger().info(MessageFormat.format("Async loaded {0} of {1} artists.", loaded, artists.length - 1));

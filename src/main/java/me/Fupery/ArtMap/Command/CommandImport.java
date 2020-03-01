@@ -62,7 +62,12 @@ class CommandImport extends AsyncCommand {
             msg.message = Lang.COMMAND_EXPORT.get();
         }
 
-        File importFile = new File(ArtMap.instance().getDataFolder(), importFilename + ".json");
+        File importFile = new File(ArtMap.instance().getDataFolder(), importFilename);
+        if(!importFile.exists()) {
+            importFilename+=".json";
+        }
+        //add json and look again
+        importFile = new File(ArtMap.instance().getDataFolder(), importFilename);
         if (!importFile.exists()) {
             sender.sendMessage("Import file cannot be found!");
             return;
@@ -120,7 +125,7 @@ class CommandImport extends AsyncCommand {
             arts.forEach(art -> {
                 try {
                     art.importArtwork(sender);
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     // don't care
                 }

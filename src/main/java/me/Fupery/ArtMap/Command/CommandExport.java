@@ -23,7 +23,7 @@ import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 
-class CommandExport extends AsyncCommand {
+public class CommandExport extends AsyncCommand {
 
     CommandExport() {
         super(null, "/art export <-all|-artist|-title> [name] <output_file_name>.json", true);

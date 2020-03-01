@@ -22,6 +22,7 @@ public class EventManager {
         listeners.add(new MapInitializeListener());
         listeners.add(new PlayerSwapHandListener());
         listeners.add(new PlayerDismountListener());
+        listeners.add(new PlayerJoinEventListener());
         PluginManager manager = Bukkit.getServer().getPluginManager();
         //MarriageMaster
         if(manager.isPluginEnabled("MarriageMaster")) {
