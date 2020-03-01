@@ -277,7 +277,9 @@ public final class Database {
     public void recycleMap(Map map) {
         map.setMap(Map.BLANK_MAP);
         accessSQL(() -> {
-            maps.deleteMap(map.getMapId());
+            if(artworks.getArtwork(map.getMapId()) == null) {
+                maps.deleteMap(map.getMapId());
+            }
             //idQueue.offer(map.getMapId());
         });
     }

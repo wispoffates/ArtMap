@@ -1,10 +1,10 @@
 package me.Fupery.ArtMap.Compatability;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Utils.Reflection;
 
 public class iDisguiseCompat implements ReflectionHandler {
@@ -12,7 +12,7 @@ public class iDisguiseCompat implements ReflectionHandler {
     private boolean loaded = false;
 
     public iDisguiseCompat() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("iDisguise");
+        Plugin plugin = ArtMap.instance().getServer().getPluginManager().getPlugin("iDisguise");
         loaded = (plugin != null && plugin.isEnabled());
     }
 

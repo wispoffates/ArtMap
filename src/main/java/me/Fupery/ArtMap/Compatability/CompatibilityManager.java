@@ -81,7 +81,7 @@ public class CompatibilityManager implements RegionHandler {
 
     private void loadRegionHandler(String pluginName, Class<? extends RegionHandler> handlerClass) {
         try {
-            if (Bukkit.getServer().getPluginManager().isPluginEnabled(pluginName)) {
+            if (ArtMap.instance().getServer().getPluginManager().isPluginEnabled(pluginName)) {
                 RegionHandler handler = handlerClass.newInstance();
                 if (handler.isLoaded()) {
                     regionHandlers.add(handler);

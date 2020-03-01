@@ -35,3 +35,6 @@ headPrefetch: true
 
 #Head prefetch delay - Delay the head prefetch by the provided number of server ticks (20 ticks per second)
 headPrefetchDelay: 0
+
+#Import delay (default is 100ms which is 10 artworks second)
+importDelay: 100

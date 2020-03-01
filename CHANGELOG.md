@@ -1,3 +1,9 @@
+## Release 3.4.1
+* Make import delay configurable.  Add importDelay to config.yml default is 100.
+* Prevent /art break from clearing saved artwork.   
+    * This fixes a rare case where if there is a server crash after artwork is saved causing it to be placed back on the easel breaking it deleted (blanked) the saved artwork.
+* Start adding some unit tests
+
 ## Release 3.4.0
 * Rework of database conversion
 * Internal command cleanup

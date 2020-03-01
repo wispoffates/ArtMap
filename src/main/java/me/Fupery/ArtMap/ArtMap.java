@@ -15,7 +15,9 @@ import com.google.gson.GsonBuilder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 import me.Fupery.ArtMap.Colour.BasicPalette;
 import me.Fupery.ArtMap.Colour.Palette;
@@ -43,25 +45,25 @@ import me.Fupery.ArtMap.Utils.VersionHandler;
 
 public class ArtMap extends JavaPlugin {
 
-	private static SoftReference<ArtMap>	pluginInstance	= null;
-	private MenuHandler						menuHandler;
-	private ArtistHandler					artistHandler;
-	private VersionHandler					bukkitVersion;
-	private Scheduler						scheduler;
-	private Database						database;
-	private ChannelCacheManager				cacheManager;
-	private RecipeLoader					recipeLoader;
-	private CompatibilityManager			compatManager;
-	private ProtocolHandler					protocolHandler;
-	private PixelTableManager				pixelTable;
-	private Configuration					config;
-	private EventManager					eventManager;
-	private PreviewManager					previewManager;
-	private EaselMap						easels;
-	private Palette							dyePalette;
-	private boolean							recipesLoaded	= false;
-	private boolean							disabled;
-	private boolean							dbUpgradeNeeded;
+	private static SoftReference<ArtMap> pluginInstance = null;
+	private MenuHandler menuHandler;
+	private ArtistHandler artistHandler;
+	private VersionHandler bukkitVersion;
+	private Scheduler scheduler;
+	private Database database;
+	private ChannelCacheManager cacheManager;
+	private RecipeLoader recipeLoader;
+	private CompatibilityManager compatManager;
+	private ProtocolHandler protocolHandler;
+	private PixelTableManager pixelTable;
+	private Configuration config;
+	private EventManager eventManager;
+	private PreviewManager previewManager;
+	private EaselMap easels;
+	private Palette dyePalette;
+	private boolean recipesLoaded = false;
+	private boolean disabled;
+	private boolean dbUpgradeNeeded;
 
 	public static Database getArtDatabase() {
 		return instance().database;
@@ -136,6 +138,15 @@ public class ArtMap extends JavaPlugin {
 
 	public void setColourPalette(Palette palette) {
 		this.dyePalette = palette;
+	}
+
+	public ArtMap() {
+		super();
+	}
+
+	//Testing constructor
+	public ArtMap(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader,description,dataFolder,file);
 	}
 
 	@Override

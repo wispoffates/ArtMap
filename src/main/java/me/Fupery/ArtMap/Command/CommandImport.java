@@ -121,11 +121,15 @@ class CommandImport extends AsyncCommand {
 
     //Slows the import down a bit to keep from lagging the main thread (10 per second)
     private void delayedImport(CommandSender sender,List<ArtworkExport> arts) {
+        long delayConfig = ArtMap.instance().getConfig().getInt("importDelay");
+        ArtMap.instance().getLogger().info("Delay="+delayConfig);
+        //0 if not set so move to 100 default
+        final long delay = delayConfig<=0 ? 100 : delayConfig;
         Bukkit.getScheduler().runTaskAsynchronously(ArtMap.instance(), () -> {
             arts.forEach(art -> {
                 try {
                     art.importArtwork(sender);
-                    Thread.sleep(100);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     // don't care
                 }
