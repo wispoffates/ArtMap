@@ -1,3 +1,7 @@
+## Release 3.4.2
+* Fix a major bug that would cause blank canvases when map restore would fail silently.
+* Fix the logging so Artmap doesn't eat excpetions without telling anyone.
+
 ## Release 3.4.1
 * Make import delay configurable.  Add importDelay to config.yml default is 100.
 * Prevent /art break from clearing saved artwork.   

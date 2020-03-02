@@ -1,7 +1,5 @@
 package me.Fupery.ArtMap.Command;
 
-import java.util.Arrays;
-
 import org.bukkit.command.CommandSender;
 
 import me.Fupery.ArtMap.ArtMap;

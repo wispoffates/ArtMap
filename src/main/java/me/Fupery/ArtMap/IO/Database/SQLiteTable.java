@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 
 public class SQLiteTable {
@@ -110,12 +112,12 @@ public class SQLiteTable {
             if (statement != null) try {
                 statement.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }
             if (connection != null) try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }
         }
 

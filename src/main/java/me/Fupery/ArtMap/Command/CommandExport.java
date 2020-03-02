@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -125,7 +126,7 @@ public class CommandExport extends AsyncCommand {
             writer.close();
             sender.sendMessage(MessageFormat.format("Completed export of {0} artworks.", exports.size()));
         } catch (IOException e) {
-            e.printStackTrace();
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure writing export!", e);
         }
     }
 

@@ -84,7 +84,9 @@ public class Map {
             ArtMap.instance().getLogger().warning("MapView has no renderers! :: " + this.getMapId());
         }
         
-        if (renderer != null) mapView.addRenderer(renderer);
+        if (renderer != null) {
+            mapView.addRenderer(renderer);
+        }
     }
 
     public Map cloneMap() {
@@ -110,9 +112,12 @@ public class Map {
     }
 
     public void setMap(byte[] map, boolean updateRenderer) {
-        MapView mapView = getMapView();
+        MapView mapView = getMap();
         Reflection.setWorldMap(mapView, map);
-        if (updateRenderer) setRenderer(new GenericMapRenderer(map));//todo sync?
+        if (updateRenderer) {
+            MapRenderer renderer = new GenericMapRenderer(map);
+            setRenderer(renderer);
+        }
     }
 
     public boolean exists() {
@@ -131,11 +136,12 @@ public class Map {
         return mapId;
     }
 
+    /*
     private MapView getMapView() {
         //todo We probably don't need sophisticated mapView caching right now
         return (mapView != null) ? mapView :
                 (mapView = ArtMap.getScheduler().callSync(() -> Bukkit.getMap(mapId)));
-    }
+    }*/
 
     public enum Size {
         MAX(128 * 128), STANDARD(32 * 32);

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -37,11 +38,11 @@ public class ErrorLogger {
             if (!file.exists()) {
                 try {
                     if (!(file.createNewFile())) {
-                        throwable.printStackTrace();
+                        ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", throwable);
                         return;
                     }
                 } catch (IOException e) {
-                    throwable.printStackTrace();
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
                     return;
                 }
             }
@@ -71,7 +72,7 @@ public class ErrorLogger {
                 logger.flush();
                 logger.close();
             } catch (IOException e) {
-                throwable.printStackTrace();
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }
         });
     }
@@ -83,11 +84,11 @@ public class ErrorLogger {
 			if (!file.exists()) {
 				try {
 					if (!(file.createNewFile())) {
-						throwable.printStackTrace();
+						ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", throwable);
 						return;
 					}
 				} catch (IOException e) {
-					throwable.printStackTrace();
+					ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
 					return;
 				}
 			}
@@ -119,7 +120,7 @@ public class ErrorLogger {
 				logger.flush();
 				logger.close();
 			} catch (IOException e) {
-				throwable.printStackTrace();
+				ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
 			}
 		});
 	}

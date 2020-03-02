@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -101,7 +102,7 @@ public class ArtItem {
             try {
                 recipe(ArtMap.getRecipeLoader().getRecipe(itemName.toUpperCase()));
             } catch (RecipeLoader.InvalidRecipeException e) {
-                e.printStackTrace();
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }
         }
     }

@@ -19,7 +19,6 @@ import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapArt;
-import me.Fupery.ArtMap.IO.MapId;
 import me.Fupery.ArtMap.Utils.Reflection;
 
 public final class Database {
@@ -226,12 +225,13 @@ public final class Database {
             int oldMapHash = Arrays.hashCode(data);
             if (maps.containsMap(map.getMapId())
                     && maps.getHash(map.getMapId()) != oldMapHash) {
-                ArtMap.instance().getLogger().info("Map id:" + map.getMapId() + " is corrupted! Restoring data file...");
-                map.setMap(data);
+                ArtMap.instance().getLogger().info("Map ID:" + map.getMapId() + " is corrupted! Restoring data file...");
+                map.setMap(maps.getMap(map.getMapId()).decompressMap(), true);
             }
         });
     }
 
+    /*
     private boolean restoreMap(MapId mapId) {
         boolean needsRestore;
         Map map = new Map(mapId.getId());
@@ -263,7 +263,7 @@ public final class Database {
             return true;
         }
         return false;
-    }
+    }*/
 
     private void accessSQL(Runnable runnable) {
         SQLAccessor accessor = new SQLAccessor(runnable);

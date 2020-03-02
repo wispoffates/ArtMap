@@ -8,6 +8,7 @@ import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
@@ -80,7 +81,7 @@ class CommandImport extends AsyncCommand {
             artToImport = gson.fromJson(reader, collectionType);
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure reading import!", e);
         }
 
         sender.sendMessage(MessageFormat.format("{0} artworks available for import.", artToImport.size()));

@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -136,7 +137,7 @@ public class Reflection {
                     yaw = ArtMap.getBukkitVersion().getVersion().getYaw(packet);
                     pitch = ArtMap.getBukkitVersion().getVersion().getPitch(packet);
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
                     return null;
                 }
                 return new ArtistPacket.PacketLook(yaw, pitch);
@@ -151,7 +152,7 @@ public class Reflection {
                 try {
                     packetInteractType = invokeMethod(packet, "a");
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
                     return null;
                 }
 
@@ -218,12 +219,12 @@ public class Reflection {
             Object worldMap = getField(mapView, "worldMap");
             setField(worldMap, "colors", colors);
 
+            mapView.setScale(MapView.Scale.FARTHEST);
         } catch (NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure setting world map!", e);
             return;
         }
-        mapView.setScale(MapView.Scale.FARTHEST);
     }
 
     public static class ChatPacketBuilder {

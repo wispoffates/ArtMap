@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -113,7 +114,7 @@ public class Heads {
 			}
 			br.close();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure getting head!", e);
 		} catch (IOException e) {
 			ArtMap.instance().getLogger().info("Error retrieving head texture.  Server is likely over API limit temporarily.");
 		}

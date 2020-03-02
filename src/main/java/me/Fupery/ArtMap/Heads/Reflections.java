@@ -4,10 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
+
+import me.Fupery.ArtMap.ArtMap;
 
 /**
  * An utility class that simplifies reflection in Bukkit plugins.
@@ -358,7 +361,7 @@ public final class Reflections {
         try {
             return type.newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure creating instance!", e);
             return null;
         }
     }

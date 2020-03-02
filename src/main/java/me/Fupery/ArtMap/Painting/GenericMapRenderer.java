@@ -16,9 +16,7 @@ public class GenericMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView mapView, MapCanvas canvas, Player player) {
-
         if (!hasRendered && map != null && map.length == 16384) {
-
             for (int x = 0; x < 128; x++) {
 
                 for (int y = 0; y < 128; y++) {

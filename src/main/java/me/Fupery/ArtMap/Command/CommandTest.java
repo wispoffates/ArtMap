@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,6 @@ class CommandTest extends AsyncCommand {
                         createArt(UUID.fromString("5dcadcf6-7070-42ab-aaf3-b60a120a6bcf"), "test_"+series+"_"+i, new Date().toString(),i%100==0);
                         //Thread.sleep(2); //slow it down just a bit
                     } catch(Exception e) {
-                        e.printStackTrace();
                         System.out.println("Successfully created = " + (i-1));
                         break;
                     }
@@ -72,7 +72,7 @@ class CommandTest extends AsyncCommand {
                 ArtMap.getArtDatabase().getMapTable().addMap(cMap);
                 ArtMap.getArtDatabase().getArtTable().addArtwork(mapArt);
             } catch(Exception e) {
-                e.printStackTrace();
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }
         });
     }

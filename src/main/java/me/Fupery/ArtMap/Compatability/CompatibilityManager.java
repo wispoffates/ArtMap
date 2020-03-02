@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Compatability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -90,8 +91,7 @@ public class CompatibilityManager implements RegionHandler {
                 ArtMap.instance().getLogger().info(pluginName + " not detected.  Hooks skipped.");
             }
         } catch (Exception | NoClassDefFoundError exception) {
-            ArtMap.instance().getLogger().severe("Exception loading region handler for " + pluginName);
-            exception.printStackTrace();
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Exception loading region handler for " + pluginName,exception);
         }
     }
 
