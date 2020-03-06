@@ -1,8 +1,8 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
 
 ### Supported Versions:
-* Spigot 1.15.2, 1.14.4, 1.13.2 - Master Branch
-* Spigot 1.8.8 - 1.12.2 - 1.12 Branch
+* Spigot/Paper 1.15.2, 1.14.4, 1.13.2 - Master Branch
+* Spigot/Paper 1.8.8 - 1.12.2 - 1.12 Branch
 
 ### Features
 * Custom easel entity
