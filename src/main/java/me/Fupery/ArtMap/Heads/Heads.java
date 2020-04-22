@@ -109,10 +109,12 @@ public class Heads {
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
+			StringBuffer sb = new StringBuffer();
 			while ((inputLine = br.readLine()) != null) {
-				return inputLine;
+				sb.append(inputLine);
 			}
 			br.close();
+			return sb.toString();
 		} catch (MalformedURLException e) {
 			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure getting head!", e);
 		} catch (IOException e) {
