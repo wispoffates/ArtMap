@@ -6,12 +6,9 @@
 * Removed a few compatibility hooks with plugins that never got upgraded to 1.13
 * Remove a lot of legacy code around pre 1.13 support
 
-<<<<<<< HEAD
 ## Release 3.4.3
 * Fix Head retrieval.  The JSON response reading didn't handle newlines at all and mojang appears to have added one.
 
-=======
->>>>>>> bbc510b19e8fd36afaa4a8e80798f5772faa2624
 ## Release 3.4.2
 * Fix a major bug that would cause blank canvases when map restore would fail silently.
 * Fix the logging so Artmap doesn't eat excpetions without telling anyone.
