@@ -1,9 +1,7 @@
 package me.Fupery.ArtMap.Menu.Event;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Menu.HelpMenu.ArtistArtworksMenu;
-import me.Fupery.ArtMap.Utils.VersionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,9 +27,7 @@ public class MenuListener implements Listener {
     public MenuListener(MenuHandler handler, JavaPlugin plugin) {
         this.handler = handler;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            Bukkit.getPluginManager().registerEvents(new SwapHandListener(), plugin);
-        }
+        Bukkit.getPluginManager().registerEvents(new SwapHandListener(), plugin);
     }
 
     private void fireMenuEvent(MenuEvent event) {
@@ -100,7 +96,7 @@ public class MenuListener implements Listener {
     public void onMenuClose(InventoryCloseEvent event) {
         Player player = ((Player) event.getPlayer());
 
-        if (player != null && handler.isTrackingPlayer(player)) {
+        if (handler.isTrackingPlayer(player)) {
             fireMenuEvent(new MenuCloseEvent(player, event.getInventory(), MenuCloseReason.CLIENT));
         }
     }

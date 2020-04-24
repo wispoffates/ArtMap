@@ -16,7 +16,7 @@ import me.Fupery.ArtMap.Painting.CanvasRenderer;
 public class Dye extends Brush {
     private ArrayList<CachedPixel> dirtyPixels;
 
-    private Palette palette = ArtMap.getDyePalette();
+    private Palette palette = ArtMap.instance().getDyePalette();
 
     public Dye(CanvasRenderer renderer, Player player) {
         super(renderer, player);

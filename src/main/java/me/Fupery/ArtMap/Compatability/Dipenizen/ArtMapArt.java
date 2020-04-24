@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Compatability.Dipenizen;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import net.aufdemrand.denizen.objects.dItem;
@@ -45,7 +48,7 @@ public class ArtMapArt implements dObject {
 	/////////////////
 	public ArtMapArt(int artId) {
 		this.artId = artId;
-		ArtMap.getArtDatabase().getArtwork(this.artId);
+		//ArtMap.instance().getArtDatabase().getArtwork(this.artId);
 	}
 
 	/////////////////////
@@ -71,7 +74,16 @@ public class ArtMapArt implements dObject {
 
 	@Override
 	public String getAttribute(Attribute attribute) {
-		MapArt art = ArtMap.getArtDatabase().getArtwork(this.artId);
+		MapArt art;
+		try {
+			art = ArtMap.instance().getArtDatabase().getArtwork(this.artId);
+		} catch (SQLException e) {
+			ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+			return "Error!";
+		}
+		if(art == null) {
+			return "No Artwork Found!";
+		}
 		if (attribute.startsWith("name")) {
 			return new Element(art.getTitle()).getAttribute(attribute);
 		}

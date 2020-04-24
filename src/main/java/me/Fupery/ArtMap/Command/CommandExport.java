@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Base64;
@@ -48,26 +49,38 @@ public class CommandExport extends AsyncCommand {
         String exportFilename = null;
 
         switch (args[1]) {
-        case "-all":
-            for (UUID artist : ArtMap.getArtDatabase().getArtTable().listArtists()) {
-                artToExport.addAll(Arrays.asList(ArtMap.getArtDatabase().getArtTable().listMapArt(artist)));
-            }
-            exportFilename = args[2];
+            case "-all":
+                try {
+                    for (UUID artist : ArtMap.instance().getArtDatabase().listArtists()) {
+                        artToExport.addAll(Arrays.asList(ArtMap.instance().getArtDatabase().listMapArt(artist)));
+                    }
+                } catch (SQLException e2) {
+                    msg.message = "Database error! Check logs.";
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e2);
+                    return;
+                }
+                exportFilename = args[2];
 
-            break;
-        case "-artist":
-            if (args.length < 4) {
-                // TODO: need usage
-                msg.message = Lang.COMMAND_EXPORT.get();
-                return;
-            }
-            MapArt[] arts;
-            try {
-                UUID id = UUID.fromString(args[2]);
-                arts = ArtMap.getArtDatabase().listMapArt(id);
-            } catch (Exception exp) {
-                //its a name then
-                arts = ArtMap.getArtDatabase().listMapArt(Bukkit.getPlayer(args[2]).getUniqueId());
+                break;
+            case "-artist":
+                if (args.length < 4) {
+                    // TODO: need usage
+                    msg.message = Lang.COMMAND_EXPORT.get();
+                    return;
+                }
+                MapArt[] arts;
+                try {
+                    UUID id = UUID.fromString(args[2]);
+                    arts = ArtMap.instance().getArtDatabase().listMapArt(id);
+                } catch (Exception exp) {
+                    // its a name then
+                    try {
+                        arts = ArtMap.instance().getArtDatabase().listMapArt(Bukkit.getPlayer(args[2]).getUniqueId());
+                    } catch (SQLException e) {
+                       msg.message = "Database error! Check logs.";
+                       ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                       return;
+                    }
             }
             if (arts != null) {
                 artToExport.addAll(Arrays.asList(arts));
@@ -83,7 +96,14 @@ public class CommandExport extends AsyncCommand {
                 msg.message = Lang.COMMAND_EXPORT.get();
                 return;
             }
-            MapArt art = ArtMap.getArtDatabase().getArtwork(args[2]);
+            MapArt art;
+            try {
+                art = ArtMap.instance().getArtDatabase().getArtwork(args[2]);
+            } catch (SQLException e1) {
+                msg.message = "Database error! Check logs.";
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e1);
+                return;
+            }
             if (art != null) {
                 artToExport.add(art);
                 exportFilename = args[3];
@@ -104,7 +124,13 @@ public class CommandExport extends AsyncCommand {
         sender.sendMessage(MessageFormat.format("Beginning export of {0} artworks.", artToExport.size()));
         List<ArtworkExport> exports = new LinkedList<>();
         for (MapArt artwork : artToExport) {
-            CompressedMap map = ArtMap.getArtDatabase().getMapTable().getMap(artwork.getMapId());
+            CompressedMap map = null;
+            try {
+                map = ArtMap.instance().getArtDatabase().getArtworkCompressedMap(artwork.getMapId());
+            } catch (SQLException e) {
+                msg.message = "Database error! Check logs.";
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+            }
             if (map != null) {
                 exports.add(new ArtworkExport(artwork, map));
             } else {
@@ -116,9 +142,8 @@ public class CommandExport extends AsyncCommand {
             sender.sendMessage("File all ready exists please choose another filename.");
             return;
         }
-        try {
-            FileWriter writer = new FileWriter(exportFile);
-            Gson gson = ArtMap.getGson(true);
+        try (FileWriter writer = new FileWriter(exportFile);) {
+            Gson gson = ArtMap.instance().getGson(true);
             Type collectionType = new TypeToken<List<ArtworkExport>>() {
             }.getType();
             gson.toJson(exports, collectionType, writer);
@@ -167,12 +192,12 @@ public class CommandExport extends AsyncCommand {
          */
         public void importArtwork(CommandSender sender) {
             //1.14 requires create map to be run on the main thread!
-            Bukkit.getScheduler().runTask(ArtMap.instance(), ()->{
+            ArtMap.instance().getScheduler().SYNC.run( ()->{
                 try {
-                    Map map = ArtMap.getArtDatabase().createMap();
+                    Map map = ArtMap.instance().getArtDatabase().createMap();
                     CompressedMap cMap = new CompressedMap(map.getMapId(), this.hash, Base64.getDecoder().decode(this.mapData));
                     map.setMap(cMap.decompressMap(), true);
-                    MapArt check = ArtMap.getArtDatabase().getArtwork(this.title);
+                    MapArt check = ArtMap.instance().getArtDatabase().getArtwork(this.title);
                     if(check != null) {
                         //art with this title all ready exists see if its the same artwork (artist,and hash) otherwise increment name by 1
                         if(check.getArtist().equals(this.artist) && check.getMap().compress().getHash().equals(this.hash)) {
@@ -182,11 +207,8 @@ public class CommandExport extends AsyncCommand {
                     }
                     //null artistname since its dropped when importing into the database. 
                     MapArt mapArt = new MapArt(map.getMapId(), this.title, this.artist, null, this.date);
-                    ArtMap.getArtDatabase().getMapTable().addMap(cMap);
-                    ArtMap.getArtDatabase().getArtTable().addArtwork(mapArt);
-                    if(sender != null){
-                        sender.sendMessage(this.title + " :: Import Successful!");
-                    }
+                    ArtMap.instance().getArtDatabase().saveArtwork(mapArt, cMap);
+                    sender.sendMessage(this.title + " :: Import Successful!");
                 } catch(Exception e) {
                     if(sender != null) {
                         sender.sendMessage(this.title + " :: Import Failed! :: " + e.getMessage());

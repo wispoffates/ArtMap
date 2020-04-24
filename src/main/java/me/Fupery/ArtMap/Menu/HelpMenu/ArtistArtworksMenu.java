@@ -1,7 +1,9 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.github.Fupery.InvMenu.Utils.SoundCompat;
 
@@ -22,7 +24,6 @@ import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.VersionHandler;
 
 public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     private final UUID artist;
@@ -48,7 +49,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     }
 
     public static boolean isPreviewItem(ItemStack item) {
-		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta()
+        return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta()
                 && item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
     }
 
@@ -59,16 +60,22 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
     @Override
     public void onMenuCloseEvent(Player viewer, MenuCloseReason reason) {
-        if (reason == MenuCloseReason.SPECIAL) return;
-        if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-            ItemStack offHand = viewer.getInventory().getItemInOffHand();
-            if (isPreviewItem(offHand)) viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-        }
+        if (reason == MenuCloseReason.SPECIAL)
+            return;
+        ItemStack offHand = viewer.getInventory().getItemInOffHand();
+        if (isPreviewItem(offHand))
+            viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
     }
 
     @Override
     protected Button[] getListItems() {
-		MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(this.artist);
+        MapArt[] artworks;
+        try {
+            artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
+        } catch (SQLException e) {
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+            return new Button[0];
+        }
         Button[] buttons;
 
         if (artworks != null && artworks.length > 0) {
@@ -95,7 +102,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
         private PreviewButton(ArtistArtworksMenu menu, MapArt artwork, boolean adminButton) {
 			super(Material.FILLED_MAP);
 			MapMeta meta = (MapMeta) artwork.getMapItem().getItemMeta();
-			meta.setMapId(artwork.getMapId());
+			meta.setMapView(ArtMap.getMap(artwork.getMapId()));
 			meta.setLocationName(artwork.getTitle());
             List<String> lore = meta.getLore();
             lore.add(HelpMenu.CLICK);
@@ -110,12 +117,12 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
         public void onClick(Player player, ClickType clickType) {
 
             if (clickType == ClickType.LEFT) {
-				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SWITCH);
-				ArtMap.getMenuHandler().openMenu(player, new ArtPieceMenu(this.artworkMenu, this.artwork, player));
+				ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.SWITCH);
+				ArtMap.instance().getMenuHandler().openMenu(player, new ArtPieceMenu(this.artworkMenu, this.artwork, player));
             } else if (clickType == ClickType.RIGHT) {
                 if (player.hasPermission("artmap.admin")) {
                     SoundCompat.BLOCK_CLOTH_FALL.play(player);
-                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+                    ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
                 } else if (adminViewing) {
                     Lang.NO_PERM.send(player);
                 }

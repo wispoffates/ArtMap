@@ -1,7 +1,9 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,8 +34,8 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
-		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
-				&& item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
+		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta()
+				&& item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
 	}
 
 	@Override
@@ -48,7 +50,7 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 		return buttons.toArray(new Button[0]);
 	}
 
-	private class AcceptButton extends Button {
+	private static class AcceptButton extends Button {
 
 		private final MapArt artwork;
 		private final ArtistArtworksMenu artworkMenu;
@@ -69,20 +71,23 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 		public void onClick(Player player, ClickType clickType) {
 
 			if (clickType == ClickType.LEFT) {
-				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
+				ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
-				ArtMap.getScheduler().SYNC.run(() -> {
+				ArtMap.instance().getScheduler().SYNC.run(() -> {
 					if (this.artwork.getArtist().equals(player.getUniqueId()) || player.hasPermission("artmap.admin")) {
-						if (ArtMap.getArtDatabase().deleteArtwork(this.artwork)) {
+						try {
+							ArtMap.instance().getArtDatabase().deleteArtwork(this.artwork);
 							player.sendMessage(String.format(Lang.DELETED.get(), this.artwork.getTitle()));
-						} else {
-							player.sendMessage(String.format(Lang.MAP_NOT_FOUND.get(), this.artwork.getTitle()));
+						} catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
+							ArtMap.instance().getLogger().log(Level.SEVERE, "Error deleting artwork!!", e);
+							player.sendMessage("Error deleting Artwork check logs.");
+							return; 
 						}
 					} else {
 						player.sendMessage(Lang.NO_PERM.get());
 						return;
 					}
-					ArtMap.getMenuHandler().openMenu(player, this.artworkMenu);
+					ArtMap.instance().getMenuHandler().openMenu(player, this.artworkMenu);
 				});
 			}
 		}

@@ -5,46 +5,34 @@ import java.util.Arrays;
 
 import org.bukkit.map.MapView;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
 import me.Fupery.ArtMap.IO.Database.Map;
-import me.Fupery.ArtMap.Utils.Reflection;
 
 public class CompressedMap extends MapId {
     private byte[] compressedMap;
 
     public CompressedMap(int id, int hash, byte[] compressedMap) {
         super(id, hash);
-        this.compressedMap = compressedMap;
+        this.compressedMap = Arrays.copyOf(compressedMap, compressedMap.length);
     }
 
-    public static CompressedMap compress(MapView mapView) {
-		return compress(mapView.getId(), Reflection.getMap(mapView));
+    public static CompressedMap compress(MapView mapView) throws IOException {
+		return compress(mapView.getId(), ArtMap.instance().getReflection().getMap(mapView));
     }
 
-    public static CompressedMap compress(int mapId, byte[] map) {
-        byte[] compressed;
-        try {
-            compressed = new f32x32().generateBLOB(map);
-        } catch (IOException e) {
-            ErrorLogger.log(e, "Compression error!");
-            return null;
-        }
+    public static CompressedMap compress(int mapId, byte[] map) throws IOException {
+        byte[] compressed = new f32x32().generateBLOB(map);
         return new CompressedMap(mapId, Arrays.hashCode(map), compressed);
     }
 
-	public static CompressedMap compress(int newId, MapView mapView) {
-		byte[] compressed;
-		try {
-			compressed = new f32x32().generateBLOB(Reflection.getMap(mapView));
-		} catch (IOException e) {
-			ErrorLogger.log(e, "Compression error!");
-			return null;
-		}
-		return new CompressedMap(newId, Arrays.hashCode(Reflection.getMap(mapView)), compressed);
+	public static CompressedMap compress(int newId, MapView mapView) throws IOException {
+		byte[] compressed = new f32x32().generateBLOB(ArtMap.instance().getReflection().getMap(mapView));
+		return new CompressedMap(newId, Arrays.hashCode(ArtMap.instance().getReflection().getMap(mapView)), compressed);
 	}
 
     public byte[] getCompressedMap() {
-        return compressedMap;
+        return Arrays.copyOf(this.compressedMap, this.compressedMap.length);
     }
 
     public byte[] decompressMap() {

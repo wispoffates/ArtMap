@@ -2,6 +2,9 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.DataTables.DataTables;
 import me.Fupery.DataTables.PixelTable;
+
+import java.util.Arrays;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PixelTableManager {
@@ -27,11 +30,11 @@ public class PixelTableManager {
     }
 
     public float[] getYawBounds() {
-        return yawBounds;
+        return Arrays.copyOf(this.yawBounds, this.yawBounds.length);
     }
 
     public Object[] getPitchBounds() {
-        return pitchBounds;
+        return Arrays.copyOf(this.pitchBounds, this.pitchBounds.length);
     }
 
     public int getResolutionFactor() {

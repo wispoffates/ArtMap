@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
 
 public class SQLiteTable {
     protected static final String sqlError = "Database error,";
@@ -23,39 +22,18 @@ public class SQLiteTable {
         this.creationSQL = creationSQL;
     }
 
-    protected boolean create() {
-        Connection connection = null;
-        Statement buildTableStatement = null;
-
+    protected void create() throws SQLException {
         manager.getLock().lock();
-        try {
-            connection = manager.getConnection();
-            buildTableStatement = connection.createStatement();
+        try (Connection connection = manager.getConnection(); Statement buildTableStatement = connection.createStatement()) {
             buildTableStatement.executeUpdate(creationSQL);
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TABLE);
-            ps.executeQuery();
-        } catch (SQLException e) {
-			ErrorLogger.log(e, SQLiteTable.sqlError);
-            return false;
         } finally {
-            if (buildTableStatement != null) try {
-                buildTableStatement.close();
-            } catch (SQLException e) {
-					ErrorLogger.log(e, SQLiteTable.sqlError);
-            }
-            if (connection != null) try {
-                connection.close();
-            } catch (SQLException e) {
-					ErrorLogger.log(e, SQLiteTable.sqlError);
-            }
             manager.getLock().unlock();
         }
-        return true;
     }
 
-    protected abstract class QueuedStatement extends ArtTable.QueuedQuery<Boolean> {
+    protected abstract class QueuedStatement extends ArtTable.QueuedQuery<Void> {
 
-        protected int[] executeBatch(String query) {
+        protected int[] executeBatch(String query) throws SQLException {
             Connection connection = null;
             PreparedStatement statement = null;
             int[] result = new int[0];
@@ -66,8 +44,8 @@ public class SQLiteTable {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 result = statement.executeBatch();
-            } catch (Exception e) {
-				ErrorLogger.log(statement, e, sqlError);
+            } catch (SQLException e) {
+				throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
@@ -76,29 +54,28 @@ public class SQLiteTable {
         }
 
         @Override
-		protected Boolean read(ResultSet set) throws SQLException {
-            return false;//unused
+		protected Void read(ResultSet set) throws SQLException {
+            return null;
         }
 
         @Override
-		public Boolean execute(String query) {
+		public Void execute(String query) throws SQLException {
             Connection connection = null;
             PreparedStatement statement = null;
-            boolean result = false;
 
             manager.getLock().lock();
             try {
                 connection = manager.getConnection();
                 statement = connection.prepareStatement(query);
                 prepare(statement);
-                result = (statement.executeUpdate() != 0);
-            } catch (Exception e) {
-				ErrorLogger.log(statement, e, sqlError);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
             }
-            return result;
+            return null;
         }
     }
 
@@ -121,7 +98,7 @@ public class SQLiteTable {
             }
         }
 
-        public T execute(String query) {
+        public T execute(String query) throws SQLException {
             Connection connection = null;
             PreparedStatement statement = null;
             T result = null;
@@ -132,8 +109,8 @@ public class SQLiteTable {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 result = read(statement.executeQuery());
-            } catch (Exception e) {
-				ErrorLogger.log(statement, e, sqlError);
+            } catch (SQLException e) {
+                throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();

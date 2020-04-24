@@ -23,7 +23,6 @@ public class CompatibilityManager implements RegionHandler {
 		loadRegionHandler("Factions",FactionsCompat.class);
         loadRegionHandler("GriefPrevention",GriefPreventionCompat.class);
 		loadRegionHandler("RedProtect",RedProtectCompat.class);
-		loadRegionHandler("Landlord",LandlordCompat.class);
         loadRegionHandler("ASkyBlock",ASkyBlockCompat.class);
         loadRegionHandler("uSkyBlock",USkyBlockCompat.class);
         loadRegionHandler("BentoBox",BentoBoxCompat.class);
@@ -97,11 +96,12 @@ public class CompatibilityManager implements RegionHandler {
 
     @Override
     public String toString() {
-        String string = "Plugin compatability hooks: ";
+        StringBuffer sb = new StringBuffer();
+        sb.append("Plugin compatability hooks: ");
         for (RegionHandler regionHandler : regionHandlers) {
-            string += regionHandler.getClass().getSimpleName() + " [LOADED:" + regionHandler.isLoaded() + "], ";
+            sb.append(regionHandler.getClass().getSimpleName() + " [LOADED:" + regionHandler.isLoaded() + "], ");
         }
-        string += "Reflection Handler: " + reflectionHandler.getClass();
-        return string;
+        sb.append("Reflection Handler: " + reflectionHandler.getClass());
+        return sb.toString();
     }
 }

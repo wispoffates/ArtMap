@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,12 +26,11 @@ import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.VersionHandler;
 import net.wesjd.anvilgui.AnvilGUI;
 
 public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	private ArtistArtworksMenu parent;
-	private Player				viewer;
+	private Player viewer;
 	private MapArt artwork;
 
 	public ArtPieceMenu(ArtistArtworksMenu parent, MapArt artwork, Player viewer) {
@@ -40,8 +41,8 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	}
 
 	public static boolean isPreviewItem(ItemStack item) {
-		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta() && item.getItemMeta().hasLore()
-				&& item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
+		return item != null && item.getType() == Material.FILLED_MAP && item.hasItemMeta()
+				&& item.getItemMeta().hasLore() && item.getItemMeta().getLore().get(0).equals(ArtItem.PREVIEW_KEY);
 	}
 
 	@Override
@@ -53,11 +54,9 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	public void onMenuCloseEvent(Player viewer, MenuCloseReason reason) {
 		if (reason == MenuCloseReason.SPECIAL)
 			return;
-		if (ArtMap.getBukkitVersion().getVersion() != VersionHandler.BukkitVersion.v1_8) {
-			ItemStack offHand = viewer.getInventory().getItemInOffHand();
-			if (isPreviewItem(offHand))
-				viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-		}
+		ItemStack offHand = viewer.getInventory().getItemInOffHand();
+		if (isPreviewItem(offHand))
+			viewer.getInventory().setItemInOffHand(new ItemStack(Material.AIR));	
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		return buttons.toArray(new Button[0]);
 	}
 
-	private class PreviewButton extends Button {
+	private static class PreviewButton extends Button {
 
 		private final MapArt artwork;
 		private final ArtPieceMenu artworkMenu;
@@ -80,13 +79,13 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		private PreviewButton(ArtPieceMenu menu, MapArt artwork, Player player) {
 			super(Material.FILLED_MAP);
 			MapMeta meta = (MapMeta) artwork.getMapItem().getItemMeta();
-			meta.setMapId(artwork.getMapId());
+			meta.setMapView(ArtMap.getMap(artwork.getMapId()));
 			List<String> lore = meta.getLore();
 			lore.add(HelpMenu.CLICK);
 			if (player.hasPermission("artmap.admin")) {
 				lore.add(lore.size(), ChatColor.GOLD + Lang.ADMIN_RECIPE.get());
-			} else if(artwork.getArtistPlayer().equals(player)){ 
-				lore.add(ChatColor.GOLD+Lang.RECIPE_PLAYER_MAP_COPY.get());
+			} else if (artwork.getArtistPlayer().equals(player)) {
+				lore.add(ChatColor.GOLD + Lang.RECIPE_PLAYER_MAP_COPY.get());
 			}
 			meta.setLore(lore);
 			setItemMeta(meta);
@@ -103,28 +102,28 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 					SoundCompat.BLOCK_CLOTH_FALL.play(player);
 					ItemStack preview = artwork.getMapItem();
 					MapMeta meta = (MapMeta) preview.getItemMeta();
-					meta.setMapId(artwork.getMapId());
+					meta.setMapView(ArtMap.getMap(artwork.getMapId()));
 					List<String> lore = getItemMeta().getLore();
 					lore.set(0, ArtItem.PREVIEW_KEY);
 					meta.setLore(lore);
 					preview.setItemMeta(meta);
-					ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.SPECIAL);
+					ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.SPECIAL);
 					player.getInventory().setItemInOffHand(preview);
-					ArtMap.getMenuHandler().openMenu(player, this.artworkMenu);
+					ArtMap.instance().getMenuHandler().openMenu(player, this.artworkMenu);
 				} else {
 					Lang.EMPTY_HAND_PREVIEW.send(player);
 				}
 			} else if (clickType == ClickType.RIGHT) {
 				if (player.hasPermission("artmap.admin")) {
 					SoundCompat.BLOCK_CLOTH_FALL.play(player);
-					ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+					ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
 				} else if (artwork.getArtistPlayer().equals(player)) {
-					if(player.getInventory().contains(Material.MAP)) {
-						//remove a map from the player
-						HashMap<Integer,? extends ItemStack> maps = player.getInventory().all(Material.MAP);
+					if (player.getInventory().contains(Material.MAP)) {
+						// remove a map from the player
+						HashMap<Integer, ? extends ItemStack> maps = player.getInventory().all(Material.MAP);
 						ItemStack map = maps.entrySet().iterator().next().getValue();
-						map.setAmount(map.getAmount()-1);
-						ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
+						map.setAmount(map.getAmount() - 1);
+						ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, artwork.getMapItem()));
 					} else {
 						player.sendMessage(Lang.RECIPE_PLAYER_MAP_COPY_MISSING.get());
 					}
@@ -135,7 +134,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		}
 	}
 
-	private class DeleteButton extends Button {
+	private static class DeleteButton extends Button {
 
 		private final MapArt artwork;
 		private final ArtistArtworksMenu parent;
@@ -156,17 +155,17 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		public void onClick(Player player, ClickType clickType) {
 
 			if (clickType == ClickType.LEFT) {
-				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
+				ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
-				ArtMap.getScheduler().SYNC.run(() -> {
-					ArtMap.getMenuHandler().openMenu(player,
+				ArtMap.instance().getScheduler().SYNC.run(() -> {
+					ArtMap.instance().getMenuHandler().openMenu(player,
 							new DeleteConfirmationMenu(this.parent, this.artwork, false));
 				});
 			}
 		}
 	}
 
-	private class RenameButton extends Button {
+	private static class RenameButton extends Button {
 
 		private final MapArt artwork;
 		private final ArtistArtworksMenu artworkMenu;
@@ -187,21 +186,25 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 		public void onClick(Player player, ClickType clickType) {
 
 			if (clickType == ClickType.LEFT) {
-				ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
+				ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.DONE);
 
 				if (this.artwork.getArtist().equals(player.getUniqueId()) || player.hasPermission("artmap.admin")) {
-					new AnvilGUI(ArtMap.instance(), player, Lang.TITLE_QUESTION.get(), (p, reply) -> {
-						ArtMap.getScheduler().SYNC.run(() -> {
-							if (ArtMap.getArtDatabase().renameArtwork(this.artwork, reply)) {
+					AnvilGUI.Builder gui = new AnvilGUI.Builder();
+					gui.plugin(ArtMap.instance()).text(Lang.TITLE_QUESTION.get()).onComplete((p, reply) -> {
+						ArtMap.instance().getScheduler().SYNC.run(() -> {
+							try {
+								ArtMap.instance().getArtDatabase().renameArtwork(this.artwork, reply);
 								player.sendMessage(String.format(Lang.RENAMED.get(), this.artwork.getTitle()));
-							} else {
-								player.sendMessage(String.format(Lang.MAP_NOT_FOUND.get(), this.artwork.getTitle()));
+								ArtMap.instance().getMenuHandler().openMenu(player, this.artworkMenu.getParent(player));
+							} catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
+								ArtMap.instance().getLogger().log(Level.SEVERE, "Rename Artwork Failure!", e);
+								player.sendMessage("Error Renaming Artwork check logs.");
+            					return; 
 							}
-
-							ArtMap.getMenuHandler().openMenu(player, this.artworkMenu.getParent(player));
 						});
 						return null;
 					});
+					gui.open(player);
 				} else {
 					player.sendMessage(Lang.NO_PERM.get() + " " + this.artwork.getArtist().equals(player.getUniqueId())
 							+ " " + player.hasPermission("artmap.admin"));

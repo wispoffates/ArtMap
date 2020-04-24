@@ -31,7 +31,7 @@ public class Dropper extends Brush {
             byte[] pixel = getCurrentPixel();
             if (pixel != null) {
                 dye = getPixelAt(pixel[0], pixel[1]).getColour();
-                ArtDye artdye = ((BasicPalette)ArtMap.getDyePalette()).getDye(dye);
+                ArtDye artdye = ((BasicPalette)ArtMap.instance().getDyePalette()).getDye(dye);
                 Bukkit.getScheduler().runTask(ArtMap.instance(), ()->{
                     this.player.sendMessage("Picked up Dye colour: " + artdye.name() + " :: " + artdye.getMaterial().name() + " :: " + dye);
                 });

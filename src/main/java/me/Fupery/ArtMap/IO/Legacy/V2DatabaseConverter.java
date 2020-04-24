@@ -1,15 +1,18 @@
 package me.Fupery.ArtMap.IO.Legacy;
 
 import me.Fupery.ArtMap.IO.ColourMap.f32x32;
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Command.CommandExport.ArtworkExport;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.Database.SQLiteDatabase;
 import me.Fupery.ArtMap.IO.Database.SQLiteTable;
 import me.Fupery.ArtMap.IO.MapArt;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class V2DatabaseConverter extends DatabaseConverter {
 
@@ -43,11 +47,12 @@ public class V2DatabaseConverter extends DatabaseConverter {
     @Override
     public boolean createExport(boolean force) throws Exception {
         String dbFileName = "ArtMap.db";
-        if(force) {
+        if (force) {
             dbFileName = "ArtMap.db.off";
         }
         File databaseFile = new File(plugin.getDataFolder(), dbFileName);
-        if (!databaseFile.exists()) return false;
+        if (!databaseFile.exists())
+            return false;
 
         sendMessage("Old 'ArtMap.db' database found! Converting to new format ...");
         sendMessage("(This may take a while, but only needs to run once)");
@@ -56,7 +61,7 @@ public class V2DatabaseConverter extends DatabaseConverter {
         String message = this.export(artList);
         sendMessage(message);
 
-        if(dbFileName.equals("ArtMap.db")) {
+        if (dbFileName.equals("ArtMap.db")) {
             if (!databaseFile.renameTo(new File(plugin.getDataFolder(), dbFileName + ".off"))) {
                 sendMessage("Failed to move old ArtMap.db to ArtMap.db.off pleae do it manually.");
                 return true;
@@ -66,12 +71,11 @@ public class V2DatabaseConverter extends DatabaseConverter {
         return true;
     }
 
-    private List<ArtworkExport> readArtworks(String filename) {
+    private List<ArtworkExport> readArtworks(String filename) throws SQLException {
         List<ArtworkExport> artList = new ArrayList<>();
         OldDatabase database = new OldDatabase(plugin, filename);
         OldDatabaseTable table = new OldDatabaseTable(database);
-        if (!database.initialize(table)) return artList;
-
+        database.initialize(table);
         for (RichMapArt artwork : table.readArtworks()) {
             String title = artwork.getArt().getTitle();
             sendMessage(String.format("    Converting '%s' ...", title));
@@ -98,14 +102,14 @@ public class V2DatabaseConverter extends DatabaseConverter {
         }
     }
 
-    private class OldDatabase extends SQLiteDatabase {
+    private static class OldDatabase extends SQLiteDatabase {
 
         OldDatabase(JavaPlugin plugin, String filename) {
             super(new File(plugin.getDataFolder(), filename));
         }
 
-        private boolean initialize(OldDatabaseTable table) {
-            return super.initialize(table);
+        private void initialize(OldDatabaseTable table) throws SQLException {
+            super.initialize(table);
         }
 
         @Override
@@ -114,16 +118,16 @@ public class V2DatabaseConverter extends DatabaseConverter {
         }
     }
 
-    private class OldDatabaseTable extends SQLiteTable {
+    private static class OldDatabaseTable extends SQLiteTable {
 
         OldDatabaseTable(SQLiteDatabase database) {
             super(database, "artworks", "SELECT * FROM artworks");
         }
 
-        List<RichMapArt> readArtworks() {
+        List<RichMapArt> readArtworks() throws SQLException {
             return new QueuedQuery<List<RichMapArt>>() {
 
-                protected void prepare(PreparedStatement statement) throws SQLException {
+                protected void prepare(PreparedStatement statement) {
                 }
 
                 protected List<RichMapArt> read(ResultSet set) throws SQLException {
@@ -131,7 +135,8 @@ public class V2DatabaseConverter extends DatabaseConverter {
                     while (set.next()) {
                         try {
                             artList.add(readArtwork(set));
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+                            ArtMap.instance().getLogger().log(Level.SEVERE, "Exception reading artwork!",e);
                         }
                     }
                     return artList;
@@ -139,7 +144,7 @@ public class V2DatabaseConverter extends DatabaseConverter {
             }.execute("SELECT * FROM artworks");
         }
 
-        private RichMapArt readArtwork(ResultSet set) throws SQLException {
+        private RichMapArt readArtwork(ResultSet set) throws SQLException, IOException {
             String title = set.getString("title");
             int id = set.getInt("id");
             UUID artist = UUID.fromString(set.getString("artist"));
@@ -151,11 +156,10 @@ public class V2DatabaseConverter extends DatabaseConverter {
         }
 
         @Override
-        protected boolean create() {
-            return new QueuedQuery<Boolean>() {
+        protected void create() throws SQLException {
+            new QueuedQuery<Boolean>() {
                 @Override
-                protected void prepare(PreparedStatement statement) throws SQLException {
-
+                protected void prepare(PreparedStatement statement) {
                 }
 
                 @Override

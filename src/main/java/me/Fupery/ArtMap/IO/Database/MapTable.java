@@ -5,12 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.MapId;
 
-public final class MapTable extends SQLiteTable {
+final class MapTable extends SQLiteTable {
     public MapTable(SQLiteDatabase database) {
         super(database, "maps", "CREATE TABLE IF NOT EXISTS maps (" +
                 "id   INT   NOT NULL UNIQUE," +
@@ -20,7 +21,7 @@ public final class MapTable extends SQLiteTable {
                 ");");
     }
 
-    public void addMap(CompressedMap map) {
+    void addMap(CompressedMap map) throws SQLException {
         new QueuedStatement() {
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -31,7 +32,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("INSERT INTO " + TABLE + " (id, hash, map) VALUES(?,?,?);");
     }
 
-    void updateMapId(int oldMapId, int newMapId) {
+    void updateMapId(int oldMapId, int newMapId) throws SQLException {
         new QueuedStatement() {
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -41,7 +42,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET id=? WHERE id=?;");
     }
 
-    public boolean deleteMap(int mapId) {
+    Void deleteMap(int mapId) throws SQLException {
         return new QueuedStatement() {
 
             @Override
@@ -51,7 +52,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
     }
 
-    public boolean containsMap(int mapId) {
+    boolean containsMap(int mapId) throws SQLException {
         return new QueuedQuery<Boolean>() {
             @Override
             protected void prepare(PreparedStatement statement) throws SQLException {
@@ -65,7 +66,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("SELECT hash FROM " + TABLE + " WHERE id=?;");
     }
 
-    public void updateMap(CompressedMap map) {
+    void updateMap(CompressedMap map) throws SQLException {
         new QueuedStatement() {
             @Override
             protected void prepare(PreparedStatement statement) throws SQLException {
@@ -76,7 +77,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("UPDATE " + TABLE + " SET hash=?, map=? WHERE id=?;");
     }
 
-    public CompressedMap getMap(int mapId) {
+    CompressedMap getMap(int mapId) throws SQLException {
         return new QueuedQuery<CompressedMap>() {
 
             @Override
@@ -95,7 +96,7 @@ public final class MapTable extends SQLiteTable {
         }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
     }
 
-    public Integer getHash(int mapId) {
+    Integer getHash(int mapId) throws SQLException {
         return new QueuedQuery<Integer>() {
 
             @Override
@@ -111,16 +112,16 @@ public final class MapTable extends SQLiteTable {
     }
 
 
-    List<MapId> getMapIds() {
+    List<MapId> getMapIds() throws SQLException {
         return new QueuedQuery<List<MapId>>() {
 
             @Override
-			protected void prepare(PreparedStatement statement) throws SQLException {
+			protected void prepare(PreparedStatement statement) {
             }
 
             @Override
 			protected List<MapId> read(ResultSet set) throws SQLException {
-                List<MapId> mapHashes = new ArrayList<>();
+                List<MapId> mapHashes = new ArrayList<>(set.getFetchSize());
                 while (set.next()) {
                     mapHashes.add(new MapId(set.getInt("id"), set.getInt("hash")));
                 }
@@ -132,8 +133,9 @@ public final class MapTable extends SQLiteTable {
     /**
      * @param maps A list of maps to add to the database
      * @return A list of maps that could not be added
+     * @throws SQLException
      */
-    public List<CompressedMap> addMaps(List<CompressedMap> maps) {
+    List<CompressedMap> addMaps(List<CompressedMap> maps) throws SQLException {
         List<CompressedMap> failed = new ArrayList<>();
         new QueuedStatement() {
             @Override
@@ -145,7 +147,7 @@ public final class MapTable extends SQLiteTable {
                         statement.setBytes(3, map.getCompressedMap());
                     } catch (Exception e) {
                         failed.add(map);
-                        ErrorLogger.log(e, String.format("Error writing map %s to database!", map.getId()));
+                        ArtMap.instance().getLogger().log(Level.SEVERE, String.format("Error writing map %s to database!", map.getId()),e);
                         continue;
                     }
                     statement.addBatch();

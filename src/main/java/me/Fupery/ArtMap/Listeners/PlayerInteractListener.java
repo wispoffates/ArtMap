@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Listeners;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -32,50 +35,50 @@ class PlayerInteractListener implements RegisteredListener {
             yaw += 360;
         }
 
+        if (yaw >= 315 || yaw < 45) {
+            return BlockFace.NORTH;
+        } 
+        if (yaw >= 45 && yaw < 135) {
+            return BlockFace.EAST;
+        }
         if (yaw >= 135 && yaw < 225) {
             return BlockFace.SOUTH;
-
-        } else if (yaw >= 225 && yaw < 315) {
+        } 
+        if (yaw >= 225 && yaw < 315) {
             return BlockFace.WEST;
-
-        } else if (yaw >= 315 || yaw < 45) {
-            return BlockFace.NORTH;
-
-        } else if (yaw >= 45 && yaw < 135) {
-            return BlockFace.EAST;
-
-        } else return BlockFace.NORTH;
+        }
+        return BlockFace.NORTH;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
 
-        if (ArtMap.getPreviewManager().endPreview(event.getPlayer())) event.setCancelled(true);
+        if (ArtMap.instance().getPreviewManager().endPreview(event.getPlayer()))
+            event.setCancelled(true);
 
-		// Don't place paint brushes in the world
-		if (ArtMaterial.getCraftItemType(event.getItem()) == ArtMaterial.PAINT_BRUSH) {
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				event.setCancelled(true);
-				event.getPlayer().sendMessage(Lang.PAINTBRUSH_GROUND.get());
-				return;
-			}
-		}
+        // Don't place paint brushes in the world
+        if (ArtMaterial.getCraftItemType(event.getItem()) == ArtMaterial.PAINT_BRUSH) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(Lang.PAINTBRUSH_GROUND.get());
+                return;
+            }
+        }
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
-                || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         event.setCancelled(true);
 
-        if (!event.getBlockFace().equals(BlockFace.UP)) {
+        if (event.getBlockFace() != BlockFace.UP) {
             return;
         }
         Player player = event.getPlayer();
         Location baseLocation = event.getClickedBlock().getLocation().clone().add(.5, 1.25, .5);
         Location easelLocation = event.getClickedBlock().getLocation().clone().add(0, 2, 0);
-        CompatibilityManager compat = ArtMap.getCompatManager();
-        if (!player.hasPermission("artmap.artist")
-                || !compat.checkBuildAllowed(player, baseLocation)
+        CompatibilityManager compat = ArtMap.instance().getCompatManager();
+        if (!player.hasPermission("artmap.artist") || !compat.checkBuildAllowed(player, baseLocation)
                 || !compat.checkBuildAllowed(player, easelLocation)) {
             Lang.ActionBar.NO_PERM_ACTION.send(player);
             EaselEffect.USE_DENIED.playEffect(baseLocation);
@@ -84,18 +87,16 @@ class PlayerInteractListener implements RegisteredListener {
         BlockFace facing = getFacing(player);
         Location frameBlock = new LocationHelper(easelLocation).shiftTowards(facing);
 
-        if (!easelLocation.getBlock().isEmpty()
-                || !baseLocation.getBlock().isEmpty()
-                || !frameBlock.getBlock().isEmpty()
-                || Easel.checkForEasel(easelLocation)) {
+        if (!easelLocation.getBlock().isEmpty() || !baseLocation.getBlock().isEmpty()
+                || !frameBlock.getBlock().isEmpty() || Easel.checkForEasel(easelLocation)) {
             Lang.ActionBar.INVALID_POS.send(player);
             EaselEffect.USE_DENIED.playEffect(baseLocation);
             return;
         }
         Easel easel = Easel.spawnEasel(easelLocation, facing);
 
-		// remove 1 easel from either hand
-		removeEaselFromHandle(player);
+        // remove 1 easel from either hand
+        removeEaselFromHandle(player);
 
         if (easel == null) {
             Lang.ActionBar.INVALID_POS.send(player);
@@ -103,46 +104,52 @@ class PlayerInteractListener implements RegisteredListener {
         } else {
             EaselEffect.SPAWN.playEffect(new LocationHelper(baseLocation).shiftTowards(facing, .5));
         }
-	}
+    }
 
-	private void removeEaselFromHandle(Player player) {
-		// check main hand
-		if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInMainHand())) {
-			ItemStack items = player.getInventory().getItemInMainHand();
-			if (items.getAmount() > 1) {
-				items.setAmount(items.getAmount() - 1);
-			} else {
-				items = null;
-			}
-			player.getInventory().setItemInMainHand(items);
-			// check off hand
-		} else if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInOffHand())) {
-			ItemStack items = player.getInventory().getItemInOffHand();
-			if (items.getAmount() > 1) {
-				items.setAmount(items.getAmount() - 1);
-			} else {
-				items = null;
-			}
-			player.getInventory().setItemInOffHand(items);
-		}
-	}
+    private void removeEaselFromHandle(Player player) {
+        // check main hand
+        if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInMainHand())) {
+            ItemStack items = player.getInventory().getItemInMainHand();
+            if (items.getAmount() > 1) {
+                items.setAmount(items.getAmount() - 1);
+            } else {
+                items = null;
+            }
+            player.getInventory().setItemInMainHand(items);
+            // check off hand
+        } else if (ArtMaterial.EASEL.isValidMaterial(player.getInventory().getItemInOffHand())) {
+            ItemStack items = player.getInventory().getItemInOffHand();
+            if (items.getAmount() > 1) {
+                items.setAmount(items.getAmount() - 1);
+            } else {
+                items = null;
+            }
+            player.getInventory().setItemInOffHand(items);
+        }
+    }
 
     @EventHandler
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
         final ItemStack item = event.getCursor();
 
-        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null
-		        || item == null || item.getType() != Material.FILLED_MAP) {
+        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null || item.getType() != Material.FILLED_MAP) {
             return;
         }
 
-        ArtMap.getScheduler().ASYNC.run(() -> {
+        ArtMap.instance().getScheduler().ASYNC.run(() -> {
 
             ItemMeta meta = item.getItemMeta();
 
             if (!meta.hasLore()) {
 
-				MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(item));
+                MapArt art = null;
+                try {
+                    art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(item));
+                } catch (SQLException e) {
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+					event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
+            		return; 
+                }
 
                 if (art != null) {
 

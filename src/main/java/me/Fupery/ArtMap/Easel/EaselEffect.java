@@ -47,7 +47,7 @@ public enum EaselEffect {
     }
 
     public void playEffect(Location location) {
-        ArtMap.getScheduler().runSafely(() -> effect.play(location));
+        ArtMap.instance().getScheduler().runSafely(() -> effect.play(location));
     }
 
     private interface EffectPlayer {

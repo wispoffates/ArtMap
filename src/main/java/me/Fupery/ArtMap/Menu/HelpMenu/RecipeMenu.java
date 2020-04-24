@@ -20,14 +20,12 @@ import me.Fupery.ArtMap.Menu.Button.StaticButton;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
-import me.Fupery.ArtMap.Utils.VersionHandler;
 
 public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     private static final char LEFT_ARROW = '\u2B05';
 
     private boolean adminMenu;
-    private boolean version_1_12 = ArtMap.getBukkitVersion().getVersion().isEqualTo(VersionHandler.BukkitVersion.v1_12);
 
     public RecipeMenu(boolean adminMenu) {
 		super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), new MenuType(9));
@@ -38,9 +36,9 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
     public Button[] getButtons() {
 		String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
         return new Button[]{
-		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
+		        new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
 		        new StaticButton(Material.AIR),
-                new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
+                new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
 				new RecipeButton(ArtMaterial.PAINT_BRUSH),
@@ -49,7 +47,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+        return ArtMap.instance().getMenuHandler().MENU.HELP.get(viewer);
     }
 
 
@@ -75,7 +73,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
                 if (clickType == ClickType.LEFT) {
                     openRecipePreview(player);
                 } else if (clickType == ClickType.RIGHT) {
-                    ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
+                    ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, recipe.getItem()));
                 }
             } else {
                 openRecipePreview(player);
@@ -83,11 +81,7 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
         }
 
         private void openRecipePreview(Player player) {
-            if (version_1_12) {
-                ArtMap.getMenuHandler().openMenu(player, new RecipePreview_1_12(recipe));
-            } else {
-                ArtMap.getMenuHandler().openMenu(player, new RecipePreview(recipe));
-            }
+            ArtMap.instance().getMenuHandler().openMenu(player, new RecipePreview(recipe));
         }
     }
 }

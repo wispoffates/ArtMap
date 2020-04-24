@@ -1,9 +1,11 @@
 package me.Fupery.ArtMap.Easel;
 
 import java.lang.ref.WeakReference;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,18 +42,21 @@ public class Easel {
     }
 
     /**
-     * Attempts to spawn an easel at the location provided, facing the direction provided.
+     * Attempts to spawn an easel at the location provided, facing the direction
+     * provided.
      *
      * @param location The location where the easel will be spawned.
-     * @param facing   The direction the easel will face. Valid directions are NORTH, SOUTH, EAST and WEST.
-     * @return A reference to the spawned easel if it was spawned successfully, or null if the area is obstructed.
+     * @param facing   The direction the easel will face. Valid directions are
+     *                 NORTH, SOUTH, EAST and WEST.
+     * @return A reference to the spawned easel if it was spawned successfully, or
+     *         null if the area is obstructed.
      */
     public static Easel spawnEasel(Location location, BlockFace facing) {
         Easel easel = new Easel(location, false);
         easel.place(location, facing);
 
         if (easel.exists()) {
-            ArtMap.getEasels().put(easel);
+            ArtMap.instance().getEasels().put(easel.getLocation(), easel);
             easel.spawned.set(true);
             return easel;
         }
@@ -69,13 +74,13 @@ public class Easel {
     public static Easel getEasel(Location partLocation, EaselPart part) {
         Location easelLocation = part.getEaselPos(partLocation, EaselPart.getFacing(partLocation.getYaw()));
 
-        if (ArtMap.getEasels().contains(easelLocation)) {
-            return ArtMap.getEasels().get(easelLocation);
+        if (ArtMap.instance().getEasels().containsKey(easelLocation)) {
+            return ArtMap.instance().getEasels().get(easelLocation);
         }
         Easel easel = new Easel(easelLocation, true);
         easel.spawned.set(true);
         if (easel.hasSign() && easel.exists()) {
-            ArtMap.getEasels().put(easel);
+            ArtMap.instance().getEasels().put(easel.getLocation(), easel);
             easel.spawned.set(true);
             return easel;
         }
@@ -92,14 +97,15 @@ public class Easel {
         if (new Easel(location, true).exists()) {
             return true;
         }
-        if (ArtMap.getEasels().contains(location)) {
-            ArtMap.getEasels().remove(location);
+        if (ArtMap.instance().getEasels().containsKey(location)) {
+            ArtMap.instance().getEasels().remove(location);
         }
         return false;
     }
 
     private void place(Location location, BlockFace facing) {
-        if (exists()) breakEasel();
+        if (exists())
+            breakEasel();
         EaselPart.SIGN.spawn(location, facing);
         stand.spawn(location, facing);
         frame.spawn(location, facing);
@@ -107,7 +113,8 @@ public class Easel {
     }
 
     private boolean exists() {
-        if (!spawned.get()) return false;
+        if (!spawned.get())
+            return false;
         Collection<Entity> entities = getNearbyEntities();
         if (stand.exists(entities) && frame.exists(entities)) {
             return true;
@@ -118,9 +125,8 @@ public class Easel {
 
     private boolean hasSign() {
         BlockState state = location.getBlock().getState();
-        return (location.getBlock().getType() == ArtMap.getBukkitVersion().getVersion().getWallSign()
-                && state instanceof Sign
-                && ((Sign) state).getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID));
+        return (location.getBlock().getType() == ArtMap.instance().getBukkitVersion().getVersion().getWallSign()
+                && state instanceof Sign && ((Sign) state).getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID));
     }
 
     /**
@@ -129,17 +135,23 @@ public class Easel {
      * @param canvas The canvas that will be placed on the easel.
      */
     public void mountCanvas(Canvas canvas) {
-        if (getItem() != null) removeItem();
-		setItem(canvas.getEaselItem());
-        EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
+        try {
+            removeItem();
+            setItem(canvas.getEaselItem());
+            EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
+        } catch(Exception e) {
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Error placing canvas!",e);
+        }
     }
 
     /**
-     * Removes the current item mounted on the easel.
-     * If the item is an unsaved canvas, a canvas will be dropped at the easel.
-     * If the item is an edited artwork, a copy of the original artwork wil be dropped.
+     * Removes the current item mounted on the easel. If the item is an unsaved
+     * canvas, a canvas will be dropped at the easel. If the item is an edited
+     * artwork, a copy of the original artwork wil be dropped.
+     * 
+     * @throws SQLException
      */
-    public void removeItem() {
+    public void removeItem() throws SQLException {
         ItemStack item = getItem().clone();
         Canvas canvas = Canvas.getCanvas(item);
 
@@ -147,8 +159,9 @@ public class Easel {
         if (canvas != null) {
 			location.getWorld().dropItem(location, canvas.getDroppedItem());
         } else {
-            if (item != null && item.getType() != Material.AIR)
+            if (item.getType() != Material.AIR) {
                 location.getWorld().dropItemNaturally(location, item);
+            }
         }
     }
 
@@ -157,16 +170,20 @@ public class Easel {
      */
     public void breakEasel() {
         if (!spawned.getAndSet(false)) return;
-        ArtMap.getEasels().remove(location);
-        final Collection<Entity> entities = getNearbyEntities();
 
-        ArtMap.getScheduler().SYNC.run(() -> {
-            location.getBlock().setType(Material.AIR);
-            EaselEffect.BREAK.playEffect(getCentreLocation());
-            if (stand.remove(entities)) location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
-            if (frame.exists(entities)) {
-                removeItem();
-                frame.remove(entities);
+        ArtMap.instance().getScheduler().SYNC.run(() -> {
+            try {
+                final Collection<Entity> entities = getNearbyEntities();
+                if (frame.exists(entities)) {
+                    removeItem();
+                    frame.remove(entities);
+                }
+                location.getBlock().setType(Material.AIR);
+                EaselEffect.BREAK.playEffect(getCentreLocation());
+                if (stand.remove(entities)) location.getWorld().dropItemNaturally(location, ArtMaterial.EASEL.getItem());
+                ArtMap.instance().getEasels().remove(location);
+            } catch (Exception e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE,"Error removing easel!",e);
             }
         });
     }
@@ -206,7 +223,7 @@ public class Easel {
         Location location = user.getEyeLocation();
         EaselEffect.START_RIDING.playEffect(location);
 		seat.addPassenger(user);
-		if (seat.getPassengers() == null || !seat.getPassengers().contains(user)) {
+		if (!seat.getPassengers().contains(user)) {
 			return false;
 		}
 
@@ -220,7 +237,7 @@ public class Easel {
 
     private UUID getUser() {
         if (user == null) return null;
-        if (!ArtMap.getArtistHandler().containsPlayer(user)) removeUser();
+        if (!ArtMap.instance().getArtistHandler().containsPlayer(user)) removeUser();
         return user;
     }
 
@@ -274,6 +291,7 @@ public class Easel {
 
         T spawn(Location location, BlockFace facing) {
             if (exists(getNearbyEntities())) remove();
+            @SuppressWarnings("unchecked")
             T entity = (T) type.spawn(location, facing);
             entityRef = new WeakReference<>(entity);
             return entity;
@@ -295,6 +313,7 @@ public class Easel {
             return get(entities) != null;
         }
 
+        @SuppressWarnings("unchecked")
         T get(Collection<Entity> entities) {
             T entity = entityRef.get();
             if (entity != null && entity.isValid()) {

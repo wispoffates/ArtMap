@@ -61,6 +61,7 @@ class CommandImport extends AsyncCommand {
         default:
             // TODO: need usage
             msg.message = Lang.COMMAND_EXPORT.get();
+            return;
         }
 
         File importFile = new File(ArtMap.instance().getDataFolder(), importFilename);
@@ -75,7 +76,7 @@ class CommandImport extends AsyncCommand {
         }
         try {
             FileReader reader = new FileReader(importFile);
-            Gson gson = ArtMap.getGson(true);
+            Gson gson = ArtMap.instance().getGson(true);
             Type collectionType = new TypeToken<List<ArtworkExport>>() {
             }.getType();
             artToImport = gson.fromJson(reader, collectionType);
@@ -116,6 +117,7 @@ class CommandImport extends AsyncCommand {
         default:
             // TODO: need usage
             msg.message = Lang.COMMAND_EXPORT.get();
+            return;
         }
         sender.sendMessage("Import complete.");
     }

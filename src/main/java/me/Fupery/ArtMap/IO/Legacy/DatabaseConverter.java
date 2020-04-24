@@ -42,9 +42,8 @@ public abstract class DatabaseConverter {
         }
 
         File exportFile = File.createTempFile("conversion_", ".json", ArtMap.instance().getDataFolder());
-        try {
-            FileWriter writer = new FileWriter(exportFile);
-            Gson gson = ArtMap.getGson(true);
+        try (FileWriter writer = new FileWriter(exportFile);) {
+            Gson gson = ArtMap.instance().getGson(true);
             Type collectionType = new TypeToken<List<ArtworkExport>>() {
             }.getType();
             gson.toJson(export, collectionType, writer);

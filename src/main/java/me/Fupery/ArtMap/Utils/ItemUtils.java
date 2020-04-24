@@ -27,9 +27,15 @@ public class ItemUtils {
 
     public static ItemStack addKey(ItemStack item, String key) {
         ItemMeta meta = item.getItemMeta();
+        if(meta == null) {
+            return null;
+        }
         List<String> lore = meta.getLore();
-        if (lore == null) lore = new ArrayList<>();
-        else if (lore.contains(key)) return item;
+        if (lore == null) {
+            lore = new ArrayList<>();
+        } else if (lore.contains(key)) {
+            return item;
+        } 
         lore.add(key);
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -47,7 +53,14 @@ public class ItemUtils {
 			return -1;
 		}
 
-		MapMeta meta = (MapMeta) item.getItemMeta();
-		return meta.getMapId();
+        MapMeta meta = (MapMeta) item.getItemMeta();
+        if(null == meta) {
+            return -1;
+        }
+        if(meta.getMapView() != null) {
+            return meta.getMapView().getId();
+        } else {
+            return -1;
+        }
 	}
 }

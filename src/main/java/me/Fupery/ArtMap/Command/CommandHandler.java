@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,7 +76,7 @@ public class CommandHandler implements CommandExecutor {
 				});
 				ItemStack map = new ItemStack(Material.FILLED_MAP, 1);
 				MapMeta meta = (MapMeta) map.getItemMeta();
-				meta.setMapId(mapView.getId());
+				meta.setMapView(mapView);
 				map.setItemMeta(meta);
 				((Player) sender).getInventory().setItemInMainHand(map);
 			}
@@ -97,12 +98,17 @@ public class CommandHandler implements CommandExecutor {
 						String[] strings = args[2].split(":");
 						if (strings.length > 1) {
 							String title = strings[1];
-							MapArt art = ArtMap.getArtDatabase().getArtwork(title);
-							if (art == null) {
-								sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
-								return;
+							try {
+								MapArt art = ArtMap.instance().getArtDatabase().getArtwork(title);
+								if (art == null) {
+									sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
+									return;
+								}
+								item = art.getMapItem();
+							} catch( Exception e) {
+								sender.sendMessage(Lang.PREFIX + ChatColor.RED + "Error retrieving art! Check logs for details.");
+								ArtMap.instance().getLogger().log(Level.SEVERE, "Error retrieving art!", e);
 							}
-							item = art.getMapItem();
 						}
 					}
 					if (item == null) {
@@ -115,7 +121,7 @@ public class CommandHandler implements CommandExecutor {
 							item.setAmount(amount);
 					}
 					ItemStack finalItem = item;
-					ArtMap.getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
+					ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, finalItem));
 					return;
 				}
 				sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.PLAYER_NOT_FOUND.get(), args[1]));
@@ -127,13 +133,13 @@ public class CommandHandler implements CommandExecutor {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 if (sender instanceof Player) {
-                    ArtMap.getScheduler().SYNC.run(() -> {
-                        if (args.length > 0 & sender.hasPermission("artmap.admin")) {
+                    ArtMap.instance().getScheduler().SYNC.run(() -> {
+                        if (args.length > 0 && sender.hasPermission("artmap.admin")) {
                             Lang.Array.CONSOLE_HELP.send(sender);
                         }//todo fix formatting here
                         PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
                         Bukkit.getServer().getPluginManager().callEvent(event);
-                        MenuHandler menuHandler = ArtMap.getMenuHandler();
+                        MenuHandler menuHandler = ArtMap.instance().getMenuHandler();
                         menuHandler.openMenu(((Player) sender), menuHandler.MENU.HELP.get(((Player) sender)));
                     });
                 } else {
@@ -144,7 +150,7 @@ public class CommandHandler implements CommandExecutor {
 		commands.put("reload", new AsyncCommand("artmap.admin", "/art reload", true) {
             @Override
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.getScheduler().SYNC.run(() -> {
+                ArtMap.instance().getScheduler().SYNC.run(() -> {
                     JavaPlugin plugin = ArtMap.instance();
                     plugin.onDisable();
                     plugin.onEnable();
@@ -191,12 +197,12 @@ public class CommandHandler implements CommandExecutor {
 			}
 
 			// start combine
-			if (arg.contains("\"") && combined == null) {
+			if (combined == null && arg.contains("\"")) {
 				combined = arg.replace("\"", "");
 				continue;
 			}
 			// end combine
-			if (arg.contains("\"") && combined != null) {
+			if (combined != null && arg.contains("\"")) {
 				combined += " " + arg.replace("\"", "");
 				newArgs.add(combined);
 				combined = null;

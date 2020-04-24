@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Preview;
 
 import me.Fupery.ArtMap.ArtMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -44,7 +45,7 @@ public class PreviewManager {
     }
 
     void endPreview(UUID uuid) {
-        endPreview(ArtMap.getScheduler().callSync(() -> Bukkit.getPlayer(uuid)));
+        endPreview(ArtMap.instance().getScheduler().callSync(() -> Bukkit.getPlayer(uuid)));
     }
 
     public boolean endPreview(Player player) {

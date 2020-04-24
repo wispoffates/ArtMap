@@ -30,12 +30,12 @@ public class Fill extends Brush {
     public List<CachedPixel> paint(BrushAction action, ItemStack bucket, long strokeTime) {
 
         if (action == BrushAction.LEFT_CLICK) {
-            ArtDye colour =ArtMap.getDyePalette().getDye(this.player.getInventory().getItemInOffHand());
+            ArtDye colour =ArtMap.instance().getDyePalette().getDye(this.player.getInventory().getItemInOffHand());
 
             //handle fill with sponge in offhand
             if(colour == null) {
                 ItemStack offhand = this.player.getInventory().getItemInOffHand();
-                if(offhand != null && dropper.checkMaterial(offhand) && dropper.getColour() != null) {
+                if(dropper.checkMaterial(offhand) && dropper.getColour() != null) {
                     clean();
                     fillPixel(dropper.getColour());
                     return this.lastFill;
@@ -74,7 +74,7 @@ public class Fill extends Brush {
             final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour.getDyeColour(clickedColour);
 
-            ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
+            ArtMap.instance().getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 
@@ -87,7 +87,7 @@ public class Fill extends Brush {
             final byte clickedColour = getPixelBuffer()[pixel[0]][pixel[1]];
             final byte setColour = colour;
 
-            ArtMap.getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
+            ArtMap.instance().getScheduler().ASYNC.run(() -> fillBucket(coloured, pixel[0], pixel[1], clickedColour, setColour));
         }
     }
 

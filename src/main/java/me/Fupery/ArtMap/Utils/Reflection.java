@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Utils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,9 +12,9 @@ import org.bukkit.map.MapView;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
+import me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion;
 
 public class Reflection {
 
@@ -26,18 +25,11 @@ public class Reflection {
         NMS = version.replace("org.bukkit.craftbukkit", "net.minecraft.server");
     }
 
-    public static Channel getPlayerChannel(Player player) {
-        Channel channel;
-        try {
-            channel = ArtMap.getCompatManager().getReflectionHandler().getPlayerChannel(player);
-        } catch (Exception e) {
-            ErrorLogger.log(e);
-            return null;
-        }
-        return channel;
+    public Channel getPlayerChannel(Player player) throws ReflectiveOperationException {
+        return ArtMap.instance().getCompatManager().getReflectionHandler().getPlayerChannel(player);
     }
 
-    public static Object getField(Object obj, String fieldName)
+    public Object getField(Object obj, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
         Field field;
         try {
@@ -50,7 +42,7 @@ public class Reflection {
         return field.get(obj);
     }
 
-    public static Object getSuperField(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+    public Object getSuperField(Object obj, String fieldName) throws NoSuchFieldException, IllegalAccessException {
         Field field;
         try {
             field = obj.getClass().getSuperclass().getDeclaredField(fieldName);
@@ -62,7 +54,7 @@ public class Reflection {
         return field.get(obj);
     }
 
-    public static void setField(Object obj, String fieldName, Object value)
+    public void setField(Object obj, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
         Field field;
         try {
@@ -75,7 +67,7 @@ public class Reflection {
         field.set(obj, value);
     }
 
-    public static Object invokeMethod(Object obj, String methodName)
+    public Object invokeMethod(Object obj, String methodName)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method;
         try {
@@ -88,7 +80,7 @@ public class Reflection {
         return method.invoke(obj);
     }
 
-    public static Object invokeMethod(Object obj, String methodName, Object... parameters)
+    public Object invokeMethod(Object obj, String methodName, Object... parameters)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method;
         Class<?>[] parameterTypes = new Class[parameters.length];
@@ -105,7 +97,7 @@ public class Reflection {
         return method.invoke(obj, parameters);
     }
 
-    public static Object invokeStaticMethod(String className, String methodName, Object... params)
+    public Object invokeStaticMethod(String className, String methodName, Object... params)
             throws Exception {
         Class<?> obj = Class.forName(NMS + "." + className);
 
@@ -123,8 +115,9 @@ public class Reflection {
         return method.invoke(null, params);
     }
 
-    public static ArtistPacket getArtistPacket(Object packet) {
+    public ArtistPacket getArtistPacket(Object packet) {
         PacketType type = PacketType.getPacketType(packet);
+        final BukkitVersion version = ArtMap.instance().getBukkitVersion().getVersion();
 
         if (type == null) {
             return null;
@@ -134,8 +127,8 @@ public class Reflection {
 
                 float yaw, pitch;
                 try {
-                    yaw = ArtMap.getBukkitVersion().getVersion().getYaw(packet);
-                    pitch = ArtMap.getBukkitVersion().getVersion().getPitch(packet);
+                    yaw = version.getYaw(packet);
+                    pitch = version.getPitch(packet);
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
                     return null;
@@ -179,7 +172,7 @@ public class Reflection {
         return null;
     }
 
-    public static byte[] getMap(MapView mapView) {
+    public byte[] getMap(MapView mapView) {
         byte colors[];
 
         try {
@@ -196,23 +189,7 @@ public class Reflection {
         return colors;
     }
 
-    public static boolean isMapArt(MapView mapView) {
-		int centerX, centerZ;
-
-        try {
-            centerX = mapView.getCenterX();
-            centerZ = mapView.getCenterZ();
-
-        } catch (SecurityException
-                | IllegalArgumentException  e) {
-            return false;
-        }
-        return (centerX == -999999
-		        && centerZ == -999999);
-    }
-
-    public static void setWorldMap(MapView mapView, byte[] colors) {
-        try {
+    public void setWorldMap(MapView mapView, byte[] colors) throws NoSuchFieldException, IllegalAccessException {
             mapView.setCenterX(-999999);
             mapView.setCenterZ(-999999);
             
@@ -220,74 +197,5 @@ public class Reflection {
             setField(worldMap, "colors", colors);
 
             mapView.setScale(MapView.Scale.FARTHEST);
-        } catch (NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException e) {
-            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure setting world map!", e);
-            return;
-        }
     }
-
-    public static class ChatPacketBuilder {
-        private Constructor<?> packetCons;
-        private Method chatSerializer;
-        private Class<?> chatSerializerClass;
-
-        public ChatPacketBuilder() {
-            this(NMS);
-        }
-
-        public ChatPacketBuilder(String NMS_Prefix) {
-            String packetClassName = NMS_Prefix + ".PacketPlayOutChat";
-            String chatComponentName = NMS_Prefix + ".IChatBaseComponent";
-            String chatSerializerName = chatComponentName + "$ChatSerializer";
-
-            try {
-                Class<?> chatPacketClass = Class.forName(packetClassName);
-                Class<?> chatComponentClass = Class.forName(chatComponentName);
-                chatSerializerClass = Class.forName(chatSerializerName);
-
-                packetCons = chatPacketClass.getDeclaredConstructor(chatComponentClass, byte.class);
-                chatSerializer = chatSerializerClass.getDeclaredMethod("a", String.class);
-
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                logFailure(e);
-            }
-        }
-
-        public Object buildActionBarPacket(String message) {
-            try {
-                Object chatComponent = chatSerializer.invoke(chatSerializerClass, "{\"text\": \"" + message + "\"}");
-                return packetCons.newInstance(chatComponent, (byte) 2);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                logFailure(e);
-                return null;
-            }
-        }
-
-        private void logFailure(Exception e) {
-            ErrorLogger.log(e, "Failed to instantiate protocol! Is this version supported?");
-        }
-    }
-//
-//    public class NBTStorageFile {
-//
-//        // the file to use
-//        private final File file;
-//        // the TagCompound containing the files content
-//        private NBTTagCompound tagCompound;
-//
-//        public NBTStorageFile(File file) {
-//            this.file = file;
-//        }
-//
-//        // two optional constructors:
-//        public NBTStorageFile(String folder, String name) {
-//            this(new File(folder, name + ".dat"));
-//        }
-//
-//        public NBTStorageFile(String path) {
-//            this(new File(path));
-//        }
-//
-//    }
 }

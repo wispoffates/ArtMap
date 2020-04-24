@@ -1,5 +1,7 @@
 package me.Fupery.ArtMap.Painting;
 
+import java.util.Arrays;
+
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -11,7 +13,7 @@ public class GenericMapRenderer extends MapRenderer {
     private boolean hasRendered;
 
     public GenericMapRenderer(byte[] map) {
-        this.map = map;
+        this.map = Arrays.copyOf(map, map.length);
     }
 
     @Override

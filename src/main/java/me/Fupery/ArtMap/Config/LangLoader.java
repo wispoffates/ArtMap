@@ -1,14 +1,22 @@
 package me.Fupery.ArtMap.Config;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+
+import javax.annotation.Nonnull;
 
 class LangLoader {
     private JavaPlugin plugin;
@@ -42,7 +50,6 @@ class LangLoader {
             lang = defaults;
             usingCustomLang = false;
         }
-        if (configuration.HIDE_PREFIX) Lang.PREFIX = "";
     }
 
     private File getCustomLangFile() {
@@ -56,13 +63,13 @@ class LangLoader {
         File langFile = getCustomLangFile();
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(langFile, true));
-            for (String key : missingStrings.keySet()) {
+            for (Entry<String,String> ent : missingStrings.entrySet()) {
                 writer.newLine();
-                writer.write(key + ": " + missingStrings.get(key));
+                writer.write(ent.getKey() + ": " + ent.getValue());
             }
             writer.close();
         } catch (IOException e) {
-            ErrorLogger.log(e, "Cannot save default keys to lang,yml.");
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Cannot save default keys to lang,yml.",e);
         }
     }
 
@@ -77,20 +84,24 @@ class LangLoader {
         return lang.getString(key);
     }
 
+    @Nonnull
     String[] loadArray(String key) {
         List<String> messages = lang.getStringList(key);
-        if (messages == null) {
-            logLangError(String.format("Error loading key from lang.yml: '%s'", key));
-            if (defaults == null || !defaults.contains(key)) return new String[]{"[" + key + "] NOT FOUND"};
-            messages = defaults.getStringList(key);
+        if (messages.isEmpty()) {
+            //if loading as List fails try loading as String an making a list
+            messages = Collections.singletonList(lang.getString(key));
+            if(messages.isEmpty()) {
+                logLangError(String.format("Error loading key from lang.yml: '%s'", key));
+                if (defaults == null || !defaults.contains(key)) return new String[]{"[" + key + "] NOT FOUND"};
+                messages = defaults.getStringList(key);
+            }
         }
-        return messages == null ? null : messages.toArray(new String[messages.size()]);
+        return messages.toArray(new String[messages.size()]);
     }
 
     String[] loadRegex(String key) {
         List<String> msg = lang.getStringList(key);
-        if (msg != null) return msg.toArray(new String[msg.size()]);
-        return new String[0];
+        return msg.toArray(new String[msg.size()]);
     }
 
     private void logLangError(String reason) {

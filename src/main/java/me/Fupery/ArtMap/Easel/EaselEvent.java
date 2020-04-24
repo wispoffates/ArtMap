@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Easel;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,30 +36,46 @@ public final class EaselEvent {
 			easel.playEffect(EaselEffect.USE_DENIED);
 			return;
 		}
-		if (ArtMap.getPreviewManager().endPreview(player))
+		if (ArtMap.instance().getPreviewManager().endPreview(player))
 			return;
 
 		switch (click) {
-		case LEFT_CLICK:
-			Lang.ActionBar.EASEL_HELP.send(player);
-			return;
-		case RIGHT_CLICK:
+			case LEFT_CLICK:
+				Lang.ActionBar.EASEL_HELP.send(player);
+				return;
+			case RIGHT_CLICK:
 				if (easel.getItem().getType() == Material.FILLED_MAP) {
-				// If the easel has a canvas, player rides the easel
-					ArtMap.getArtistHandler().addPlayer(player, easel, new Map(ItemUtils.getMapID(easel.getItem())),
-						EaselPart.getYawOffset(easel.getFacing()));
-				return;
-			} else if (easel.getItem().getType() != Material.AIR) {
-				// remove items that were added while instance is unloaded etc.
-				easel.removeItem();
-				return;
-			}
-			ItemStack itemInHand = player.getInventory().getItemInMainHand();
-			ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
+					// If the easel has a canvas, player rides the easel
+					try {
+						ArtMap.instance().getArtistHandler().addPlayer(player, easel,
+								new Map(ItemUtils.getMapID(easel.getItem())),
+								EaselPart.getYawOffset(easel.getFacing()));
+					} catch (Exception e) {
+						ArtMap.instance().getLogger().log(Level.SEVERE, "Failure having player mount the Easel!", e);
+					}
+					return;
+				} else if (easel.getItem().getType() != Material.AIR) {
+					// remove items that were added while instance is unloaded etc.
+					try {
+						easel.removeItem();
+					} catch (SQLException e) {
+						ArtMap.instance().getLogger().log(Level.SEVERE, "Unexpected item on Easel!", e);
+					}
+					return;
+				}
+				ItemStack itemInHand = player.getInventory().getItemInMainHand();
+				ArtMaterial material = ArtMaterial.getCraftItemType(itemInHand);
 
-			if (material == ArtMaterial.CANVAS) {
-				// Mount a canvas on the easel
-				Map map = ArtMap.getArtDatabase().createMap();
+				if (material == ArtMaterial.CANVAS) {
+					// Mount a canvas on the easel
+					Map map = null;
+					try {
+						map = ArtMap.instance().getArtDatabase().createMap();
+					} catch (NoSuchFieldException | IllegalAccessException e) {
+						player.sendMessage(
+							ChatColor.RED + " Severe Error.  Pleae contact a server Admin! " + ChatColor.RESET);
+						ArtMap.instance().getLogger().log(Level.SEVERE, "Error creating map!", e);
+					}
 				if (map == null) {
 					player.sendMessage(
 							ChatColor.RED + " Severe Error.  Pleae contact a server Admin! " + ChatColor.RESET);
@@ -66,17 +85,29 @@ public final class EaselEvent {
 				mountCanvas(itemInHand, new Canvas(map));
 			} else if (material == ArtMaterial.MAP_ART) {
 				// Edit an artwork on the easel
-				ArtMap.getScheduler().ASYNC.run(() -> {
-						MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(itemInHand));
-					ArtMap.getScheduler().SYNC.run(() -> {
+				ArtMap.instance().getScheduler().ASYNC.run(() -> {
+					MapArt art;
+					try {
+						art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(itemInHand));
+					} catch(Exception e) {
+						player.sendMessage("Error placing art on the Easel!");
+						ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing art on easel for edit!",e );
+						return;
+					}
+					ArtMap.instance().getScheduler().SYNC.run(() -> {
 						if (art != null) {
 							if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId()) && !player.hasPermission("artmap.admin")) {
 								Lang.ActionBar.NO_EDIT_PERM.send(player);
 								easel.playEffect(EaselEffect.USE_DENIED);
 								return;
 							}
-							Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art);
-							mountCanvas(itemInHand, canvas);
+							try {
+								Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art);
+								mountCanvas(itemInHand, canvas);
+							} catch (Exception e) {
+								player.sendMessage("Error placing art on the Easel!");
+								ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing art on easel for edit!",e );
+							}
 						} else {
 							Lang.ActionBar.NEED_CANVAS.send(player);
 							easel.playEffect(EaselEffect.USE_DENIED);

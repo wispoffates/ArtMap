@@ -26,17 +26,17 @@ public class ToolMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public CacheableMenu getParent(Player viewer) {
-        return ArtMap.getMenuHandler().MENU.HELP.get(viewer);
+        return ArtMap.instance().getMenuHandler().MENU.HELP.get(viewer);
     }
 
     @Override
     public Button[] getButtons() {
     	String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
         return new Button[]{
-		        new LinkedButton(ArtMap.getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back),
+		        new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back),
 		        new StaticButton(Material.AIR),
-                new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_TOOLS.get()),
-		        new LinkedButton(ArtMap.getMenuHandler().MENU.DYES, ArtMap.getBukkitVersion().getVersion().getRedDye(), Lang.Array.TOOL_DYE.get()),
+                new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_TOOLS.get()),
+		        new LinkedButton(ArtMap.instance().getMenuHandler().MENU.DYES, ArtMap.instance().getBukkitVersion().getVersion().getRedDye(), Lang.Array.TOOL_DYE.get()),
                 new StaticButton(ArtMaterial.PAINTBUCKET.getItem()),
                 new StaticButton(ArtMaterial.COAL.getItem()),
                 new StaticButton(ArtMaterial.FEATHER.getItem()),

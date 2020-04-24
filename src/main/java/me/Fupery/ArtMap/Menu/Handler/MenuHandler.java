@@ -16,10 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MenuHandler {
     public final MenuList MENU = new MenuList();
     private final ConcurrentHashMap<UUID, CacheableMenu> openMenus = new ConcurrentHashMap<>();
-    private final MenuListener listener;
-
+    
     public MenuHandler(JavaPlugin plugin) {
-        listener = new MenuListener(this, plugin);
+        new MenuListener(this, plugin);
     }
 
     private CacheableMenu getMenu(Player viewer) {
@@ -38,12 +37,12 @@ public final class MenuHandler {
     }
 
     public void fireClickEvent(Player viewer, int slot, ClickType clickType) {
-        if (!openMenus.containsKey(viewer.getUniqueId()) || viewer.getOpenInventory() == null) return;
+        if (!openMenus.containsKey(viewer.getUniqueId())) return;
         getMenu(viewer).click(viewer, slot, clickType);
     }
 
     public void refreshMenu(Player viewer) {
-        if (!openMenus.containsKey(viewer.getUniqueId()) || viewer.getOpenInventory() == null) return;
+        if (!openMenus.containsKey(viewer.getUniqueId())) return;
         getMenu(viewer).refresh(viewer);
     }
 

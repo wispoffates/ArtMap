@@ -16,7 +16,7 @@ class Cursor {
     private boolean pitchOffCanvas;
 
     Cursor(int yawOffset) {
-        PixelTableManager pixelTable = ArtMap.getPixelTable();
+        PixelTableManager pixelTable = ArtMap.instance().getPixelTable();
 
         yawTable = pixelTable.getYawBounds();
         pitchTables = pixelTable.getPitchBounds();
@@ -33,14 +33,14 @@ class Cursor {
     }
 
     void setPitch(float pitch) {
-        if (this.pitch != pitch) {
+        if (Math.abs(this.pitch - pitch) > .0001) {
             this.pitch = pitch;
             updateYPos();
         }
     }
 
     void setYaw(float yaw) {
-        if (this.yaw != yaw) {
+        if (Math.abs(this.yaw - yaw) > .0001) {
             this.yaw = yaw;
             updateXPos();
         }

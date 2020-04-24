@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Command;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,34 +17,31 @@ import me.Fupery.ArtMap.Utils.ItemUtils;
 class CommandPreview extends AsyncCommand {
 
     CommandPreview() {
-		super(null, "/art preview <title>", false);
+        super(null, "/art preview <title>", false);
     }
 
     private static boolean previewArtwork(final Player player, final MapArt art) {
-		if (ArtMap.getConfiguration().FORCE_GUI) {
-			player.sendMessage("Please use the Paint Brush to access previews.");
-			return false;
-		}
+        if (ArtMap.instance().getConfiguration().FORCE_GUI) {
+            player.sendMessage("Please use the Paint Brush to access previews.");
+            return false;
+        }
 
         if (player.hasPermission("artmap.admin")) {
-            ArtMap.getScheduler().SYNC.run(() -> {
-				ItemStack currentItem = player.getInventory().getItemInMainHand();
-				player.getInventory().setItemInMainHand(art.getMapItem());
-
-                if (currentItem != null) {
-                    ItemUtils.giveItem(player, currentItem);
-                }
+            ArtMap.instance().getScheduler().SYNC.run(() -> {
+                ItemStack currentItem = player.getInventory().getItemInMainHand();
+                player.getInventory().setItemInMainHand(art.getMapItem());
+                ItemUtils.giveItem(player, currentItem);
             });
 
         } else {
 
-            ArtMap.getPreviewManager().endPreview(player);
+            ArtMap.instance().getPreviewManager().endPreview(player);
 
-			if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
+            if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
                 return false;
             }
 
-            ArtMap.getPreviewManager().startPreview(player, new ArtPreview(art));
+            ArtMap.instance().getPreviewManager().startPreview(player, new ArtPreview(art));
         }
         return true;
     }
@@ -51,7 +51,14 @@ class CommandPreview extends AsyncCommand {
 
         Player player = (Player) sender;
 
-        MapArt art = ArtMap.getArtDatabase().getArtwork(args[1]);
+        MapArt art;
+        try {
+            art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
+        } catch (SQLException e) {
+            sender.sendMessage("Error loading preview!");
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Error loading preview!",e);
+            return;
+        }
 
         if (art == null) {
             msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);

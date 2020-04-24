@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -107,7 +108,7 @@ public class CustomItem {
     }
 
     public void addRecipe() {
-        if (getRecipe() != null) Bukkit.addRecipe(getBukkitRecipe());
+        if (getRecipe() != null) Bukkit.getServer().addRecipe(getBukkitRecipe());
     }
 
     public Material getMaterial() {
@@ -138,6 +139,9 @@ public class CustomItem {
 		// get the stack or create a new one.
 		ItemStack item = stack.isPresent() ? stack.get() : new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
+        if(meta == null) {
+            return null;
+        }
         if (name != null) meta.setDisplayName(name);
         List<String> lore = new ArrayList<>();
         lore.add(key);
@@ -145,7 +149,9 @@ public class CustomItem {
         meta.setLore(lore);
         if (itemFlags.length > 0) meta.addItemFlags(itemFlags);
         if (enchants.size() > 0) {
-            for (Enchantment e : enchants.keySet()) meta.addEnchant(e, enchants.get(e), true);
+            for (Entry<Enchantment,Integer> e : enchants.entrySet()) {
+                meta.addEnchant(e.getKey(), e.getValue(), true);
+            }
         }
         item.setItemMeta(meta);
         return item;

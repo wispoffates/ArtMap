@@ -31,6 +31,6 @@ public class NestedMenuButton extends Button {
     @Override
     public void onClick(Player player, ClickType clickType) {
         SoundCompat.UI_BUTTON_CLICK.play(player);
-        ArtMap.getMenuHandler().openMenu(player, linkedMenu);
+        ArtMap.instance().getMenuHandler().openMenu(player, linkedMenu);
     }
 }

@@ -1,5 +1,7 @@
 package me.Fupery.ArtMap.Utils;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -14,11 +16,11 @@ public class Version implements Comparable<Version> {
             //chop anything like -SNAPSHOT off the version number.
             String str = strings[i];
             if(str.contains("-")) {
-                str = str.substring(0, str.indexOf("-"));
+                str = str.substring(0, str.indexOf('-'));
             }
             //also wierdness like version: "7.0.0;02b731f"
             if(str.contains(";")) {
-                str = str.substring(0, str.indexOf(";"));
+                str = str.substring(0, str.indexOf(';'));
             }
             numbers[i] = Integer.parseInt(str);
         }
@@ -30,7 +32,7 @@ public class Version implements Comparable<Version> {
     }
 
     public static Version getBukkitVersion() {
-        String bukkit = Bukkit.getBukkitVersion();
+        String bukkit = Bukkit.getServer().getBukkitVersion();
         String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
         int[] verNumbers = new int[ver.length];
         for (int i = 0; i < ver.length; i++) {
@@ -52,8 +54,23 @@ public class Version implements Comparable<Version> {
         return 0;
     }
 
+    @Override
+    public boolean equals(Object ver) {
+        if(!(ver instanceof Version)) {
+            return false;
+        }
+        Version cVer = (Version) ver;
+        return cVer.isEqualTo(this.numbers);
+        
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.numbers);
+    }
+
     public boolean isGreaterThan(int... numbers) {
-        return compareTo(new Version(numbers)) == 1;
+        return compareTo(new Version(numbers)) > 1;
     }
 
     public boolean isGreaterOrEqualTo(int... numbers) {
@@ -69,17 +86,19 @@ public class Version implements Comparable<Version> {
     }
 
     public boolean isLessThan(int... numbers) {
-        return compareTo(new Version(numbers)) == -1;
+        return compareTo(new Version(numbers)) < -1;
     }
 
     @Override
     public String toString() {
         if (numbers.length == 0) return "0";
-        String ver = "";
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < numbers.length; i++) {
-            ver += numbers[i];
-            if (i < numbers.length - 1) ver += ".";
+            sb.append(numbers[i]);
+            if (i < numbers.length - 1) {
+                sb.append('.');
+            }
         }
-        return ver;
+        return sb.toString();
     }
 }

@@ -30,11 +30,17 @@ hidePrefix: false
 #Force use of the GUI and disable most slash commands for a bit more immersive feel
 guiOnly: false
 
+#Fetch unknown heads from Mojang api.  Turning this off will show steve heads for players not in the server cache.
+headFetchMojang: true
+
 #Do head prefetch - Setting this to false will cause the first load of the artist menu to take a long time.
 headPrefetch: true
 
 #Head prefetch delay - Delay the head prefetch by the provided number of server ticks (20 ticks per second)
 headPrefetchDelay: 0
 
+#Head prefetch period - Delay between non cached head retrievals.  This prevents artmap from hitting mojang api limits.
+headPrefetchPeriod: 10000
+
 #Import delay (default is 100ms which is 10 artworks second)
-importDelay: 100
+importDelay: 250

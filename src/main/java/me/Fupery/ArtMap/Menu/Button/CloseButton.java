@@ -19,6 +19,6 @@ public class CloseButton extends Button {
     @Override
     public void onClick(Player player, ClickType clickType) {
         SoundCompat.UI_BUTTON_CLICK.play(player, 1, 3);
-        ArtMap.getMenuHandler().closeMenu(player, MenuCloseReason.BACK);
+        ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.BACK);
     }
 }

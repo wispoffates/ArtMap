@@ -1,6 +1,11 @@
 package me.Fupery.ArtMap.Listeners;
 
 import me.Fupery.ArtMap.ArtMap;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,8 +20,14 @@ public class PlayerDismountListener implements RegisteredListener {
             return;
         }
         Player player = (Player) event.getEntity();
-        if (ArtMap.getArtistHandler().containsPlayer(player)) {
-            ArtMap.getArtistHandler().removePlayer(player);
+        if (ArtMap.instance().getArtistHandler().containsPlayer(player)) {
+            try {
+                ArtMap.instance().getArtistHandler().removePlayer(player);
+            } catch (SQLException | IOException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                player.sendMessage("Error Saving Artwork check logs.");
+                return; 
+            }
         }
     }
 

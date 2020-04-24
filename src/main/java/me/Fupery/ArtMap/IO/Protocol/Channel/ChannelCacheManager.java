@@ -12,7 +12,7 @@ public class ChannelCacheManager {
     private final Object cleanupLock = new Object();
     private CleanupThread cleanup = null;
 
-    private CacheablePlayerChannel cacheChannel(UUID player) {
+    private CacheablePlayerChannel cacheChannel(UUID player) throws ReflectiveOperationException {
         CacheablePlayerChannel playerChannel = new CacheablePlayerChannel(player, 30000); //30 seconds
         cacheMap.put(player, playerChannel);
         synchronized (cleanupLock) {
@@ -21,7 +21,7 @@ public class ChannelCacheManager {
         return playerChannel;
     }
 
-    public Channel getChannel(UUID player) {
+    public Channel getChannel(UUID player) throws ReflectiveOperationException {
         CacheablePlayerChannel cachedChannel = cacheMap.get(player);
         if (cachedChannel == null) {
             cachedChannel = cacheChannel(player);
@@ -35,7 +35,7 @@ public class ChannelCacheManager {
 
     private class CleanupThread extends BukkitRunnable {
         CleanupThread() {
-            ArtMap.getScheduler().getTaskHandler(this).runTimer(true, 300, 300); //15 seconds
+            ArtMap.instance().getScheduler().getTaskHandler(this).runTimer(true, 300, 300); //15 seconds
         }
 
         @Override

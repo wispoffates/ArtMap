@@ -70,12 +70,12 @@ class PlayerInteractEaselListener implements RegisteredListener {
 	public void onRickClick(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		Action a = e.getAction();
-		if ((e.getItem() != null) && a == Action.RIGHT_CLICK_AIR
+		if ( a == Action.RIGHT_CLICK_AIR && e.getItem() != null
 				&& (ArtMaterial.getCraftItemType(e.getItem()) == ArtMaterial.PAINT_BRUSH)) {
-			ArtMap.getScheduler().SYNC.run(() -> {
+			ArtMap.instance().getScheduler().SYNC.run(() -> {
 				PlayerOpenMenuEvent event = new PlayerOpenMenuEvent(p);
 				Bukkit.getServer().getPluginManager().callEvent(event);
-				MenuHandler menuHandler = ArtMap.getMenuHandler();
+				MenuHandler menuHandler = ArtMap.instance().getMenuHandler();
 				menuHandler.openMenu((p), menuHandler.MENU.HELP.get((p)));
 			});
 		}
@@ -109,8 +109,8 @@ class PlayerInteractEaselListener implements RegisteredListener {
         Player player = (Player) clicker;
 
         boolean interactionAllowed = (click == ClickType.SHIFT_RIGHT_CLICK) ?
-                ArtMap.getCompatManager().checkBuildAllowed(player, clicked.getLocation()) :
-                ArtMap.getCompatManager().checkInteractAllowed(player, clicked, click);
+                ArtMap.instance().getCompatManager().checkBuildAllowed(player, clicked.getLocation()) :
+                ArtMap.instance().getCompatManager().checkInteractAllowed(player, clicked, click);
 
         if (!interactionAllowed) {
             Lang.ActionBar.NO_PERM_ACTION.send(player);
@@ -126,7 +126,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private boolean checkIsPainting(Player player, Cancellable event) {
-		if (player.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(player)) {
+		if (player.isInsideVehicle() && ArtMap.instance().getArtistHandler().containsPlayer(player)) {
             event.setCancelled(true);
             return true;
         }
@@ -134,17 +134,17 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private void checkPreviewing(Player player, Cancellable event) {
-        if (ArtMap.getPreviewManager().endPreview(player)) event.setCancelled(true);
+        if (ArtMap.instance().getPreviewManager().endPreview(player)) event.setCancelled(true);
     }
 
     private boolean checkSignBreak(Block block, Cancellable event) {
 
-        if (block.getType() == ArtMap.getBukkitVersion().getVersion().getWallSign()) {
+        if (block.getType() == ArtMap.instance().getBukkitVersion().getVersion().getWallSign()) {
             Sign sign = ((Sign) block.getState());
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
 
-                if (ArtMap.getEasels().contains(block.getLocation())
+                if (ArtMap.instance().getEasels().containsKey(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);
                     return true;

@@ -1,8 +1,11 @@
 package me.Fupery.ArtMap.Painting;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +17,8 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.Exception.DuplicateArtworkException;
+import me.Fupery.ArtMap.Exception.PermissionException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.IO.Database.Map;
@@ -50,30 +55,35 @@ public class ArtistHandler {
 			} else if (type == PacketType.INTERACT && ArtMaterial
 					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
 				// handle click with paint brush in main hand causes save
-				if (sender.isInsideVehicle() && ArtMap.getArtistHandler().containsPlayer(sender)) {
-					ArtMap.getScheduler().SYNC.run(() -> {
-						new AnvilGUI(ArtMap.instance(), sender, "Title?", (player, title) -> {
+				if (sender.isInsideVehicle() && ArtMap.instance().getArtistHandler().containsPlayer(sender)) {
+					ArtMap.instance().getScheduler().SYNC.run(() -> {
+						AnvilGUI.Builder builder = new AnvilGUI.Builder();
+						builder.plugin(ArtMap.instance()).text("Title?").onComplete((player, title) -> {
 							TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
 							if (!filter.check(title)) {
 								player.sendMessage(Lang.BAD_TITLE.get());
 								return null;
 							}
 							Easel easel = session.getEasel();
-							ArtMap.getScheduler().SYNC.run(() -> {
-								easel.playEffect(EaselEffect.SAVE_ARTWORK);
-								Canvas canvas = Canvas.getCanvas(easel.getItem());
-								MapArt art1 = ArtMap.getArtDatabase().saveArtwork(canvas, title, player);
-								if (art1 != null) {
-									ArtMap.getArtistHandler().removePlayer(player);
+							ArtMap.instance().getScheduler().SYNC.run(() -> {
+								try {
+									easel.playEffect(EaselEffect.SAVE_ARTWORK);
+									Canvas canvas = Canvas.getCanvas(easel.getItem());
+									MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
+									ArtMap.instance().getArtistHandler().removePlayer(player);
 									easel.setItem(new ItemStack(Material.AIR));
 									ItemUtils.giveItem(player, art1.getMapItem());
 									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
-								} else {
-									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
+								} catch (DuplicateArtworkException | PermissionException e) {
+									player.sendMessage(e.getMessage());
+								} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
+									player.sendMessage(Lang.SAVE_FAILURE.get());
+									ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
 								}
 							});
 							return null;
 						});
+						builder.open(sender);
 					});
 				}
 				return false;
@@ -85,14 +95,20 @@ public class ArtistHandler {
 				return false;
 			}
 		} else {
-			removePlayer(sender);
+			try {
+				removePlayer(sender);
+			} catch (SQLException | IOException e) {
+				ArtMap.instance().getLogger().log(Level.SEVERE,"Error exiting art session!",e);
+			}
 		}
 		return true;
 	}
 
-	public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset) {
+	public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset)
+			throws ReflectiveOperationException, SQLException, IOException {
 		ArtSession session = new ArtSession(player, easel, map, yawOffset);
-		if (session.start(player) && ArtMap.getProtocolManager().PACKET_RECIEVER.injectPlayer(player)) {
+		if (session.start(player)) {
+			ArtMap.instance().getProtocolManager().PACKET_RECIEVER.injectPlayer(player);
 			artists.put(player.getUniqueId(), session);
 			session.setActive(true);
 		}
@@ -119,7 +135,7 @@ public class ArtistHandler {
 		return artists.containsKey(player);
 	}
 
-	public synchronized void removePlayer(final Player player) {
+	public synchronized void removePlayer(final Player player) throws SQLException, IOException {
 		if (!containsPlayer(player))
 			return;// just for safety :)
 		ArtSession session = artists.get(player.getUniqueId());
@@ -127,7 +143,7 @@ public class ArtistHandler {
 			return;
 		artists.remove(player.getUniqueId());
 		session.end(player);
-		ArtMap.getProtocolManager().PACKET_RECIEVER.uninjectPlayer(player);
+		ArtMap.instance().getProtocolManager().PACKET_RECIEVER.uninjectPlayer(player);
 	}
 
 	public ArtSession getCurrentSession(Player player) {
@@ -140,7 +156,11 @@ public class ArtistHandler {
 
 	private synchronized void clearPlayers() {
 		for (UUID uuid : artists.keySet()) {
-			removePlayer(Bukkit.getPlayer(uuid));
+			try {
+				removePlayer(Bukkit.getPlayer(uuid));
+			} catch (SQLException | IOException e) {
+				ArtMap.instance().getLogger().log(Level.SEVERE,"Error clearing players art session!",e);
+			}
 		}
 	}
 
@@ -150,6 +170,6 @@ public class ArtistHandler {
 
 	public void stop() {
 		clearPlayers();
-		ArtMap.getProtocolManager().PACKET_RECIEVER.close();
+		ArtMap.instance().getProtocolManager().PACKET_RECIEVER.close();
 	}
 }

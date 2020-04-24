@@ -1,11 +1,12 @@
 package me.Fupery.ArtMap.Config;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Protocol.Out.WrappedPacket;
 
 public enum Lang implements LangSet<String> {
 
@@ -20,9 +21,9 @@ public enum Lang implements LangSet<String> {
     DYE_YELLOW, DYE_LIGHT_BLUE, DYE_MAGENTA, DYE_ORANGE, DYE_WHITE, DYE_CREAM, DYE_COFFEE, DYE_GRAPHITE, DYE_GUNPOWDER,
 	DYE_MAROON, DYE_AQUA, DYE_GRASS, DYE_GOLD, DYE_VOID, DYE_COAL, DYE_FEATHER, DYE_ICE, DYE_LEAVES, DYE_SNOW, DYE_BLACK_TERRACOTTA, DYE_RED_TERRACOTTA, DYE_GREEN_TERRACOTTA, DYE_BROWN_TERRACOTTA, DYE_BLUE_TERRACOTTA, DYE_PURPLE_TERRACOTTA, DYE_CYAN_TERRACOTTA, DYE_LIGHT_GRAY_TERRACOTTA, DYE_GRAY_TERRACOTTA, DYE_PINK_TERRACOTTA, DYE_LIME_TERRACOTTA, DYE_YELLOW_TERRACOTTA, DYE_LIGHT_BLUE_TERRACOTTA, DYE_MAGENTA_TERRACOTTA, DYE_ORANGE_TERRACOTTA, DYE_WHITE_TERRACOTTA, DYE_STONE, DYE_LIGHT_GRAY, DYE_BRICK, DYE_LAPIS, DYE_EMERALD, DYE_LIGHT_WOOD, DYE_WATER, DYE_DARK_WOOD;
 
-    public static String PREFIX = ChatColor.AQUA + "[ArtMap] ";
-    private static final char EIGHT_POINTED_STAR = '\u2737';
-    private static final char SIX_PETALLED_FLORETTE = '\u273E';
+    public static final String PREFIX = ChatColor.AQUA + "[ArtMap] ";
+    //private static final char EIGHT_POINTED_STAR = '\u2737';
+    //private static final char SIX_PETALLED_FLORETTE = '\u273E';
     private String message = String.format("'%s' NOT FOUND", name());
 
     public static void load(ArtMap plugin, Configuration configuration) {
@@ -31,26 +32,17 @@ public enum Lang implements LangSet<String> {
         for (Lang key : Lang.values()) {
             key.message = loader.loadString(key.name());
         }
-        //Load action bar messages
-        for (ActionBar key : ActionBar.values()) {
-            String messageString = loader.loadString(key.name());
-            if (configuration.DISABLE_ACTION_BAR) {
-                String formattedMessage = PREFIX + messageString.replace(ChatColor.BOLD.toString(), "")
-                        .replace(ChatColor.DARK_AQUA.toString(), ChatColor.GOLD.toString())
-                        .replace(ChatColor.AQUA.toString(), ChatColor.GOLD.toString())
-                        .replace(ChatColor.DARK_RED.toString(), ChatColor.RED.toString());
-                key.message = WrappedPacket.raw(formattedMessage, Player::sendMessage);
-            } else {
-                String formattedMessage = key.isError
-                        ? ChatColor.RED.toString() + ChatColor.BOLD + EIGHT_POINTED_STAR + messageString + ChatColor.RED + ChatColor.BOLD + EIGHT_POINTED_STAR
-                        : ChatColor.GOLD.toString() + SIX_PETALLED_FLORETTE + messageString + ChatColor.GOLD + SIX_PETALLED_FLORETTE;
-                key.message = ArtMap.getProtocolManager().PACKET_SENDER.buildChatPacket(formattedMessage);
-            }
-        }
+        
         //Load array messages
         for (Array key : Array.values()) {
             key.messages = loader.loadArray(key.name());
         }
+
+        //Load array messages
+        for (ActionBar key : ActionBar.values()) {
+            key.messages = loader.loadArray(key.name());
+        }
+
         loader.save();
         Filter.ILLEGAL_EXPRESSIONS.expressions = loader.loadRegex("ILLEGAL_EXPRESSIONS");
     }
@@ -63,29 +55,6 @@ public enum Lang implements LangSet<String> {
     @Override
     public String get() {
         return message;
-    }
-
-    public enum ActionBar implements LangSet<WrappedPacket<?>> {
-        EASEL_HELP(false), NEED_CANVAS(true), PAINTING(false), SAVE_USAGE(false), ELSE_USING(true),
-        NO_PERM_ACTION(true), NO_EDIT_PERM(true), INVALID_POS(true);
-
-        private WrappedPacket<?> message = null;
-        private boolean isError;
-
-        ActionBar(boolean isErrorMessage) {
-            isError = isErrorMessage;
-        }
-
-        @Override
-        public void send(CommandSender sender) {
-            if (message != null && sender instanceof Player)
-                message.send((Player) sender);// FIXME: 21/09/2016 loading, sending
-        }
-
-        @Override
-        public WrappedPacket<?> get() {
-            return message;
-        }
     }
 
     public enum Array implements LangSet<String[]> {
@@ -102,7 +71,31 @@ public enum Lang implements LangSet<String> {
 
         @Override
         public String[] get() {
-            return messages;
+            return Arrays.copyOf(messages, messages.length);
+        }
+    }
+
+    public enum ActionBar implements LangSet<String[]> {
+        EASEL_HELP, NEED_CANVAS, PAINTING, SAVE_USAGE, ELSE_USING,
+        NO_PERM_ACTION, NO_EDIT_PERM, INVALID_POS;
+
+        private String[] messages = null;
+
+        @Override
+        public void send(CommandSender sender) {
+            if (messages != null && sender instanceof Player) {
+                Player p = (Player) sender;
+                if(messages.length>1) {
+                    p.sendTitle(messages[0], messages[1], 20, 40 , 20);
+                } else {
+                    p.sendTitle("", messages[0], 20, 40 , 20);
+                }
+            }
+        }
+
+        @Override
+        public String[] get() {
+            return Arrays.copyOf(messages, messages.length);
         }
     }
 
@@ -118,7 +111,7 @@ public enum Lang implements LangSet<String> {
 
         @Override
         public String[] get() {
-            return expressions;
+            return Arrays.copyOf(expressions, expressions.length);
         }
     }
 }
