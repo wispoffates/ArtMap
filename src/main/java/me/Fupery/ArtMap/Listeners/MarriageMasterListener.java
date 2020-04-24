@@ -17,15 +17,15 @@ public class MarriageMasterListener implements RegisteredListener {
             OfflinePlayer partner1 = event.getMarriageData().getPartner1().getPlayer();
             OfflinePlayer partner2 = event.getMarriageData().getPartner1().getPlayer();
             if(partner1.isOnline()) {
-                if(ArtMap.getArtistHandler().containsPlayer(partner1.getPlayer()) 
-                    && ArtMap.getArtistHandler().getCurrentSession(partner1.getPlayer()).isInArtKit()) {
+                if(ArtMap.instance().getArtistHandler().containsPlayer(partner1.getPlayer()) 
+                    && ArtMap.instance().getArtistHandler().getCurrentSession(partner1.getPlayer()).isInArtKit()) {
                         event.setCancelled(true);
                         partner1.getPlayer().sendMessage(ChatColor.RED+" You cannot send gifts while using the Artkit!");
                 }
             }
             if(partner2.isOnline()) {
-                if(ArtMap.getArtistHandler().containsPlayer(partner2.getPlayer()) 
-                    && ArtMap.getArtistHandler().getCurrentSession(partner2.getPlayer()).isInArtKit()) {
+                if(ArtMap.instance().getArtistHandler().containsPlayer(partner2.getPlayer()) 
+                    && ArtMap.instance().getArtistHandler().getCurrentSession(partner2.getPlayer()).isInArtKit()) {
                         event.setCancelled(true);
                         partner2.getPlayer().sendMessage(ChatColor.RED+" You cannot send gifts while using the Artkit!");
                 }

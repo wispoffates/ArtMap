@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Preview;
 
 import java.util.UUID;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,9 @@ public class ArtPreview extends TimedPreview {
     public boolean start(Player player) {
         super.start(player);
         PlayerInventory inventory = player.getInventory();
-        if (inventory.getItemInMainHand() == null) return false;
+        if (inventory.getItemInMainHand().getType() != Material.AIR){
+            return false;
+        }
         inventory.setItemInMainHand(preview);
         return true;
     }
@@ -32,7 +35,9 @@ public class ArtPreview extends TimedPreview {
     public boolean end(Player player) {
         super.end(player);
         SoundCompat.UI_BUTTON_CLICK.play(player, 1, -2);
-        if (player.getItemOnCursor().equals(preview)) player.setItemOnCursor(null);
+        if (player.getItemOnCursor().equals(preview)) {
+            player.setItemOnCursor(null);
+        } 
         player.getInventory().removeItem(preview);// TODO: 5/08/2016
         return true;
     }

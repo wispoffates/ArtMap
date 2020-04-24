@@ -41,10 +41,10 @@ public abstract class CacheableMenu implements MenuTemplate {
 
     void open(Player player) {
 		ArtMap.instance();
-		ArtMap.getScheduler().ASYNC.run(() -> {
+		ArtMap.instance().getScheduler().ASYNC.run(() -> {
 			Inventory inventory = this.type.createInventory(player, heading);
 			loadButtons(inventory);
-			ArtMap.getScheduler().SYNC.run(() -> {
+			ArtMap.instance().getScheduler().SYNC.run(() -> {
 				player.openInventory(inventory);
 				onMenuOpenEvent(player);
 				this.open = true;
@@ -66,7 +66,7 @@ public abstract class CacheableMenu implements MenuTemplate {
     }
 
     void close(Player player, MenuCloseReason reason) {
-        if (reason.shouldCloseInventory() && player.getOpenInventory() != null) player.closeInventory();
+        if (reason.shouldCloseInventory()) player.closeInventory();
         onMenuCloseEvent(player, reason);
         this.open = false;
     }

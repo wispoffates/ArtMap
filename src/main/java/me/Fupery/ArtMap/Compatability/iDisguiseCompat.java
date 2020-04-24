@@ -5,7 +5,6 @@ import org.bukkit.plugin.Plugin;
 
 import io.netty.channel.Channel;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Utils.Reflection;
 
 public class iDisguiseCompat implements ReflectionHandler {
 
@@ -20,10 +19,10 @@ public class iDisguiseCompat implements ReflectionHandler {
     public Channel getPlayerChannel(Player player) throws ReflectiveOperationException {
         Object nmsPlayer, playerConnection, networkManager;
         Channel channel;
-        nmsPlayer = Reflection.invokeMethod(player, "getHandle");
-        playerConnection = Reflection.getField(nmsPlayer, "playerConnection");
-        networkManager = Reflection.getSuperField(playerConnection, "networkManager");
-        channel = (Channel) Reflection.getField(networkManager, "channel");
+        nmsPlayer = ArtMap.instance().getReflection().invokeMethod(player, "getHandle");
+        playerConnection = ArtMap.instance().getReflection().getField(nmsPlayer, "playerConnection");
+        networkManager = ArtMap.instance().getReflection().getSuperField(playerConnection, "networkManager");
+        channel = (Channel) ArtMap.instance().getReflection().getField(networkManager, "channel");
         return channel;
     }
 

@@ -1,10 +1,11 @@
 package me.Fupery.ArtMap.IO.Protocol.Channel;
 
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.Utils.Reflection;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 
-import java.util.UUID;
+import io.netty.channel.Channel;
+import me.Fupery.ArtMap.ArtMap;
 
 class CacheablePlayerChannel {
 
@@ -12,10 +13,10 @@ class CacheablePlayerChannel {
     private final long expiryTime;
     private final Channel channel;
 
-    CacheablePlayerChannel(UUID player, long timeToLive) {
+    CacheablePlayerChannel(UUID player, long timeToLive) throws ReflectiveOperationException {
         this.player = player;
         expiryTime = (timeToLive == -1) ? -1 : System.currentTimeMillis() + timeToLive;
-        channel = Reflection.getPlayerChannel(Bukkit.getPlayer(player));
+        channel = ArtMap.instance().getReflection().getPlayerChannel(Bukkit.getPlayer(player));
     }
 
     public void sendPacket(Object packet) {

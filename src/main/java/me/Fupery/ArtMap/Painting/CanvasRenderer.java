@@ -24,7 +24,7 @@ public class CanvasRenderer extends MapRenderer {
 
     CanvasRenderer(Map map, int yawOffset) {
         this.map = map;
-        PixelTableManager pixelTable = ArtMap.getPixelTable();
+        PixelTableManager pixelTable = ArtMap.instance().getPixelTable();
         if (pixelTable == null) {
             resolutionFactor = 0;
             axisLength = 0;
@@ -42,7 +42,7 @@ public class CanvasRenderer extends MapRenderer {
     @Override
     public void render(MapView map, MapCanvas canvas, Player player) {
 
-        if (!active.get() || dirtyPixels == null || dirtyPixels.peek() == null || pixelBuffer == null) {
+        if (dirtyPixels == null || pixelBuffer == null || !active.get() || dirtyPixels.peek() == null) {
             return;
         }
         for (int i = 0; i < maxUpdate; i++) {
@@ -105,7 +105,7 @@ public class CanvasRenderer extends MapRenderer {
         return colours;
     }
 
-    private void loadMap() {
+    final private void loadMap() {
         byte[] colours = map.readData();
 
         pixelBuffer = new byte[axisLength][axisLength];

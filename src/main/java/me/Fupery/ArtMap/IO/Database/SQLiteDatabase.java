@@ -6,10 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 
-import me.Fupery.ArtMap.IO.ErrorLogger;
+import me.Fupery.ArtMap.ArtMap;
 
 public class SQLiteDatabase {
     protected final File dbFile;
@@ -24,11 +25,11 @@ public class SQLiteDatabase {
         if (!dbFile.exists()) {
             try {
                 if (!dbFile.createNewFile()) {
-                    Bukkit.getLogger().warning(String.format("[ArtMap] Could not create '%s'!", dbFile.getName()));
+                    Bukkit.getLogger().warning(String.format("[ArtMap] Could not create '%s'!", dbFile.getAbsolutePath()));
                     return null;
                 }
             } catch (IOException e) {
-                ErrorLogger.log(e, String.format("File write error: '%s'!", dbFile.getName()));
+                ArtMap.instance().getLogger().log(Level.SEVERE, String.format("File write error: '%s'!", dbFile.getAbsolutePath()),e);
                 return null;
             }
         }
@@ -40,15 +41,16 @@ public class SQLiteDatabase {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
         } catch (SQLException | ClassNotFoundException e) {
             connection = null;
-			ErrorLogger.log(e, SQLiteTable.sqlError);
+			ArtMap.instance().getLogger().log(Level.SEVERE, String.format("File write error: '%s'!", dbFile.getAbsolutePath()),e);
         }
         return connection;
     }
 
-    protected boolean initialize(SQLiteTable... tables) {
-        if ((connection = getConnection()) == null) return false;
-        for (SQLiteTable table : tables) if (!table.create()) return false;
-        return true;
+    protected void initialize(SQLiteTable... tables) throws SQLException {
+        connection = getConnection();
+        for (SQLiteTable table : tables) {
+            table.create();
+        }
     }
 
     public ReentrantLock getLock() {

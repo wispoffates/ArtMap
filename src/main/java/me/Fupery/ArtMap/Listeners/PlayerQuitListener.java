@@ -1,5 +1,9 @@
 package me.Fupery.ArtMap.Listeners;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -28,7 +32,7 @@ class PlayerQuitListener implements RegisteredListener {
         ArtSession.clearHotbar(event.getPlayer());
     }
 
-	@EventHandler
+    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (event.getEntity().getType() != EntityType.PLAYER) {
             return;
@@ -37,14 +41,14 @@ class PlayerQuitListener implements RegisteredListener {
         endPlayerArtSession(player);
     }
 
-	@EventHandler
-	public void onPlayerDamage(EntityDamageEvent event) {
-		if (event.getEntity().getType() != EntityType.PLAYER) {
-			return;
-		}
-		Player player = Player.class.cast(event.getEntity());
-		endPlayerArtSession(player);
-	}
+    @EventHandler
+    public void onPlayerDamage(EntityDamageEvent event) {
+        if (event.getEntity().getType() != EntityType.PLAYER) {
+            return;
+        }
+        Player player = Player.class.cast(event.getEntity());
+        endPlayerArtSession(player);
+    }
 
     @EventHandler
     public void onPlayerTeleport(final PlayerTeleportEvent event) {
@@ -59,20 +63,27 @@ class PlayerQuitListener implements RegisteredListener {
     }
 
     /**
-     * Convience method to end a players art sessions including removing artkit and previews.
+     * Convience method to end a players art sessions including removing artkit and
+     * previews.
+     * 
      * @param player The player who's session is ending.
      */
     public static void endPlayerArtSession(Player player) {
-        if (ArtMap.getArtistHandler().containsPlayer(player)) {
+        if (ArtMap.instance().getArtistHandler().containsPlayer(player)) {
             if (player.isInsideVehicle()) {
-				ArtMap.getArtistHandler().getCurrentSession(player).removeKit(player);
-                ArtMap.getArtistHandler().removePlayer(player);
+                ArtMap.instance().getArtistHandler().getCurrentSession(player).removeKit(player);
+                try {
+                    ArtMap.instance().getArtistHandler().removePlayer(player);
+                } catch (SQLException | IOException e) {
+                    ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                    return; 
+                }
             }
         }
-		if (ArtMap.getPreviewManager().isPreviewing(player)) {
+		if (ArtMap.instance().getPreviewManager().isPreviewing(player)) {
             ItemStack item = player.getInventory().getItemInMainHand();
-			if (item != null && item.getType() == Material.FILLED_MAP) {
-				ArtMap.getPreviewManager().endPreview(player);
+			if (item.getType() == Material.FILLED_MAP) {
+				ArtMap.instance().getPreviewManager().endPreview(player);
 			}
 		}
     }

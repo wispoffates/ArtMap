@@ -7,6 +7,8 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
+
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket.PacketInteract;
@@ -24,11 +26,8 @@ public class ProtocolLibReceiver extends PacketReceiver {
         options.optionAsync();
         options.connectionSide(ConnectionSide.CLIENT_SIDE);
         options.listenerPriority(ListenerPriority.HIGH);
-        options.types(
-                PacketType.Play.Client.ARM_ANIMATION,
-                PacketType.Play.Client.LOOK,
-                PacketType.Play.Client.USE_ENTITY
-        );
+        options.types(PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.LOOK,
+                PacketType.Play.Client.USE_ENTITY);
         ProtocolLibrary.getProtocolManager().addPacketListener(new DefaultPacketAdapter(options));
     }
 
@@ -43,7 +42,8 @@ public class ProtocolLibReceiver extends PacketReceiver {
 
         } else if (packet.getType() == PacketType.Play.Client.USE_ENTITY) {
             EnumWrappers.EntityUseAction action = packet.getEntityUseActions().read(0);
-            return new PacketInteract(action == EnumWrappers.EntityUseAction.ATTACK ? InteractType.ATTACK : InteractType.INTERACT);
+            return new PacketInteract(
+                action == EnumWrappers.EntityUseAction.ATTACK ? InteractType.ATTACK : InteractType.INTERACT);
         }
         return null;
     }
@@ -60,11 +60,20 @@ public class ProtocolLibReceiver extends PacketReceiver {
 
         @Override
         public void onPacketReceiving(PacketEvent event) {
-            ArtistHandler handler = ArtMap.getArtistHandler();
-            if (!handler.containsPlayer(event.getPlayer())) return;
+            ArtistHandler handler = ArtMap.instance().getArtistHandler();
+            if (!handler.containsPlayer(event.getPlayer()))
+                return;
             ArtistPacket packet = getPacketType(event.getPacket());
-            if (packet == null) return;
-            if (!onPacketPlayIn(handler, event.getPlayer(), packet)) event.setCancelled(true);
+            if (packet == null)
+                return;
+            if (!onPacketPlayIn(handler, event.getPlayer(), packet))
+                event.setCancelled(true);
         }
     }
+
+    @Override
+    public void injectPlayer(Player player) throws ReflectiveOperationException {}
+
+    @Override
+    public void uninjectPlayer(Player player) {}
 }

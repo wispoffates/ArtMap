@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.IO;
 
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,7 +14,6 @@ import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 
 public class MapArt {
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private final int id;
     private final String title;
     private final UUID artist;
@@ -23,7 +21,7 @@ public class MapArt {
     private final String date;
 
     public MapArt(int mapIDValue, String title, UUID artist, String artistName, Date date) {
-        this(mapIDValue, title, artist, artistName, DATE_FORMAT.format(date));
+        this(mapIDValue, title, artist, artistName, new SimpleDateFormat("dd-MM-yyyy").format(date));
     }
 
     public MapArt(int id, String title, UUID artist, String artistName, String date) {
@@ -39,8 +37,7 @@ public class MapArt {
     }
 
     public boolean isValid() {
-        return title != null && title.length() > 2 && title.length() <= 16
-                && getArtistPlayer() != null && getArtistPlayer().hasPlayedBefore();
+        return title != null && title.length() > 2 && title.length() <= 16 && getArtistPlayer().hasPlayedBefore();
     }
 
     public boolean equals(MapArt art, boolean ignoreMapID) {

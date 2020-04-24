@@ -6,26 +6,22 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
-import me.Fupery.ArtMap.IO.ErrorLogger;
-import me.Fupery.ArtMap.Utils.Reflection;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class GenericPacketReceiver extends PacketReceiver {
 
     private final Map<UUID, Channel> channelLookup = new MapMaker().weakValues().makeMap();
 
-    private final String handlerName = "ArtMapHandler";
+    private static final String handlerName = "ArtMapHandler";
 
     @Override
-    public boolean injectPlayer(Player player) {
+    public void injectPlayer(Player player) throws ReflectiveOperationException {
         Channel channel = getChannel(player);
-        if (channel == null) {
-            return false;
-        }
         PacketHandler handler;
         try {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
@@ -38,7 +34,6 @@ public class GenericPacketReceiver extends PacketReceiver {
             handler = (PacketHandler) channel.pipeline().get(handlerName);
         }
         handler.player = player;
-        return true;
     }
 
     @Override
@@ -56,7 +51,7 @@ public class GenericPacketReceiver extends PacketReceiver {
                 });
             }
         } catch (Exception e) {
-            ErrorLogger.log(e, "Error unbinding player channel!");
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Error unbinding player channel!",e);
         }
         channelLookup.remove(player.getUniqueId());
     }
@@ -73,11 +68,11 @@ public class GenericPacketReceiver extends PacketReceiver {
         }
     }
 
-    private Channel getChannel(Player player) {
+    private Channel getChannel(Player player) throws ReflectiveOperationException {
         Channel channel = channelLookup.get(player.getUniqueId());
 
         if (channel == null) {
-            channel = Reflection.getPlayerChannel(player);
+            channel = ArtMap.instance().getReflection().getPlayerChannel(player);
 
             if (channel == null) {
                 Bukkit.getLogger().warning(Lang.PREFIX + "Error binding player channel!");
@@ -90,8 +85,8 @@ public class GenericPacketReceiver extends PacketReceiver {
     }
 
     private Object onPacketInAsync(Player player, Channel channel, Object packet) {
-        if (!ArtMap.getArtistHandler().containsPlayer(player)) return packet;
-        return ArtMap.getArtistHandler().handlePacket(player, Reflection.getArtistPacket(packet)) ? packet : null;
+        if (!ArtMap.instance().getArtistHandler().containsPlayer(player)) return packet;
+        return ArtMap.instance().getArtistHandler().handlePacket(player, ArtMap.instance().getReflection().getArtistPacket(packet)) ? packet : null;
     }
 
     private final class PacketHandler extends ChannelDuplexHandler {
@@ -101,13 +96,7 @@ public class GenericPacketReceiver extends PacketReceiver {
         public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 
             final Channel channel = context.channel();
-
-            try {
-                msg = onPacketInAsync(player, channel, msg);
-
-            } catch (Exception e) {
-                ErrorLogger.log(e, "Error in onPacketInAsync().");
-            }
+            msg = onPacketInAsync(player, channel, msg);
             if (msg != null) {
                 super.channelRead(context, msg);
             }

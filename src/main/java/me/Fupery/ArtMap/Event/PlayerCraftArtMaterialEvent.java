@@ -1,6 +1,9 @@
 package me.Fupery.ArtMap.Event;
 
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
+
+import java.util.Arrays;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -43,7 +46,7 @@ public class PlayerCraftArtMaterialEvent extends PlayerEvent implements Cancella
     }
 
     public ItemStack[] getIngredients() {
-        return ingredients;
+        return Arrays.copyOf(ingredients, ingredients.length);
     }
 
     @Override

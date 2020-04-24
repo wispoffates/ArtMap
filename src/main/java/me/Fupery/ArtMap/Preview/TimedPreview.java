@@ -11,7 +11,7 @@ abstract class TimedPreview implements Preview {
 
     @Override
     public boolean start(Player player) {
-        ArtMap.getScheduler().getTaskHandler(timeout = new Timeout(player.getUniqueId())).runLater(false, 300);
+        ArtMap.instance().getScheduler().getTaskHandler(timeout = new Timeout(player.getUniqueId())).runLater(false, 300);
         return true;
     }
 
@@ -21,7 +21,7 @@ abstract class TimedPreview implements Preview {
         return true;
     }
 
-    private class Timeout extends BukkitRunnable {
+    private static class Timeout extends BukkitRunnable {
 
         private final UUID player;
 
@@ -31,7 +31,7 @@ abstract class TimedPreview implements Preview {
 
         @Override
         public void run() {
-            ArtMap.getPreviewManager().endPreview(player);
+            ArtMap.instance().getPreviewManager().endPreview(player);
         }
     }
 }

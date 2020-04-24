@@ -24,7 +24,6 @@ public class TownyCompat implements RegionHandler {
             ArtMap.instance().getLogger().warning(String.format("Invalid Towny version: " +
                     "'%s'. ArtMap requires version 0.92 or above.", version.toString()));
             loaded = false;
-            plugin = null;
             return;
         }
         this.loaded = true;

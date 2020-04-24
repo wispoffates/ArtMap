@@ -1,8 +1,8 @@
 package me.Fupery.ArtMap.IO.Database;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
@@ -13,13 +13,11 @@ import org.bukkit.map.MapView;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.CompressedMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
 import me.Fupery.ArtMap.Painting.GenericMapRenderer;
-import me.Fupery.ArtMap.Utils.Reflection;
 
 public class Map {
 
-    public static final byte[] BLANK_MAP = getBlankMap();
+    static final byte[] BLANK_MAP = getBlankMap();
 
     private final int mapId;
     private MapView mapView;
@@ -30,90 +28,72 @@ public class Map {
     }
 
     public Map(MapView mapView) {
-		this.mapId = mapView.getId();
+        this.mapId = mapView.getId();
         this.mapView = mapView;
     }
 
     private static byte[] getBlankMap() {
         byte[] mapOutput = new byte[Size.MAX.value];
-        Arrays.fill(mapOutput, ArtMap.getDyePalette().getDefaultColour().getColour());
+        Arrays.fill(mapOutput, ArtMap.instance().getDyePalette().getDefaultColour().getColour());
         return mapOutput;
     }
 
     public static File getMapDataFolder() {
         String pluginDir = ArtMap.instance().getDataFolder().getParentFile().getAbsolutePath();
         String rootDir = pluginDir.substring(0, pluginDir.lastIndexOf(File.separator));
-        return new File(rootDir + File.separator + ArtMap.getConfiguration().WORLD + File.separator + "data");                               //Navigate to this world's data folder);
+        // Navigate to this world's data folder);
+        return new File(rootDir + File.separator + ArtMap.instance().getConfiguration().WORLD + File.separator + "data");
     }
 
-    public static int getNextMapId() {
-        int nextMapId = -1;
-        File file = new File(getMapDataFolder(), "idcounts.dat");
-        if (file.exists()) {
-            byte[] data = new byte[((int) file.length())];
-            try {
-                FileInputStream inputStream = new FileInputStream(file);
-                inputStream.read(data);
-                inputStream.close();
-            } catch (IOException e) {
-                ErrorLogger.log(e, "Error reading idcounts.dat.");
-                return -1;
-            }
-            nextMapId = (data[9] << 8 | data[10] & 0xFF);//The short is stored at index 9-10
-        }
-        return nextMapId;
-    }
-
-    public CompressedMap compress() {
+    public CompressedMap compress() throws IOException {
         return CompressedMap.compress(getMap());
     }
 
     public byte[] readData() {
-        return Reflection.getMap(getMap());
+        return ArtMap.instance().getReflection().getMap(getMap());
     }
 
     public void setRenderer(MapRenderer renderer) {
         MapView mapView = getMap();
-        if(mapView == null) {
+        if (mapView == null) {
             ArtMap.instance().getLogger().warning("MapView is null! :: " + this.getMapId());
             return;
         }
-        if(mapView.getRenderers() != null) {
-            mapView.getRenderers().forEach(mapView::removeRenderer);
-        } else {
-            ArtMap.instance().getLogger().warning("MapView has no renderers! :: " + this.getMapId());
-        }
-        
+        mapView.getRenderers().forEach(mapView::removeRenderer);
         if (renderer != null) {
             mapView.addRenderer(renderer);
         }
     }
 
-    public Map cloneMap() {
-        World world = Bukkit.getWorld(ArtMap.getConfiguration().WORLD);
+    public Map cloneMap() throws SQLException, IOException, NoSuchFieldException, IllegalAccessException {
+        World world = Bukkit.getServer().getWorld(ArtMap.instance().getConfiguration().WORLD);
         if (world == null) {
-            ArtMap.instance().getLogger().severe("Tried to create MapView instance for Non-existent world, " + ArtMap.getConfiguration().WORLD);
+            ArtMap.instance().getLogger().severe("Tried to create MapView instance for Non-existent world, " + ArtMap.instance().getConfiguration().WORLD);
+            return null;
         }
 
-        MapView newMapView = Bukkit.createMap(world);
+        MapView newMapView = Bukkit.getServer().createMap(world);
         Map newMap = new Map(newMapView);
         byte[] mapData = readData();
         newMap.setMap(mapData);
-        ArtMap.getArtDatabase().cacheMap(newMap, mapData);
+        ArtMap.instance().getArtDatabase().saveInProgressArt(newMap, mapData);
         return newMap;
     }
 
     public MapView getMap() {
-        return Bukkit.getMap(mapId);
+        if(this.mapView != null) {
+            return this.mapView;
+        }
+        return ArtMap.getMap(this.mapId);
     }
 
-    public void setMap(byte[] map) {
+    public void setMap(byte[] map) throws NoSuchFieldException, IllegalAccessException {
         setMap(map, true);
     }
 
-    public void setMap(byte[] map, boolean updateRenderer) {
+    public void setMap(byte[] map, boolean updateRenderer) throws NoSuchFieldException, IllegalAccessException {
         MapView mapView = getMap();
-        Reflection.setWorldMap(mapView, map);
+        ArtMap.instance().getReflection().setWorldMap(mapView, map);
         if (updateRenderer) {
             MapRenderer renderer = new GenericMapRenderer(map);
             setRenderer(renderer);
@@ -129,7 +109,7 @@ public class Map {
     }
 
     public void update(Player player) {
-        ArtMap.getScheduler().runSafely(() -> player.sendMap(getMap()));
+        ArtMap.instance().getScheduler().runSafely(() -> player.sendMap(getMap()));
     }
 
     public int getMapId() {
@@ -140,7 +120,7 @@ public class Map {
     private MapView getMapView() {
         //todo We probably don't need sophisticated mapView caching right now
         return (mapView != null) ? mapView :
-                (mapView = ArtMap.getScheduler().callSync(() -> Bukkit.getMap(mapId)));
+                (mapView = ArtMap.instance().getScheduler().callSync(() -> Bukkit.getMap(mapId)));
     }*/
 
     public enum Size {

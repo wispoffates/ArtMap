@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Recipe;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -42,7 +43,7 @@ public class RecipeLoader {
             throw new InvalidRecipeException(recipeName, "Recipe cannot have less than two materials");
 
         List<String> shape = recipeData.getStringList("SHAPE");
-        boolean recipeIsShaped = shape != null && shape.size() != 0;
+        boolean recipeIsShaped = !shape.isEmpty();
         HashMap<Character, Ingredient> materials = readRecipeMaterials(recipeName, recipeMaterials);
 
 		SimpleRecipe recipe = recipeIsShaped ? new SimpleRecipe.Shaped(recipeName)
@@ -53,10 +54,10 @@ public class RecipeLoader {
             ((SimpleRecipe.Shaped) recipe).shape(shape.get(0), shape.get(1), shape.get(2));
         }
 
-        for (Character key : materials.keySet()) {
-            Ingredient material = materials.get(key);
+        for (Entry<Character,Ingredient> ent : materials.entrySet()) {
+            Ingredient material = ent.getValue();
             if (recipeIsShaped) {
-                ((SimpleRecipe.Shaped) recipe).set(key, material);
+                ((SimpleRecipe.Shaped) recipe).set(ent.getKey(), material);
             } else {
                 ((SimpleRecipe.Shapeless) recipe).add(material);
             }

@@ -36,7 +36,11 @@ public abstract class ListMenu extends CacheableMenu {
 		this.heading = heading;
 		this.page = page;
 		this.parent = Optional.of(parent);
-	}
+    }
+    
+    public String getHeading() {
+        return this.heading;
+    }
 
     @Override
     public void onMenuOpenEvent(Player viewer) {
@@ -117,8 +121,7 @@ public abstract class ListMenu extends CacheableMenu {
 
         @Override
         public void onClick(Player player, ClickType clickType) {
-            if (forward) SoundCompat.UI_BUTTON_CLICK.play(player);
-            else SoundCompat.UI_BUTTON_CLICK.play(player);
+            SoundCompat.UI_BUTTON_CLICK.play(player);
             changePage(player, forward);
         }
     }

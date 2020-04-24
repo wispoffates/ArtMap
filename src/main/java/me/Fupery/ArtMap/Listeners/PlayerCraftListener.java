@@ -1,5 +1,8 @@
 package me.Fupery.ArtMap.Listeners;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -22,8 +25,15 @@ class PlayerCraftListener implements RegisteredListener {
     public void onPlayerCraftEvent(CraftItemEvent event) {
         ItemStack result = event.getCurrentItem();
         // Disallow players from copying ArtMap maps in the crafting table
-		if (result.getType() == Material.FILLED_MAP) {
-			MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+        if (result.getType() == Material.FILLED_MAP) {
+            MapArt art;
+            try {
+                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+            } catch (SQLException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
+                return; 
+            }
             if (art != null) {
                 if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                     Player player = (Player) event.getWhoClicked();
@@ -39,23 +49,30 @@ class PlayerCraftListener implements RegisteredListener {
                     event.setCancelled(true);
                 }
             }
-        } 
+        }
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        //one check this if 1.14+
-        if(ArtMap.getBukkitVersion().getVersion().isLessThan(BukkitVersion.v1_14)) {
+        // one check this if 1.14+
+        if (ArtMap.instance().getBukkitVersion().getVersion().isLessThan(BukkitVersion.v1_14)) {
             return;
         }
-        //exit if not a cartogaphy inventory
-        if(!(event.getInventory() instanceof CartographyInventory)) {
+        // exit if not a cartogaphy inventory
+        if (!(event.getInventory() instanceof CartographyInventory)) {
             return;
         }
-		ItemStack result = event.getCurrentItem();
+        ItemStack result = event.getCurrentItem();
         // Disallow players from copying ArtMap maps in the crafting table
-		if (result.getType() == Material.FILLED_MAP) {
-			MapArt art = ArtMap.getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+        if (result.getType() == Material.FILLED_MAP) {
+            MapArt art;
+            try {
+                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+            } catch (SQLException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
+                return; 
+            }
             if (art != null) {
                 if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
                     ItemStack artworkItem = art.getMapItem();

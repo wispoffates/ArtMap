@@ -1,8 +1,6 @@
 package me.Fupery.ArtMap.Easel;
 
 import me.Fupery.ArtMap.ArtMap;
-import static me.Fupery.ArtMap.ArtMap.getBukkitVersion;
-import static me.Fupery.ArtMap.Utils.VersionHandler.BukkitVersion.v1_8;
 import static org.bukkit.entity.EntityType.ARMOR_STAND;
 import static org.bukkit.entity.EntityType.ITEM_FRAME;
 
@@ -23,12 +21,11 @@ import me.Fupery.ArtMap.Config.Lang;
  */
 public enum EaselPart {
 	STAND(ARMOR_STAND, 0.4, -1, true), FRAME(ITEM_FRAME, 1, 0, false), SIGN(ARMOR_STAND, 0, 0, false), SEAT(ARMOR_STAND,
-			getBukkitVersion().getVersion().getSeatXOffset(), getBukkitVersion().getVersion().getSeatYOffset(),
+			ArtMap.instance().getBukkitVersion().getVersion().getSeatXOffset(), ArtMap.instance().getBukkitVersion().getVersion().getSeatYOffset(),
 			true), MARKER(ARMOR_STAND, SEAT.modifier, 0, true);
 
 	public static final String ARBITRARY_SIGN_ID = "*{=}*";
 	public static final String EASEL_ID = Lang.RECIPE_EASEL_NAME.get();
-	private static final boolean requiresSeatCompensation = (getBukkitVersion().getVersion() == v1_8);
 
 	final EntityType entityType;
 	final double modifier;
@@ -98,7 +95,7 @@ public enum EaselPart {
 	public Entity spawn(Location easelLocation, BlockFace facing) {
 
 		if (this == SIGN) {
-			easelLocation.getBlock().setType(ArtMap.getBukkitVersion().getVersion().getWallSign());
+			easelLocation.getBlock().setType(ArtMap.instance().getBukkitVersion().getVersion().getWallSign());
 			WallSign bd = (WallSign) easelLocation.getBlock().getBlockData();
 			bd.setFacing(getSignFacing(facing));
 			easelLocation.getBlock().setBlockData(bd, false);
@@ -159,28 +156,20 @@ public enum EaselPart {
 
 		switch (facing) {
 		case NORTH:
-				z = -this.modifier;
+			z = -this.modifier;
 			yaw = 180;
 			break;
 		case SOUTH:
-				z = this.modifier;
-
-			if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
-				z += .031;
-			}
+			z = this.modifier;
 			yaw = 0;
 			break;
 		case WEST:
-				x = -this.modifier;
+			x = -this.modifier;
 			yaw = 90;
 			break;
 		case EAST:
-				x = this.modifier;
+			x = this.modifier;
 			yaw = 270;
-
-			if (requiresSeatCompensation && (this == SEAT || this == MARKER)) {
-				x += .031;
-			}
 			break;
 		default:
 		}

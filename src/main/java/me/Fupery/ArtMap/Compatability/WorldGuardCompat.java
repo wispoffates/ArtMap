@@ -28,7 +28,6 @@ public class WorldGuardCompat implements RegionHandler {
             ArtMap.instance().getLogger().warning(String.format("Invalid WorldGuard version: " +
                     "'%s'. ArtMap requires version 7.0.0 or above.", version.toString()));
             loaded = false;
-            plugin = null;
             return;
         }
         this.worldGuardPlugin = WorldGuardPlugin.inst();

@@ -37,7 +37,7 @@ class CommandTest extends AsyncCommand {
         case "-create":
             Bukkit.getScheduler().runTaskAsynchronously(ArtMap.instance(), ()->{
                 int count = Integer.parseInt(args[2]);
-                String series = System.currentTimeMillis() + "";
+                String series = String.valueOf(System.currentTimeMillis());
                 for(int i=0;i<count;i++) {
                     try {
                         createArt(UUID.fromString("5dcadcf6-7070-42ab-aaf3-b60a120a6bcf"), "test_"+series+"_"+i, new Date().toString(),i%100==0);
@@ -59,7 +59,7 @@ class CommandTest extends AsyncCommand {
     private void createArt(UUID artist, String name, String date, boolean print) throws Exception {
         Bukkit.getScheduler().runTask(ArtMap.instance(), ()->{
             try {
-                Map map = ArtMap.getArtDatabase().createMap();
+                Map map = ArtMap.instance().getArtDatabase().createMap();
                 if(print) {
                     System.out.println("Created new Map: " + map.getMapId());
                 }
@@ -69,8 +69,7 @@ class CommandTest extends AsyncCommand {
                 }
                 MapArt mapArt = new MapArt(map.getMapId(), name, artist, null, date);
                 CompressedMap cMap = CompressedMap.compress(map.getMap());
-                ArtMap.getArtDatabase().getMapTable().addMap(cMap);
-                ArtMap.getArtDatabase().getArtTable().addArtwork(mapArt);
+                ArtMap.instance().getArtDatabase().saveArtwork(mapArt, cMap);
             } catch(Exception e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
             }

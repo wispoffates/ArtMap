@@ -1,6 +1,9 @@
 package me.Fupery.ArtMap.Compatability.Dipenizen;
 
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 
@@ -13,25 +16,30 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 
 public class ArtMapArtists implements dObject {
-	
+
 	protected String prefix = "artmapartists";
 	protected UUID[] artists;
-	
+
 	/////////////////////
 	// OBJECT FETCHER
 	/////////////////
 
 	public static ArtMapArtists valueOf(String string) {
-		return valueOf(string,null);
+		return valueOf(string, null);
 	}
-	
+
 	@Fetchable("artmapartists")
 	public static ArtMapArtists valueOf(String string, TagContext context) {
-		if(string == null)
+		if (string == null)
 			return null;
-		
-		string = string.replace("artmapartists@", "");
-		return new ArtMapArtists(ArtMap.getArtDatabase().listArtists());
+
+		//string = string.replace("artmapartists@", "");
+		try {
+			return new ArtMapArtists(ArtMap.instance().getArtDatabase().listArtists());
+		} catch (SQLException e) {
+			ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+			return null;
+		}
 	}
 	
 	public static boolean matches(String arg) {
@@ -42,7 +50,7 @@ public class ArtMapArtists implements dObject {
 	// STATIC CONSTRUCTORS
 	/////////////////
 	public ArtMapArtists(UUID[] artists) {
-		this.artists = artists;
+		this.artists = Arrays.copyOf(artists, artists.length);
 	}
 
 	/////////////////////
@@ -51,14 +59,14 @@ public class ArtMapArtists implements dObject {
 	@Override
 	public boolean equals(Object a) {
 		if (a instanceof ArtMapArtists) {
-			return ArtMapArtists.class.cast(a).artists.equals(this.artists);
+			return Arrays.equals(ArtMapArtists.class.cast(a).artists,this.artists);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.artists.hashCode();
+		return Arrays.hashCode(this.artists);
 	}
 
 	@Override

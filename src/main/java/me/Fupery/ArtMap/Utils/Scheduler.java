@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Utils;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.ErrorLogger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,9 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.bukkit.Bukkit.getScheduler;
-import static org.bukkit.Bukkit.isPrimaryThread;
+import java.util.logging.Level;
 
 public class Scheduler {
     //todo add checks that ArtMap isn't disabled
@@ -19,33 +17,33 @@ public class Scheduler {
     public final TaskScheduler SYNC = new TaskScheduler() {
         @Override
         public BukkitTask run(Runnable runnable) {
-            return getScheduler().runTask(plugin, runnable);
+            return Bukkit.getScheduler().runTask(plugin, runnable);
         }
 
         @Override
         public BukkitTask runLater(Runnable runnable, int delay) {
-            return getScheduler().runTaskLater(plugin, runnable, delay);
+            return Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
         }
 
         @Override
         public BukkitTask runTimer(Runnable runnable, int startDelay, int period) {
-            return getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
+            return Bukkit.getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
         }
     };
     public final TaskScheduler ASYNC = new TaskScheduler() {
         @Override
         public BukkitTask run(Runnable runnable) {
-            return getScheduler().runTaskAsynchronously(plugin, runnable);
+            return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
         }
 
         @Override
         public BukkitTask runLater(Runnable runnable, int delay) {
-            return getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
+            return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
         }
 
         @Override
         public BukkitTask runTimer(Runnable runnable, int startDelay, int period) {
-            return getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
+            return Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, startDelay, period);
         }
     };
 
@@ -58,7 +56,7 @@ public class Scheduler {
     }
 
     public void runSafely(Runnable runnable) {
-        if (!isPrimaryThread()) {
+        if (!Bukkit.getServer().isPrimaryThread()) {
             SYNC.run(runnable);
         } else {
             runnable.run();
@@ -66,7 +64,7 @@ public class Scheduler {
     }
 
     public <T> T callSync(Callable<T> callable) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (!Bukkit.getServer().isPrimaryThread()) {
             final BukkitFuture<T> future = new BukkitFuture<>(callable);
             future.run();
             synchronized (future.getLock()) {
@@ -84,7 +82,7 @@ public class Scheduler {
         try {
             return callable.call();
         } catch (Exception e) {
-            ErrorLogger.log(e, "Error in Callable:");
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Error in sync call!",e);
             return null;
         }
     }
@@ -120,7 +118,7 @@ public class Scheduler {
         }
     }
 
-    private class BukkitFuture<t> {
+    public static class BukkitFuture<t> {
         private final AtomicBoolean isReady;
         private final AtomicReference<t> reference;
         private final Object lock;
@@ -134,14 +132,14 @@ public class Scheduler {
         }
 
         void run() {
-            ArtMap.getScheduler().SYNC.run(() -> {
+            ArtMap.instance().getScheduler().SYNC.run(() -> {
                 synchronized (lock) {
                     try {
                         reference.set(callable.call());
                     } catch (Exception e) {
-                        ErrorLogger.log(e, "Error in BukkitGetter:");
+                        ArtMap.instance().getLogger().log(Level.SEVERE,"Error in sync call!",e);
                     }
-                    lock.notify();
+                    lock.notifyAll();
                 }
             });
         }

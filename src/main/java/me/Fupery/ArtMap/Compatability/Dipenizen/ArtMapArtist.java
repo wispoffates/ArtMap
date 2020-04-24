@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Compatability.Dipenizen;
 
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 
@@ -82,10 +84,16 @@ public class ArtMapArtist implements dObject {
 		}
 
 		if (attribute.startsWith("artworks")) {
-			MapArt[] artworks = ArtMap.getArtDatabase().listMapArt(this.artist);
+			MapArt[] artworks;
+			try {
+				artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
+			} catch (SQLException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                return "Error!";
+			}
 			dList artworksList = new dList();
 			for (MapArt art : artworks) {
-				artworksList.add(art.getMapId() + "");
+				artworksList.add(String.valueOf(art.getMapId()));
 			}
 
 			return artworksList.getAttribute(attribute.fulfill(1));

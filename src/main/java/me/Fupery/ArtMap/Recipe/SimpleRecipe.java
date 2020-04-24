@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -63,9 +64,9 @@ public abstract class SimpleRecipe {
 			NamespacedKey key = new NamespacedKey(ArtMap.instance(), this.getName());
 			ShapedRecipe recipe = new ShapedRecipe(key, result);
             recipe.shape(shape);
-            for (Character c : items.keySet()) {
-                Ingredient item = items.get(c);
-				recipe.setIngredient(c, item.getMaterial());
+            for (Entry<Character,Ingredient> ent : items.entrySet()) {
+                Ingredient item = ent.getValue();
+				recipe.setIngredient(ent.getKey(), item.getMaterial());
             }
             return recipe;
         }
@@ -131,7 +132,7 @@ public abstract class SimpleRecipe {
         }
     }
 
-    private class RecipeException extends RuntimeException {
+    private static class RecipeException extends RuntimeException {
 		/**  */
 		private static final long serialVersionUID = 1L;
 

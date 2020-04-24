@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.IO;
 
 import me.Fupery.ArtMap.ArtMap;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,7 @@ public class TitleFilter {
     private String[] regex;
 
     public TitleFilter(String[] regex) {
-        this.regex = regex;
+        this.regex = Arrays.copyOf(regex, regex.length);
     }
 
     private static boolean containsIllegalCharacters(String toExamine) {
@@ -29,7 +30,7 @@ public class TitleFilter {
 
     public boolean check(String title) {
         return !(title.length() < 3 || title.length() > 16) && !containsIllegalCharacters(title)
-                && (!ArtMap.getConfiguration().LANGUAGE.equalsIgnoreCase("english")
-                || !(ArtMap.getConfiguration().SWEAR_FILTER && containsIllegalWords(title)));
+                && (!ArtMap.instance().getConfiguration().LANGUAGE.equalsIgnoreCase("english")
+                || !(ArtMap.instance().getConfiguration().SWEAR_FILTER && containsIllegalWords(title)));
     }
 }

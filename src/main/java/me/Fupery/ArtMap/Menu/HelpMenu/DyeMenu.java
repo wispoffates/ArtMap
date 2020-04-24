@@ -17,14 +17,14 @@ import me.Fupery.ArtMap.Menu.Button.StaticButton;
 public class DyeMenu extends ListMenu {
 
     public DyeMenu() {
-		super("Dyes for Painting", ArtMap.getMenuHandler().MENU.HELP, 0);
+		super("Dyes for Painting", ArtMap.instance().getMenuHandler().MENU.HELP, 0);
     }
 
     @Override
 	protected Button[] getListItems() {
 		List<Button> buttons = new ArrayList<>();
-        ArtDye[] dyes = ArtMap.getDyePalette().getDyes(DyeType.DYE);
-		buttons.add(new StaticButton(ArtMap.getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_DYES.get()));
+        ArtDye[] dyes = ArtMap.instance().getDyePalette().getDyes(DyeType.DYE);
+		buttons.add(new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_DYES.get()));
 		// buttons[53] = new CloseButton();
 
 		for (ArtDye dye : dyes) {

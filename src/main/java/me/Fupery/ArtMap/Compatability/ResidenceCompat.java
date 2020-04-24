@@ -1,8 +1,10 @@
 package me.Fupery.ArtMap.Compatability;
 
 import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
+
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Easel.EaselEvent;
 import me.Fupery.ArtMap.Utils.Version;
@@ -15,6 +17,8 @@ class ResidenceCompat implements RegionHandler {
 
     private boolean loaded = false;
     private Residence plugin;
+    private Flags artmapPlace;
+    private Flags artmapUse;
 
     public ResidenceCompat() {
         plugin = ((Residence) Bukkit.getPluginManager().getPlugin("Residence"));
@@ -26,8 +30,10 @@ class ResidenceCompat implements RegionHandler {
             plugin = null;
             return;
         }
-        FlagPermissions.addFlag("artmap-place");
-        FlagPermissions.addFlag("artmap-use");
+        artmapPlace = Flags.getFlag("artmap-place");
+        artmapUse = Flags.getFlag("artmap-use");
+        FlagPermissions.addFlag(artmapPlace);
+        FlagPermissions.addFlag(artmapUse);
         loaded = true;
     }
 
@@ -36,7 +42,7 @@ class ResidenceCompat implements RegionHandler {
         ClaimedResidence residence = plugin.getResidenceManager().getByLoc(location);
         if (residence == null) return true;
         FlagPermissions perms = plugin.getPermsByLoc(location);
-        return perms.playerHas(player.getName(), location.getWorld().getName(), "artmap-place", false);
+        return perms.playerHas(player, artmapPlace, false);
     }
 
     @Override
@@ -44,7 +50,7 @@ class ResidenceCompat implements RegionHandler {
         ClaimedResidence residence = plugin.getResidenceManager().getByLoc(entity.getLocation());
         if (residence == null) return true;
         FlagPermissions perms = plugin.getPermsByLoc(entity.getLocation());
-        return perms.playerHas(player.getName(), entity.getWorld().getName(), "artmap-use", false);
+        return perms.playerHas(player, artmapUse, false);
     }
 
     @Override

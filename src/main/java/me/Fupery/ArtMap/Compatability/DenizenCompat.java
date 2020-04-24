@@ -11,7 +11,6 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArt;
 import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArtist;
 import me.Fupery.ArtMap.Compatability.Dipenizen.ArtMapArtists;
-import me.Fupery.ArtMap.Utils.Reflection;
 import net.aufdemrand.denizencore.objects.ObjectFetcher;
 
 public class DenizenCompat implements ReflectionHandler {
@@ -50,11 +49,11 @@ public class DenizenCompat implements ReflectionHandler {
     public Channel getPlayerChannel(Player player) throws ReflectiveOperationException {
         Object nmsPlayer, denizenPacketListener, networkManager;
         Channel channel;
-
-        nmsPlayer = Reflection.invokeMethod(player, "getHandle");
-        denizenPacketListener = Reflection.getField(nmsPlayer, "playerConnection");
+        
+        nmsPlayer = ArtMap.instance().getReflection().invokeMethod(player, "getHandle");
+        denizenPacketListener = ArtMap.instance().getReflection().getField(nmsPlayer, "playerConnection");
         networkManager = getSuperSuperField(denizenPacketListener, "networkManager");
-        channel = (Channel) Reflection.getSuperField(networkManager, "channel");
+        channel = (Channel) ArtMap.instance().getReflection().getSuperField(networkManager, "channel");
 
         return channel;
     }
