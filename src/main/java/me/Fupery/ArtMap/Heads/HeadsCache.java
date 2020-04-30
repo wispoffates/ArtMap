@@ -47,7 +47,7 @@ public class HeadsCache {
 	static private JsonParser				parser				= new JsonParser();
 	static private String					API_PROFILE_LINK	= "https://sessionserver.mojang.com/session/minecraft/profile/";
 
-	private static Map<UUID, TextureData>	textureCache		= Collections.synchronizedMap( new HashMap<>());
+	private static final Map<UUID, TextureData>	textureCache	= Collections.synchronizedMap( new HashMap<>());
 	private static File						cacheFile;
 	private ArtMap plugin;
 
@@ -83,7 +83,7 @@ public class HeadsCache {
 		try {
 			UUID[] artists = plugin.getArtDatabase().listArtists(UUID.randomUUID());
 			artistsCount = artists.length;
-			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started.", artists.length - 1));
+			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started. {1} retrieved from disk cache.", artists.length - textureCache.size(), textureCache.size()));
 			// skip the first one since we dummied it
 			for (int i = 1; i < artists.length; i++) {
 				//check cache
@@ -120,10 +120,15 @@ public class HeadsCache {
             Gson gson = ArtMap.instance().getGson(true);
             Type collectionType = new TypeToken<Map<UUID,TextureData>>() {
             }.getType();
-            textureCache = gson.fromJson(reader, collectionType);
+			Map<UUID,TextureData> loadedCache = gson.fromJson(reader, collectionType);
+			if(loadedCache != null && !loadedCache.isEmpty()) {
+				textureCache.putAll(loadedCache);
+			} else {
+				ArtMap.instance().getLogger().warning("HeadCache load was null? Creating new empty cache.");
+			}
             reader.close();
-        } catch (IOException e) {
-            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure parsing head cache!", e);
+        } catch (Exception e) {
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure parsing head cache! Will start with an empty cache.", e);
         }
 	}
 

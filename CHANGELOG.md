@@ -1,4 +1,7 @@
-## Release 3.50
+## Release 3.5.1
+* Fix some edge cases that could cause NPEs and other nastiness around the new Head Cache.
+
+## Release 3.5.0
 * Major changes around how player heads are loaded and cached to work with new Mojang API limits.
 * Major internal refactoring
 * Added unit tests, spotbugs, and code coverage reports to guide code quality improvements.
