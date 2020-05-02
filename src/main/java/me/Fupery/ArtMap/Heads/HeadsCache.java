@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -285,12 +286,23 @@ public class HeadsCache {
 	}
 
 	private static Optional<TextureData> getSkinUrl(UUID uuid) throws HeadFetchException {
-		String id = uuid.toString().replace("-", "");
-		String json = getContent(API_PROFILE_LINK + id);
-		JsonObject o = parser.parse(json).getAsJsonObject();
-		String name = o.get("name").getAsString();
-		String jsonBase64 = o.get("properties").getAsJsonArray().get(0).getAsJsonObject().get("value").getAsString();
-		return Optional.of(new TextureData(name, jsonBase64));
+		try {
+			String id = uuid.toString().replace("-", "");
+			String json = getContent(API_PROFILE_LINK + id);
+			JsonObject o = parser.parse(json).getAsJsonObject();
+			String name = o.get("name").getAsString();
+			JsonArray jArray= o.get("properties").getAsJsonArray();
+			String jsonBase64 = null;
+			if(jArray.size() > 0) {
+				jsonBase64 = jArray.get(0).getAsJsonObject().get("value").getAsString();
+			} else {
+				return Optional.empty();
+			}
+			return Optional.of(new TextureData(name, jsonBase64));
+		} catch ( Exception e ) {
+			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure parsing skin texture json.", e);
+			return Optional.empty();
+		}
 	}
 
 	private static class TextureData {

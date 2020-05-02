@@ -1,3 +1,6 @@
+## Release 3.5.2
+* Better handle exceptions with play skin json.
+
 ## Release 3.5.1
 * Fix some edge cases that could cause NPEs and other nastiness around the new Head Cache.
 
