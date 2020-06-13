@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap</artifactId>
-	<version>3.5.2</version>
+	<version>3.5.3</version>
 	<description>Make pixel art!</description>
 	<profiles>
 	</profiles>
@@ -155,8 +155,8 @@
 			<url>https://repo.codemc.org/repository/maven-public/</url>
 		</repository>
 		<repository>
-			<id>plotsquared-repo</id>
-			<url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
+    		<id>IntellectualSites</id>
+    		<url>https://mvn.intellectualsites.com/content/groups/public/</url>
 		</repository>
 		<repository>
             <id>mojang</id>
@@ -196,7 +196,7 @@
 		<dependency>
 			<groupId>com.github.WesJD</groupId>
 	    	<artifactId>AnvilGUI</artifactId>
-			<version>478e0c196e</version>
+			<version>61aa6d8080</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--  Mojang dependency -->

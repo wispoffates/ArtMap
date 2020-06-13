@@ -5,6 +5,10 @@ import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * Version handles the minor changes between different MC versions.
+ * Such as dye and sign renames.
+ */
 public class Version implements Comparable<Version> {
     private final int[] numbers;
 
@@ -33,6 +37,15 @@ public class Version implements Comparable<Version> {
 
     public static Version getBukkitVersion() {
         String bukkit = Bukkit.getServer().getBukkitVersion();
+        return getBukkitVersion(bukkit);
+    }
+
+    /**
+     * Debug method! Use the no argument method.
+     * @param bukkit The Bukkit version string.
+     * @return Version Version specific wrapper.
+     */
+    public static Version getBukkitVersion(String bukkit) {
         String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
         int[] verNumbers = new int[ver.length];
         for (int i = 0; i < ver.length; i++) {
@@ -43,7 +56,7 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int compareTo(Version ver) {
-        int len = (ver.numbers.length > numbers.length) ? ver.numbers.length : numbers.length;
+        int len = (ver.numbers.length < numbers.length) ? ver.numbers.length : numbers.length;
         for (int i = 0; i < len; i++) {
             int a = i < numbers.length ? numbers[i] : 0;
             int b = i < ver.numbers.length ? ver.numbers[i] : 0;
@@ -70,7 +83,7 @@ public class Version implements Comparable<Version> {
     }
 
     public boolean isGreaterThan(int... numbers) {
-        return compareTo(new Version(numbers)) > 1;
+        return compareTo(new Version(numbers)) >= 1;
     }
 
     public boolean isGreaterOrEqualTo(int... numbers) {
@@ -86,7 +99,7 @@ public class Version implements Comparable<Version> {
     }
 
     public boolean isLessThan(int... numbers) {
-        return compareTo(new Version(numbers)) < -1;
+        return compareTo(new Version(numbers)) <= -1;
     }
 
     @Override

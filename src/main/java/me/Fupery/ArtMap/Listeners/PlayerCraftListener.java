@@ -62,7 +62,11 @@ class PlayerCraftListener implements RegisteredListener {
         if (!(event.getInventory() instanceof CartographyInventory)) {
             return;
         }
+        
         ItemStack result = event.getCurrentItem();
+        if(result ==null) {
+            return;
+        }
         // Disallow players from copying ArtMap maps in the crafting table
         if (result.getType() == Material.FILLED_MAP) {
             MapArt art;

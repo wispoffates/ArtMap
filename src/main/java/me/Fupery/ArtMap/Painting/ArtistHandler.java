@@ -77,7 +77,7 @@ public class ArtistHandler {
 								} catch (DuplicateArtworkException | PermissionException e) {
 									player.sendMessage(e.getMessage());
 								} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
-									player.sendMessage(Lang.SAVE_FAILURE.get());
+									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
 									ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
 								}
 							});

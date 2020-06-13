@@ -84,7 +84,7 @@ public class HeadsCache {
 		try {
 			UUID[] artists = plugin.getArtDatabase().listArtists(UUID.randomUUID());
 			artistsCount = artists.length;
-			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started. {1} retrieved from disk cache.", artists.length - textureCache.size(), textureCache.size()));
+			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started. {1} retrieved from disk cache.", artists.length, textureCache.size()));
 			// skip the first one since we dummied it
 			for (int i = 1; i < artists.length; i++) {
 				//check cache
@@ -107,7 +107,7 @@ public class HeadsCache {
 		} else {
 			plugin.getLogger().info(MessageFormat.format("Loaded {0} from disk cache, and {1} from mojang out of {2} artists.", loaded, mojang,artistsCount - 1));
 			if(loaded+mojang < artistsCount) {
-				plugin.getLogger().info("Remaining artists will be loaded when needed");
+				plugin.getLogger().info("Remaining artists will be loaded when needed.");
 			}
 		}
 	}

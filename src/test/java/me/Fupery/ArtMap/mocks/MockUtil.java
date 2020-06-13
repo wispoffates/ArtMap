@@ -218,7 +218,7 @@ public class MockUtil {
     }
 
     public MockUtil mockArtMap() throws NoSuchFieldException, SecurityException, FileNotFoundException,
-            IOException, InvalidConfigurationException {
+            IOException, InvalidConfigurationException, InvalidDescriptionException {
         if(this.mockArtmap != null) {
             return this;
         }
@@ -249,6 +249,10 @@ public class MockUtil {
          when(mockArtmap.getConfig()).thenReturn(fileConfig);
          Configuration config = new Configuration(mockArtmap, mockCompatibilityManager);
          when(mockArtmap.getConfiguration()).thenReturn(config);
+         // Mock the description
+         File pluginYml = new File(getClass().getResource("/plugin.yml").getPath());
+         PluginDescriptionFile desc = new PluginDescriptionFile(new FileInputStream(pluginYml));
+         Mockito.when(mockArtmap.getDescription()).thenReturn(desc);
  
          // Mock the scheduler
          Scheduler mockScheduler = mock(Scheduler.class);

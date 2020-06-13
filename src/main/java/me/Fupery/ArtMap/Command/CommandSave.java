@@ -67,7 +67,7 @@ class CommandSave extends AsyncCommand {
             } catch (DuplicateArtworkException | PermissionException e) {
                 player.sendMessage(e.getMessage());
             } catch (Exception e) {
-                msg.message = Lang.SAVE_FAILURE.get();
+                msg.message = String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title);
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
             }
         });
