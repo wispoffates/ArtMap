@@ -159,7 +159,7 @@ public class MockUtil {
          return this;
     }
 
-    public MockUtil mockServer() {
+    public MockUtil mockServer(String version) {
         if(this.mockServer != null) {
             return this;
         }
@@ -169,8 +169,8 @@ public class MockUtil {
         Server mockServer = mock(Server.class);
 
         BukkitScheduler mockBukkitScheduler = mock(BukkitScheduler.class);
-        when(mockServer.getVersion()).thenReturn("1.15-Mock");
-        when(mockServer.getBukkitVersion()).thenReturn("1.15-MOCK");
+        when(mockServer.getVersion()).thenReturn(version);
+        when(mockServer.getBukkitVersion()).thenReturn(version);
         when(mockServer.getLogger()).thenReturn(testLogger);
         when(mockServer.getScheduler()).thenReturn(mockBukkitScheduler);
         when(mockServer.getPluginManager()).thenReturn(this.mockPluginManager);

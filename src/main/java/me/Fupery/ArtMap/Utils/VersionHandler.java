@@ -12,6 +12,13 @@ public class VersionHandler {
         version = checkVersion();
     }
 
+    /**
+     * Unit tests
+     */
+    protected VersionHandler(BukkitVersion bv) {
+        version = bv;
+    }
+
     private static BukkitVersion checkVersion() {
         Version version = Version.getBukkitVersion();
         if (version.isLessThan(1, 14)) return BukkitVersion.v1_13;
@@ -79,7 +86,7 @@ public class VersionHandler {
         }
 
         public Material getWallSign() {
-            if( this == v1_13) {
+            if( this.isEqualTo(BukkitVersion.v1_13)) {
                 return Material.getMaterial("WALL_SIGN", false);
             } else {
                 return Material.getMaterial("OAK_WALL_SIGN", false);
@@ -87,7 +94,7 @@ public class VersionHandler {
         }
 
         public Material getSign() {
-            if( this == v1_13) {
+            if( this.isEqualTo(BukkitVersion.v1_13)) {
                 return Material.getMaterial("SIGN", false);
             } else {
                return Material.getMaterial("OAK_SIGN", false);
@@ -95,7 +102,7 @@ public class VersionHandler {
         }
 
         public Material getRedDye() {
-            if( this == v1_13) {
+            if( this.isEqualTo(BukkitVersion.v1_13)) {
                 return Material.getMaterial("ROSE_DYE", false);
             } else {
                 return Material.getMaterial("RED_DYE", false);
@@ -103,7 +110,7 @@ public class VersionHandler {
         }
 
         public Material getGreenDye() {
-            if( this == v1_13) {
+            if( this.isEqualTo(BukkitVersion.v1_13)) {
                 return Material.getMaterial("CACTUS_GREEN", false);
             } else {
                 return Material.getMaterial("GREEN_DYE", false);
@@ -111,7 +118,7 @@ public class VersionHandler {
         }
 
         public Material getYellowDye() {
-            if( this == v1_13) {
+            if( this.isEqualTo(BukkitVersion.v1_13)) {
                 return Material.getMaterial("DANDELION_YELLOW", false);
             } else {
                 return Material.getMaterial("YELLOW_DYE", false);
