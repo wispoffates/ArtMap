@@ -35,10 +35,9 @@ public class VersionHandlerTest {
         Assert.assertTrue("Should less than or equal to 1.13", version.isLessOrEqualTo(BukkitVersion.v1_13));
         Assert.assertTrue("Should be less than to 1.14", version.isLessThan(BukkitVersion.v1_14));
 
-        /*
+        //should fail through to bedrock
         Assert.assertNotNull("Sign should not be null!", version.getSign());
-        Assert.assertTrue("1.13 should be just sign. :: " + version.getSign().name(), version.getSign().name().equals("SIGN"));
-        */
+        Assert.assertTrue("1.13 should be just sign. :: " + version.getSign().name(), version.getSign().name().equals("BEDROCK"));
     }
 
     @Test
@@ -49,6 +48,9 @@ public class VersionHandlerTest {
         Assert.assertTrue("Should equal to 1.14 :: " + version.toString(), version.isEqualTo(BukkitVersion.v1_14));
         Assert.assertTrue("Should less than or equal to 1.14", version.isLessOrEqualTo(BukkitVersion.v1_14));
         Assert.assertTrue("Should be less than to 1.15", version.isLessThan(BukkitVersion.v1_15));
+
+        Assert.assertNotNull("Sign should not be null!", version.getSign());
+        Assert.assertTrue("1.14 should be oak_sign. :: " + version.getSign().name(), version.getSign().name().equals("OAK_SIGN"));
     }
 
     @Test

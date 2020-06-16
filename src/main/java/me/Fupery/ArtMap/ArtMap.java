@@ -178,6 +178,7 @@ public class ArtMap extends JavaPlugin {
 			dyePalette = new BasicPalette();
 			database = new Database(this);
 			dbUpgradeNeeded = this.checkIfDatabaseUpgradeNeeded();
+			this.getLogger().info(" MC version: " + bukkitVersion.toString() ) ;
 			if ((pixelTable = PixelTableManager.buildTables(this)) == null) {
 				getLogger().warning(Lang.INVALID_DATA_TABLES.get());
 				getPluginLoader().disablePlugin(this);

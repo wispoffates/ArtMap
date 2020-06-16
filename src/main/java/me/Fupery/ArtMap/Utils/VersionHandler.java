@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 
 import org.bukkit.Material;
 
+import me.Fupery.ArtMap.ArtMap;
+
 public class VersionHandler {
     private final BukkitVersion version;
 
@@ -35,6 +37,11 @@ public class VersionHandler {
 
     public BukkitVersion getVersion() {
         return version;
+    }
+
+    @Override
+    public String toString() {
+        return version.toString();
     }
 
     public enum BukkitVersion {
@@ -86,43 +93,68 @@ public class VersionHandler {
         }
 
         public Material getWallSign() {
+            String matName = "OAK_WALL_SIGN";
             if( this.isEqualTo(BukkitVersion.v1_13)) {
-                return Material.getMaterial("WALL_SIGN", false);
-            } else {
-                return Material.getMaterial("OAK_WALL_SIGN", false);
+                matName = "WALL_SIGN";
+            } 
+            Material mat = Material.getMaterial(matName, false);
+            if(mat == null) {
+                ArtMap.instance().getLogger().warning("Failed to get wall sign material! :: " + matName);
+                mat = Material.BEDROCK;
             }
+            return mat;
         }
 
         public Material getSign() {
+            String matName = "OAK_SIGN";
             if( this.isEqualTo(BukkitVersion.v1_13)) {
-                return Material.getMaterial("SIGN", false);
-            } else {
-               return Material.getMaterial("OAK_SIGN", false);
+                matName = "SIGN";
+            } 
+            Material mat = Material.getMaterial(matName, false);
+            if(mat == null) {
+                ArtMap.instance().getLogger().warning("Failed to get sign material! :: " + matName);
+                mat = Material.BEDROCK;
             }
+            return mat;
         }
 
         public Material getRedDye() {
+            String matName = "RED_DYE";
             if( this.isEqualTo(BukkitVersion.v1_13)) {
-                return Material.getMaterial("ROSE_DYE", false);
-            } else {
-                return Material.getMaterial("RED_DYE", false);
+                matName = "ROSE_RED";
+            } 
+            Material mat = Material.getMaterial(matName, false);
+            if(mat == null) {
+                ArtMap.instance().getLogger().warning("Failed to get red dye material! :: " + matName);
+                mat = Material.BEDROCK;
             }
+            return mat;
         }
 
         public Material getGreenDye() {
+            String matName = "GREEN_DYE";
             if( this.isEqualTo(BukkitVersion.v1_13)) {
-                return Material.getMaterial("CACTUS_GREEN", false);
-            } else {
-                return Material.getMaterial("GREEN_DYE", false);
+                matName = "CACTUS_GREEN";
+            } 
+            Material mat = Material.getMaterial(matName, false);
+            if(mat == null) {
+                ArtMap.instance().getLogger().warning("Failed to get green dye material! :: " + matName);
+                mat = Material.BEDROCK;
             }
+            return mat;
         }
 
         public Material getYellowDye() {
+            String matName = "YELLOW_DYE";
             if( this.isEqualTo(BukkitVersion.v1_13)) {
-                return Material.getMaterial("DANDELION_YELLOW", false);
-            } else {
-                return Material.getMaterial("YELLOW_DYE", false);
+                matName = "DANDELION_YELLOW";
+            } 
+            Material mat = Material.getMaterial(matName, false);
+            if(mat == null) {
+                ArtMap.instance().getLogger().warning("Failed to get green dye material! :: " + matName);
+                mat = Material.BEDROCK;
             }
+            return mat;
         }
 
     }
