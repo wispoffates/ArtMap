@@ -91,6 +91,7 @@ public class DatabaseTest {
 
         db.saveArtwork(art, mockCompressedMap);
         db.saveArtwork(art, mockCompressedMap); // should throw the exception
+        Assert.assertTrue("Artwork save did not throw an exception when it should have!", false);
     }
 
     @Test

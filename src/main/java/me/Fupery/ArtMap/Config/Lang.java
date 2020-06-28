@@ -10,7 +10,7 @@ import me.Fupery.ArtMap.ArtMap;
 
 public enum Lang implements LangSet<String> {
 
-    COMMAND_SAVE, COMMAND_DELETE, COMMAND_PREVIEW, COMMAND_RESTORE, COMMAND_BACKUP, COMMAND_LOOKUP, COMMAND_EXPORT, COMMAND_IMPORT, HELP, 
+    COMMAND_SAVE, COMMAND_DELETE, COMMAND_PREVIEW, COMMAND_RESTORE, COMMAND_BACKUP, COMMAND_LOOKUP, COMMAND_EXPORT, COMMAND_IMPORT, HELP, GENERIC_ERROR,
     SAVE_SUCCESS, SAVE_FAILURE, DELETED, PREVIEWING, RECIPE_HEADER, NEED_CANVAS, NO_CONSOLE, PLAYER_NOT_FOUND, NO_PERM, NOT_RIDING_EASEL, NOT_YOUR_EASEL,
     BREAK_CANVAS, MAP_NOT_FOUND, NO_ARTWORKS, NO_CRAFT_PERM, BAD_TITLE, TITLE_USED, EMPTY_HAND_PREVIEW, SAVE_ARTWORK, SAVE_ARTWORK_2,
     INVALID_DATA_TABLES, CANNOT_BUILD_DATABASE, MAP_ID_MISSING, RESTORED_SUCCESSFULY, MENU_RECIPE, MENU_ARTIST,
@@ -27,7 +27,7 @@ public enum Lang implements LangSet<String> {
     private String message = String.format("'%s' NOT FOUND", name());
 
     public static void load(ArtMap plugin, Configuration configuration) {
-        LangLoader loader = new LangLoader(plugin, configuration);// TODO: 21/09/2016
+        LangLoader loader = new LangLoader(plugin, configuration);
         //Load basic messages
         for (Lang key : Lang.values()) {
             key.message = loader.loadString(key.name());

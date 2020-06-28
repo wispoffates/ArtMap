@@ -300,7 +300,7 @@ public class HeadsCache {
 			}
 			return Optional.of(new TextureData(name, jsonBase64));
 		} catch ( Exception e ) {
-			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure parsing skin texture json.", e);
+			ArtMap.instance().getLogger().log(Level.WARNING, "Failure parsing skin texture json. You may ignore ths warning.", e);
 			return Optional.empty();
 		}
 	}

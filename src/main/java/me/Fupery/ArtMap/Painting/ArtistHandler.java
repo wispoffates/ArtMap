@@ -29,6 +29,7 @@ import me.Fupery.ArtMap.Painting.Brush.BrushAction;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import net.wesjd.anvilgui.AnvilGUI;
+import net.wesjd.anvilgui.AnvilGUI.Response;
 
 public class ArtistHandler {
 
@@ -40,7 +41,7 @@ public class ArtistHandler {
 	}
 
 	public boolean handlePacket(Player sender, ArtistPacket packet) {
-		if (packet == null) {
+		if (packet == null || sender == null) {
 			return true;
 		}
 		if (artists.containsKey(sender.getUniqueId())) {
@@ -60,20 +61,25 @@ public class ArtistHandler {
 						AnvilGUI.Builder builder = new AnvilGUI.Builder();
 						builder.plugin(ArtMap.instance()).text("Title?").onComplete((player, title) -> {
 							TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
-							if (!filter.check(title)) {
+							if (title == null || !filter.check(title)) {
 								player.sendMessage(Lang.BAD_TITLE.get());
-								return null;
+								return Response.close();
 							}
 							Easel easel = session.getEasel();
 							ArtMap.instance().getScheduler().SYNC.run(() -> {
 								try {
-									easel.playEffect(EaselEffect.SAVE_ARTWORK);
 									Canvas canvas = Canvas.getCanvas(easel.getItem());
+									if(canvas == null) {
+										ArtMap.instance().getLogger().log(Level.SEVERE,"Canvas should not be null!");
+										Lang.GENERIC_ERROR.send(player);
+										return;
+									}
 									MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
 									ArtMap.instance().getArtistHandler().removePlayer(player);
 									easel.setItem(new ItemStack(Material.AIR));
 									ItemUtils.giveItem(player, art1.getMapItem());
 									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+									easel.playEffect(EaselEffect.SAVE_ARTWORK);
 								} catch (DuplicateArtworkException | PermissionException e) {
 									player.sendMessage(e.getMessage());
 								} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
@@ -81,7 +87,7 @@ public class ArtistHandler {
 									ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
 								}
 							});
-							return null;
+							return Response.close();
 						});
 						builder.open(sender);
 					});

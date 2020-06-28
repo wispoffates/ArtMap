@@ -1,3 +1,11 @@
+## Release 3.5.5
+* Update AnvilGUI for 1.16.1 support
+* Add Generic error message to the Lang file.
+* Head loading error message cleared up.
+* Handle some more Tuinity fork weirdness with events.
+* More error catching around Artwork saving.
+* Fix case were Artmap was passing null to AnvilGUI when it should not be.
+
 ## Release 3.5.2
 * Better handle exceptions with play skin json.
 

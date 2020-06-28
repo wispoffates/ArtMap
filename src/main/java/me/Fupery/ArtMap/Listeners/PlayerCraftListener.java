@@ -24,6 +24,11 @@ class PlayerCraftListener implements RegisteredListener {
     @EventHandler
     public void onPlayerCraftEvent(CraftItemEvent event) {
         ItemStack result = event.getCurrentItem();
+
+        //Tuinity fork sends nulls sometimes so handle it.
+        if(result == null) {
+            return;
+        }
         // Disallow players from copying ArtMap maps in the crafting table
         if (result.getType() == Material.FILLED_MAP) {
             MapArt art;
@@ -54,6 +59,10 @@ class PlayerCraftListener implements RegisteredListener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        //Tuinity fork sometimes throws a null even down the pipe
+        if(event == null) {
+            return;
+        }
         // one check this if 1.14+
         if (ArtMap.instance().getBukkitVersion().getVersion().isLessThan(BukkitVersion.v1_14)) {
             return;
@@ -62,7 +71,7 @@ class PlayerCraftListener implements RegisteredListener {
         if (!(event.getInventory() instanceof CartographyInventory)) {
             return;
         }
-        
+        //if the result is empty there is nothing to do
         ItemStack result = event.getCurrentItem();
         if(result ==null) {
             return;

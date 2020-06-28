@@ -1,7 +1,9 @@
 ![ArtMap](http://puu.sh/kRWAF/2c81256338.jpg)
+### 1.16.1 Support
+We did a very quick test and it looked like everythign worked.  But as always keep backups.
 
 ### Supported Versions:
-* Spigot/Paper 1.15.2, 1.14.4, 1.13.2 - Master Branch
+* Spigot/Paper 1.16.1,  1.15.2, 1.14.4, 1.13.2 - Master Branch
 * Spigot/Paper 1.8.8 - 1.12.2 - 1.12 Branch
 
 ### Features
