@@ -89,8 +89,9 @@ public class CompatibilityManager implements RegionHandler {
             } else {
                 ArtMap.instance().getLogger().info(pluginName + " not detected.  Hooks skipped.");
             }
-        } catch (Exception | NoClassDefFoundError exception) {
-            ArtMap.instance().getLogger().log(Level.SEVERE,"Exception loading region handler for " + pluginName,exception);
+        } catch (Throwable exception) {
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Exception loading region handler for " + pluginName + 
+                " please create a ticket on the Artmap gitlab page with the version of the plugin you are using!",exception);
         }
     }
 

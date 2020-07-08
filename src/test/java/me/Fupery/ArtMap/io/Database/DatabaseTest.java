@@ -158,6 +158,25 @@ public class DatabaseTest {
         Assert.assertNull("Artwork should not have been saved!", savedArt2);
     }
 
+    @Test(expected = DuplicateArtworkException.class)
+    public void testSaveArtworkWithDuplicateTitleWithCanvasCopyButDifferentID() throws Exception {
+        Database db = new Database(mockPlugin);
+        this.clearDatabase(db);
+        // mocks
+        Canvas mockCanvas = mocks.getRandomMockCanvas();
+        Canvas mockCanvas2 = mocks.getRandomMockCanvas();
+        Canvas mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas2);
+        Player player = mocks.getRandomMockPlayer();
+
+        MapArt savedArt = db.saveArtwork(mockCanvas, "test", player);
+        Assert.assertNotNull("Database save returned null!", savedArt);
+        Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
+        // This save should throw an exception
+
+        MapArt savedArt2 = db.saveArtwork(mockCanvasCopy, "test", player);
+        Assert.assertNull("Artwork should not have been saved!", savedArt2);
+    }
+
     @Test(expected = PermissionException.class)
     public void testSaveArtworkWrongPlayer() throws Exception {
         Database db = new Database(mockPlugin);

@@ -289,6 +289,9 @@ public class HeadsCache {
 		try {
 			String id = uuid.toString().replace("-", "");
 			String json = getContent(API_PROFILE_LINK + id);
+			if(json == null) {
+				throw new HeadFetchException("Skin texture could not be loaded! invalid uuid!");
+			}
 			JsonObject o = parser.parse(json).getAsJsonObject();
 			String name = o.get("name").getAsString();
 			JsonArray jArray= o.get("properties").getAsJsonArray();
@@ -301,7 +304,7 @@ public class HeadsCache {
 			return Optional.of(new TextureData(name, jsonBase64));
 		} catch ( Exception e ) {
 			ArtMap.instance().getLogger().log(Level.WARNING, "Failure parsing skin texture json. You may ignore ths warning.", e);
-			return Optional.empty();
+			throw new HeadFetchException("Failure parsing skin texture json. You may ignore ths warning.");
 		}
 	}
 

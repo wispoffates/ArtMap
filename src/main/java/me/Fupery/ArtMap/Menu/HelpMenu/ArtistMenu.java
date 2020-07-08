@@ -28,6 +28,7 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 public class ArtistMenu extends ListMenu implements ChildMenu {
 
 	private final Player viewer;
+	private static boolean haveWarnedUser = false;
 
 	public ArtistMenu(Player viewer) {
 		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
@@ -51,9 +52,10 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 		List<Button> buttons = new LinkedList<>();
 
 		int notCached = artists.length - ArtMap.instance().getHeadsCache().getCacheSize();
-		if (notCached > 1) {
+		if (notCached > 1 && !haveWarnedUser) {
 			this.viewer.sendMessage(MessageFormat.format(
 					"ArtMap: {0} artist(s) currently not cached you might get some incorrect heads until they are all loaded.", notCached));
+			haveWarnedUser = true;
 		}
 
 		//load the player button first

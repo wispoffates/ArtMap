@@ -57,10 +57,10 @@ class CommandSave extends AsyncCommand {
                 return;
             }
             try {
-                easel.playEffect(EaselEffect.SAVE_ARTWORK);
-                ArtMap.instance().getArtistHandler().removePlayer(player);
                 Canvas canvas = Canvas.getCanvas(easel.getItem());
                 MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
+                easel.playEffect(EaselEffect.SAVE_ARTWORK);
+                ArtMap.instance().getArtistHandler().removePlayer(player);
                 easel.setItem(new ItemStack(Material.AIR));
                 ItemUtils.giveItem(player, art1.getMapItem());
                 player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));

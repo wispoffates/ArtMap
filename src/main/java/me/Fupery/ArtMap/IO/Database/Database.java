@@ -122,7 +122,9 @@ public final class Database {
 						return mapArt;
 					}
                     throw new PermissionException(Lang.NO_PERM.get());
-				}
+				} else {
+                    throw new DuplicateArtworkException(Lang.TITLE_USED.get());
+                }
 			} else {
 				throw new DuplicateArtworkException(Lang.TITLE_USED.get());
 			}
