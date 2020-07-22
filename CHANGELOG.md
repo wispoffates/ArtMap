@@ -1,3 +1,18 @@
+
+# Release 3.5.7
+* Add ability to disable paintbrush in the config.yml.
+* Add lang.yml lines for paintbrush force and disable.
+* Reduce log message amount about heads failing to be downloaded.
+* Fix a creative inventory weirdness that caused an exception
+
+# Release 3.5.6
+* Fix generic error message not being in the right file.
+* Fix SQLException showing up instead of warning the player about duplicate title in the case of using a copied artwork.
+* Dont kick the player off the easel if the save fails.
+* Better catch exceptions in Compatibility handling so the plugin loads even with the compatibility hook failing to load.
+* Fix null pointer on some head loading
+* Only warn once about head cache not being fully loaded.
+
 ## Release 3.5.5
 * Update AnvilGUI for 1.16.1 support
 * Add Generic error message to the Lang file.

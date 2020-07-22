@@ -138,8 +138,10 @@ public class ArtSession {
     }
 
     public void nextKitPage(Player player) {
-        this.artkitPage++;
-        this.setKitPage(player, this.artkitPage);
+        if (this.artkitPage < 2) {
+            this.artkitPage++;
+            this.setKitPage(player, this.artkitPage);
+        }
     }
 
     public void prevKitPage(Player player) {

@@ -15,7 +15,7 @@ class PlayerJoinEventListener implements RegisteredListener {
             try {
                 ArtMap.instance().getHeadsCache().updateCache(event.getPlayer().getUniqueId());
             } catch (HeadFetchException e) {
-                //Logged elsewhere just move on here.
+               //Too noisy going to drop the skin texture errors hear as any major issues should be caught and logged at startup.
             }
         });
         if(ArtMap.instance().isDBUpgradeNeeded() && event.getPlayer().hasPermission("artmap.admin")) {

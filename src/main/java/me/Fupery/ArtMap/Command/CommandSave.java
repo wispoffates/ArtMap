@@ -30,7 +30,7 @@ class CommandSave extends AsyncCommand {
     @Override
     public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
         if (ArtMap.instance().getConfiguration().FORCE_GUI) {
-            sender.sendMessage("Please use the Paint Brush to save.");
+            Lang.PAINTBRUSH_FORCED.send(sender);
             return;
         }
 

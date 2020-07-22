@@ -55,44 +55,7 @@ public class ArtistHandler {
 				// Handle Save brush
 			} else if (type == PacketType.INTERACT && ArtMaterial
 					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
-				// handle click with paint brush in main hand causes save
-				if (sender.isInsideVehicle() && ArtMap.instance().getArtistHandler().containsPlayer(sender)) {
-					ArtMap.instance().getScheduler().SYNC.run(() -> {
-						AnvilGUI.Builder builder = new AnvilGUI.Builder();
-						builder.plugin(ArtMap.instance()).text("Title?").onComplete((player, title) -> {
-							TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
-							if (title == null || !filter.check(title)) {
-								player.sendMessage(Lang.BAD_TITLE.get());
-								return Response.close();
-							}
-							Easel easel = session.getEasel();
-							ArtMap.instance().getScheduler().SYNC.run(() -> {
-								try {
-									Canvas canvas = Canvas.getCanvas(easel.getItem());
-									if(canvas == null) {
-										ArtMap.instance().getLogger().log(Level.SEVERE,"Canvas should not be null!");
-										Lang.GENERIC_ERROR.send(player);
-										return;
-									}
-									MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
-									ArtMap.instance().getArtistHandler().removePlayer(player);
-									easel.setItem(new ItemStack(Material.AIR));
-									ItemUtils.giveItem(player, art1.getMapItem());
-									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
-									easel.playEffect(EaselEffect.SAVE_ARTWORK);
-								} catch (DuplicateArtworkException | PermissionException e) {
-									player.sendMessage(e.getMessage());
-								} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
-									player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
-									ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
-								}
-							});
-							return Response.close();
-						});
-						builder.open(sender);
-					});
-				}
-				return false;
+				return this.handlePaintBrush(sender,session);
 			} else if (type == PacketType.INTERACT) {
 				InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
 				session.paint(sender.getInventory().getItemInMainHand(),
@@ -108,6 +71,54 @@ public class ArtistHandler {
 			}
 		}
 		return true;
+	}
+
+	private boolean handlePaintBrush(Player sender, ArtSession session) {
+		// check if the paintbrush has been disabled
+		if(ArtMap.instance().getConfiguration().DISABLE_PAINTBRUSH) {
+			Lang.PAINTBRUSH_DISABLED.send(sender);
+			return false;
+		}
+
+		// handle click with paint brush in main hand causes save
+		if (sender.isInsideVehicle() && ArtMap.instance().getArtistHandler().containsPlayer(sender)) {
+			ArtMap.instance().getScheduler().SYNC.run(() -> {
+				AnvilGUI.Builder builder = new AnvilGUI.Builder();
+				builder.plugin(ArtMap.instance()).text("Title?").onComplete((player, title) -> {
+					TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
+					if (title == null || !filter.check(title)) {
+						player.sendMessage(Lang.BAD_TITLE.get());
+						return Response.close();
+					}
+					Easel easel = session.getEasel();
+					ArtMap.instance().getScheduler().SYNC.run(() -> {
+						try {
+							Canvas canvas = Canvas.getCanvas(easel.getItem());
+							if(canvas == null) {
+								ArtMap.instance().getLogger().log(Level.SEVERE,"Canvas should not be null!");
+								Lang.GENERIC_ERROR.send(player);
+								return;
+							}
+							MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
+							ArtMap.instance().getArtistHandler().removePlayer(player);
+							easel.setItem(new ItemStack(Material.AIR));
+							ItemUtils.giveItem(player, art1.getMapItem());
+							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+							easel.playEffect(EaselEffect.SAVE_ARTWORK);
+						} catch (DuplicateArtworkException | PermissionException e) {
+							player.sendMessage(e.getMessage());
+						} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
+							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
+							ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
+						}
+					});
+					return Response.close();
+				});
+				builder.open(sender);
+			});
+			return true;
+		}
+		return false;
 	}
 
 	public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset)
