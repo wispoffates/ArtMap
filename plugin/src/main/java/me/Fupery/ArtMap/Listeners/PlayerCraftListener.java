@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Utils.VersionHandler.BukkitVersion;
@@ -25,8 +26,8 @@ class PlayerCraftListener implements RegisteredListener {
     public void onPlayerCraftEvent(CraftItemEvent event) {
         ItemStack result = event.getCurrentItem();
 
-        //Tuinity fork sends nulls sometimes so handle it.
-        if(result == null) {
+        // Tuinity fork sends nulls sometimes so handle it.
+        if (result == null) {
             return;
         }
         // Disallow players from copying ArtMap maps in the crafting table
@@ -34,10 +35,10 @@ class PlayerCraftListener implements RegisteredListener {
             MapArt art;
             try {
                 art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
-            } catch (SQLException e) {
+            } catch (SQLException | ArtMapException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
                 event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
-                return; 
+                return;
             }
             if (art != null) {
                 if (event.getWhoClicked().getUniqueId().equals(art.getArtistPlayer().getUniqueId())) {
@@ -59,8 +60,8 @@ class PlayerCraftListener implements RegisteredListener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        //Tuinity fork sometimes throws a null even down the pipe
-        if(event == null) {
+        // Tuinity fork sometimes throws a null even down the pipe
+        if (event == null) {
             return;
         }
         // one check this if 1.14+
@@ -71,9 +72,9 @@ class PlayerCraftListener implements RegisteredListener {
         if (!(event.getInventory() instanceof CartographyInventory)) {
             return;
         }
-        //if the result is empty there is nothing to do
+        // if the result is empty there is nothing to do
         ItemStack result = event.getCurrentItem();
-        if(result ==null) {
+        if (result == null) {
             return;
         }
         // Disallow players from copying ArtMap maps in the crafting table
@@ -81,7 +82,7 @@ class PlayerCraftListener implements RegisteredListener {
             MapArt art;
             try {
                 art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
-            } catch (SQLException e) {
+            } catch (SQLException | ArtMapException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
                 event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
                 return; 

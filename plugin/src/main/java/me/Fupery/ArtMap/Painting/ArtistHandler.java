@@ -17,6 +17,7 @@ import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.Exception.DuplicateArtworkException;
 import me.Fupery.ArtMap.Exception.PermissionException;
 import me.Fupery.ArtMap.IO.MapArt;
@@ -55,7 +56,7 @@ public class ArtistHandler {
 				// Handle Save brush
 			} else if (type == PacketType.INTERACT && ArtMaterial
 					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
-				return this.handlePaintBrush(sender,session);
+				return this.handlePaintBrush(sender, session);
 			} else if (type == PacketType.INTERACT) {
 				InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
 				session.paint(sender.getInventory().getItemInMainHand(),
@@ -67,7 +68,7 @@ public class ArtistHandler {
 			try {
 				removePlayer(sender);
 			} catch (SQLException | IOException e) {
-				ArtMap.instance().getLogger().log(Level.SEVERE,"Error exiting art session!",e);
+				ArtMap.instance().getLogger().log(Level.SEVERE, "Error exiting art session!", e);
 			}
 		}
 		return true;
@@ -75,7 +76,7 @@ public class ArtistHandler {
 
 	private boolean handlePaintBrush(Player sender, ArtSession session) {
 		// check if the paintbrush has been disabled
-		if(ArtMap.instance().getConfiguration().DISABLE_PAINTBRUSH) {
+		if (ArtMap.instance().getConfiguration().DISABLE_PAINTBRUSH) {
 			Lang.PAINTBRUSH_DISABLED.send(sender);
 			return false;
 		}
@@ -94,8 +95,8 @@ public class ArtistHandler {
 					ArtMap.instance().getScheduler().SYNC.run(() -> {
 						try {
 							Canvas canvas = Canvas.getCanvas(easel.getItem());
-							if(canvas == null) {
-								ArtMap.instance().getLogger().log(Level.SEVERE,"Canvas should not be null!");
+							if (canvas == null) {
+								ArtMap.instance().getLogger().log(Level.SEVERE, "Canvas should not be null!");
 								Lang.GENERIC_ERROR.send(player);
 								return;
 							}
@@ -107,10 +108,10 @@ public class ArtistHandler {
 							easel.playEffect(EaselEffect.SAVE_ARTWORK);
 						} catch (DuplicateArtworkException | PermissionException e) {
 							player.sendMessage(e.getMessage());
-						} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException sqe) {
+						} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException | ArtMapException sqe) {
 							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
-							ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",sqe);
-						}
+							ArtMap.instance().getLogger().log(Level.SEVERE, "Error saving artwork!", sqe);
+						} 
 					});
 					return Response.close();
 				});

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
@@ -59,7 +60,7 @@ public final class EaselEvent {
 					// remove items that were added while instance is unloaded etc.
 					try {
 						easel.removeItem();
-					} catch (SQLException e) {
+					} catch (SQLException | ArtMapException e) {
 						ArtMap.instance().getLogger().log(Level.SEVERE, "Unexpected item on Easel!", e);
 					}
 					return;

@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ChunkLocation;
 import me.Fupery.ArtMap.Utils.LocationHelper;
@@ -139,8 +140,8 @@ public class Easel {
             removeItem();
             setItem(canvas.getEaselItem());
             EaselEffect.MOUNT_CANVAS.playEffect(getCentreLocation());
-        } catch(Exception e) {
-            ArtMap.instance().getLogger().log(Level.SEVERE,"Error placing canvas!",e);
+        } catch (Exception e) {
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing canvas!", e);
         }
     }
 
@@ -150,8 +151,9 @@ public class Easel {
      * artwork, a copy of the original artwork wil be dropped.
      * 
      * @throws SQLException
+     * @throws ArtMapException
      */
-    public void removeItem() throws SQLException {
+    public void removeItem() throws SQLException, ArtMapException {
         ItemStack item = getItem().clone();
         Canvas canvas = Canvas.getCanvas(item);
 

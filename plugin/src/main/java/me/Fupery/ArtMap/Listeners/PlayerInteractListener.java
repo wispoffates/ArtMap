@@ -21,6 +21,7 @@ import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
@@ -37,13 +38,13 @@ class PlayerInteractListener implements RegisteredListener {
 
         if (yaw >= 315 || yaw < 45) {
             return BlockFace.NORTH;
-        } 
+        }
         if (yaw >= 45 && yaw < 135) {
             return BlockFace.EAST;
         }
         if (yaw >= 135 && yaw < 225) {
             return BlockFace.SOUTH;
-        } 
+        }
         if (yaw >= 225 && yaw < 315) {
             return BlockFace.WEST;
         }
@@ -65,8 +66,7 @@ class PlayerInteractListener implements RegisteredListener {
             }
         }
 
-        if (!ArtMaterial.EASEL.isValidMaterial(event.getItem())
-                || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (!ArtMaterial.EASEL.isValidMaterial(event.getItem()) || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         event.setCancelled(true);
@@ -132,7 +132,8 @@ class PlayerInteractListener implements RegisteredListener {
     public void onInventoryCreativeEvent(final InventoryCreativeEvent event) {
         final ItemStack item = event.getCursor();
 
-        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null || item.getType() != Material.FILLED_MAP) {
+        if (event.getClick() != ClickType.CREATIVE || event.getClickedInventory() == null
+                || item.getType() != Material.FILLED_MAP) {
             return;
         }
 
@@ -145,7 +146,7 @@ class PlayerInteractListener implements RegisteredListener {
                 MapArt art = null;
                 try {
                     art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(item));
-                } catch (SQLException e) {
+                } catch (SQLException | ArtMapException e) {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
 					event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
             		return; 

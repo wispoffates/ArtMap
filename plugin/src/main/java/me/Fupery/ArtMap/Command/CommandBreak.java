@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
@@ -40,9 +41,9 @@ class CommandBreak extends AsyncCommand {
                 ArtMap.instance().getArtistHandler().removePlayer(player);
                 ArtMap.instance().getArtDatabase().deleteInProgressArt(new Map(ItemUtils.getMapID(easel.getItem())));
                 easel.removeItem();
-			    easel.breakEasel();
-            } catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException e) {
-                sender.sendMessage("Failure deleting artwork! Check the server logs.");
+                easel.breakEasel();
+            } catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException | ArtMapException e) {
+                sender.sendMessage("Failure breaking the easel! Check the server logs.");
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Failure breaking easel!", e);
             }
         });

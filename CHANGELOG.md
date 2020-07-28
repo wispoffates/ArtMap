@@ -1,3 +1,6 @@
+# Release 3.6.1
+* Fix IllegalStateExcpetion with maps that do not have a mapview (likely another plugin).
+
 # Release 3.6.0
 * Major changes to the way region handlers are built and loaded.
 * PlotSquared 5 support added.

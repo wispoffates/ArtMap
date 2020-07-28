@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
@@ -33,7 +34,7 @@ public class Canvas {
 		this.mapId = mapId;
 	}
 
-	public static Canvas getCanvas(ItemStack item) throws SQLException {
+	public static Canvas getCanvas(ItemStack item) throws SQLException, ArtMapException {
 		if (item == null || item.getType() != Material.FILLED_MAP)
 			return null;
 
@@ -71,12 +72,12 @@ public class Canvas {
 			this.original = orginal;
 		}
 
-		public CanvasCopy(ItemStack map) throws SQLException {
+		public CanvasCopy(ItemStack map) throws SQLException, ArtMapException {
 			super(ItemUtils.getMapID(map));
 			ItemMeta meta = map.getItemMeta();
 			List<String> lore = meta.getLore();
 			if (lore == null || !lore.contains(ArtItem.COPY_KEY)) {
-				throw new IllegalArgumentException("The Copied canvas is missing the copy key!");
+				throw new ArtMapException("The Copied canvas is missing the copy key!");
 			}
 			String originalName = lore.get(lore.indexOf(ArtItem.COPY_KEY) + 1);
 			this.original = ArtMap.instance().getArtDatabase().getArtwork(originalName);
