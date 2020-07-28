@@ -1,0 +1,280 @@
+#----------------------------------------------------------------------------------------------#
+#                                     ArtMap Language File                                     #
+#----------------------------------------------------------------------------------------------#
+#
+# Replace the strings below
+# It is recommended you use a yaml-sensitive editor like notepad++ to edit this file
+#
+# EXAMPLE: “Replace me with a translation!”
+#
+# Any time you see '%s' - this is a special character that will be replaced with a word.
+# For example, if an artist saves an artwork named "Art", then "Successfully saved '%s'"
+# will become "Successfully saved Art".
+# So any time you see '%s', don't change it! Just change the words around it.
+#
+# Any time you see "/art", leave that unchanged as well (this is the help command)
+#
+# Any time you see § next to a number or letter (something like §a or §2), this is a colour code
+
+#---------------------------------------[Player Messages]---------------------------------------#
+COMMAND_SAVE: "save"
+COMMAND_DELETE: "delete"
+COMMAND_PREVIEW: "preview"
+COMMAND_RESTORE: "restore"
+COMMAND_BACKUP: "backup"
+COMMAND_LOOKUP: "lookup"
+COMMAND_EXPORT: "export"
+COMMAND_IMPORT: "import"
+HELP: "§6/art for a list of commands."
+SAVE_USAGE: "§6Use §e/art save <title> §6to save your artwork."
+SAVE_SUCCESS: "§6Successfully saved '%s'!"
+SAVE_FAILURE: "§cFailed to save '%s'. Artwork must have a unique name!"
+EASEL_HELP: "§3§lRight-Click to start painting, Use /art break to break the easel."
+PAINTING: "§b§lClick the canvas with Dyes to paint."
+DELETED: "§6Sucessfully deleted '%s'."
+PREVIEWING: "§6Previewing artwork '%s'."
+RECIPE_HEADER: "Recipe for §a[%s]"
+NO_CONSOLE: "§cThis command can only be used by players."
+PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
+INVALID_POS: "§4§lYou can't place an easel there!"
+NO_PERM: "§cYou don't have permission to do this."
+NO_PERM_ACTION: "§4§lYou don't have permission to do this."
+ELSE_USING: "§4§lSomeone else is using this canvas!"
+PAINTBRUSH_GROUND: "§cYou shouldn't throw your brush on the ground like that!"
+NOT_RIDING_EASEL: "§cYou must be sitting at your easel to do that."
+NEED_CANVAS: "§4§lPlace a canvas on the easel to paint. §3§l/art §4§lfor more info."
+NOT_YOUR_EASEL: "§cYou cannot destroy %s's artwork!"
+BREAK_CANVAS: "Use /art break to break your easel and clear the artwork."
+MAP_NOT_FOUND: "§cArtwork '%s' could not be found."
+NO_ARTWORKS: "§cThere are currently no artworks saved!"
+NO_EDIT_PERM: "§4§lYou can't edit other players' artworks"
+NO_CRAFT_PERM: "§cYou can't copy other players' artworks"
+BAD_TITLE: "§cInvalid Title. Titles must be between 3 and 16 characters and consist of only letters and numbers."
+TITLE_USED: "§cSorry, this title is already being used."
+EMPTY_HAND_PREVIEW: "§cYou need to have an empty hand to preview."
+INVALID_DATA_TABLES: "§cInvalid data tables, plugin cannot be initialized."
+CANNOT_BUILD_DATABASE: "§cError building MapArt database - plugin will be disabled."
+MAP_ID_MISSING: "§cMap id missing, assigning new id!"
+RESTORED_SUCCESSFULY: "§6Successfully restored %s with map ID %s!" #The first %s will be the name of an artwork, the second is its id.
+SAVE_ARTWORK: "§4§lPlease save your artwork first!"
+SAVE_ARTWORK_2: "§4§lor use '/art break' while seating at the easel if you are sure you want to destroy the artwork."
+GENERIC_ERROR: "§cSorry, An error occured contact a server admin."
+PAINTBRUSH_FORCED: "§4§lPlease use the paint brush for saving!"
+PAINTBRUSH_DISABLED: "§4§lSaving with the paint brush is disabled. Please use /art save!"
+#---------------------------------------[Help menu]---------------------------------------#
+#Menu titles
+MENU_RECIPE: "Choose a Recipe"
+MENU_ARTIST: "Click an Artist"
+MENU_ARTWORKS: "%s's Art" # '%s' will be replaced by the player's name
+MENU_DYES: "Dyes for painting"
+MENU_HELP: "Choose a help topic"
+MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
+BUTTON_CLICK: "Click to View"
+BUTTON_DELETE_NAME: "Delete"
+BUTTON_DELETE_TEXT: "Clicking this will delete every copy of the artwork in the world!"
+BUTTON_RENAME_NAME: "Rename"
+BUTTON_RENAME_TEXT: "Click to Rename"
+BUTTON_ACCEPT_NAME: "Accept"
+BUTTON_ACCEPT_TEXT: "Click to Accept"
+TITLE_QUESTION: "Title?"
+RENAMED: "Renamed"
+BUTTON_CLOSE: "Close" #close the menu
+BUTTON_BACK: "Back" #go back to previous page
+RECIPE_BUTTON: "Left-Click to view Recipe"
+ADMIN_RECIPE: "Right-Click to get Item"
+RECIPE_PLAYER_MAP_COPY: "Right-click to get a copy of your artwork.  This will use one empty map from your inventory."
+RECIPE_PLAYER_MAP_COPY_MISSING: "§4§lYou do not have an empty map in your inventory!"
+RECIPE_HELP: "§a/art §2for help"
+RECIPE_EASEL_NAME: "Easel"
+RECIPE_CANVAS_NAME: "Canvas"
+RECIPE_PAINT_BRUSH_NAME: "§e•§6§lSave§e•"
+RECIPE_ARTWORK_ARTIST: "by %s" # '%s' is replaced with the name of the artist who created this artwork
+
+ITEM_NAME_PAINTBUCKET: "§e•§6§lFill§e•"
+ITEM_NAME_COMPASS: "§e•§6§lRotate§e•"
+ITEM_NAME_FEATHER: "§e•§6§lTint§e•"
+ITEM_NAME_COAL: "§e•§6§lShade§e•"
+ITEM_NAKE_FEATHER: "Feather"
+ITEM_NAME_SPONGE: "§e•§6§lEyedropper§e•"
+#---------------------------------------[Menu Buttons]---------------------------------------#
+HELP_GETTING_STARTED:
+  - "§6§l⊱§e§lGetting Started§6§l⊰"
+  - "§3❉§b§oWelcome to ArtMap!§3❉"
+  - ""
+  - "§a1§2. §7Craft yourself an §6Easel,"
+  - "    §6Canvas, §7 and §6Paint Brush §7."
+  - "§a2§2. §7Place the Easel and use your Canvas §7on it."
+  - "§a3§2. §7Click the Canvas with §2Dyes §7&" 
+  - "   §3Tools §7to paint."
+  - "§a4§2. §7When you're finished," 
+  - "   §7use the §6Paint Brush §7to save§7."
+  - "   §7or you can use §6/art save §7to save§7."
+  - ""
+  - "§a§oLook at the other tabs in this menu to see more"
+  - "§a§oinformation on Recipes, Tools, and Dye Colours."
+HELP_RECIPES:
+  - "§6§l⊱§e§lRecipes§6§l⊰"
+  - "§7View the crafting recipes for all"
+  - "§7the items you will need to paint."
+  - "§a✸§2§oClick to View§a✸"
+HELP_TOOLS:
+  - "§6§l⊱§e§lTools§6§l⊰"
+  - "§7View all the tools that you"
+  - "§7can use to help you paint."
+  - "§a✸§2§oClick to View§a✸"
+HELP_DYES:
+  - "§6§l⊱§e§lDyes§6§l⊰"
+  - "§7View all the dye colours"
+  - "§7that you can paint with."
+  - "§a✸§2§oClick to View§a✸"
+HELP_LIST:
+  - "§6§l⊱§e§lArtworks§6§l⊰"
+  - "§3✺§b§oView Player Art§3✺"
+  - "§7View your artwork or view other"
+  - "§7players' work grouped by artist."
+  - "§a✸§2§oClick to view§a✸"
+HELP_CLOSE:
+  - "§6§l⊱§e§lBack§6§l⊰"
+  - "§4﴾§cClose Menu§4﴿"
+INFO_DYES:
+  - "§6§l⊱§e§lDye Colours§6§l⊰"
+  - "§7Click your canvas with any of these"
+  - "§7dyes to paint."
+  - ""
+  - "§a• §7§oLeft-Click to draw pixels"
+  - "§a• §7§oRight-Click to draw lines"
+  - ""
+  - "§b§oHover items for more info."
+INFO_RECIPES:
+  - "§6§l⊱§e§lRecipe Help§6§l⊰"
+  - "§7Craft any artwork with a §6blank map"
+  - "§7to create a copy. Only the original"
+  - "§7author of an artwork will be able to"
+  - "§7make copies."
+  - "§b§oHover items to view info."
+INFO_TOOLS:
+  - "§6§l⊱§bTool Help§6§l⊰"
+  - "§7You can use these items along with"
+  - "§aDyes §7to help you paint."
+  - "§b§oHover items to view info."
+TOOL_DYE:
+  - "§6§l⊱§bDyes§6§l⊰"
+  - " §7Left-Click to draw pixels"
+  - " §7Right-Click to draw lines"
+  - "§a✸§2§oClick to view§a✸"
+TOOL_PAINTBUCKET:
+  - "§b§oBucket"
+  - "§7Left-Click to fill an area of"
+  - "§7the canvas with the dye in your"
+  - "§7offhand."
+  - "§7Right-Click to undo last fill."
+TOOL_COAL:
+  - "§b§oCoal"
+  - "§7Left-Click to darken pixels."
+  - "§7Right-Click to darken lines."
+TOOL_FEATHER:
+  - "§b§oFeather"
+  - "§7Left-Click to lighten pixels."
+  - "§7Right-Click to lighten lines."
+TOOL_COMPASS:
+  - "§b§oCompass"
+  - "§7Left-Click to flip horizontally."
+  - "§7Right-Click to flip vertically."
+TOOL_SPONGE:
+  - "§b§oSponge"
+  - "§7Left-Click to grab a colour."
+  - "§7Right-Click to paint with the colour."
+RECIPE_EASEL:
+  - "§b§oSit at me!"
+  - "§7Use to edit artworks"
+  - "§7Right click to place"
+  - "§7/art break to break"
+  - "§cBreaking the easel deletes"
+  - "§cany painting on it."
+  - "§cSave first!"
+RECIPE_CANVAS:
+  - "§b§oPaint on me!"
+  - "§7Use on an §aEasel"
+  - "§7to start painting."
+RECIPE_PAINT_BRUSH:
+  - "§b§oPaint Brush"
+  - "§7Sit at an §aEasel §7and"
+  - "§aCanvas §7to save a painting."
+CONSOLE_HELP:
+  - "§3---------------------------------§b[ArtMap] §6Console Commands:§3---------------------------------"
+  - "§3/art §b: §eTo access the help GUI."
+  - ""
+#-------------------------------------------[Dye Names]-------------------------------------------#
+DYE_BLACK: "Black"
+DYE_RED: "Red"
+DYE_GREEN: "Green"
+DYE_BROWN: "Brown"
+DYE_BLUE: "Blue"
+DYE_PURPLE: "Purple"
+DYE_CYAN: "Cyan"
+DYE_SILVER: "Silver"
+DYE_GRAY: "Gray"
+DYE_PINK: "Pink"
+DYE_LIME: "Lime"
+DYE_YELLOW: "Yellow"
+DYE_LIGHT_BLUE: "Light Blue"
+DYE_MAGENTA: "Magenta"
+DYE_ORANGE: "Orange"
+DYE_WHITE: "White"
+DYE_CREAM: "Cream"
+DYE_COFFEE: "Coffee"
+DYE_GRAPHITE: "Graphite"
+DYE_GUNPOWDER: "Gunpowder"
+DYE_MAROON: "Maroon"
+DYE_AQUA: "Aqua"
+DYE_GRASS: "Grass"
+DYE_GOLD: "Gold"
+DYE_VOID: "Transparent"
+DYE_COAL: "Shade"
+DYE_FEATHER: "Tint"
+DYE_ICE: "Ice-Blue"
+DYE_LEAVES: "Leaf-Green"
+DYE_SNOW: "Snow-White"
+DYE_LIGHT_GRAY: "Light Gray"
+DYE_STONE: "Ghast-Gray"
+DYE_BRICK: "Brick-Red"
+DYE_LAPIS: "Deep-Blue"
+DYE_EMERALD: "Emerald-Green"
+DYE_LIGHT_WOOD: "Caramel Brown"
+DYE_WATER: "Water-Blue"
+DYE_DARK_WOOD: "Wood-Brown"
+DYE_WHITE_TERRACOTTA: "Egg-White" 
+DYE_ORANGE_TERRACOTTA: "Burnt Orange" 
+DYE_MAGENTA_TERRACOTTA: "Beet-Red" 
+DYE_LIGHT_BLUE_TERRACOTTA: "Lavender Purple" 
+DYE_YELLOW_TERRACOTTA: "Glowstone Yellow"
+DYE_LIME_TERRACOTTA: "Slime Green"
+DYE_PINK_TERRACOTTA: "Brown-Brick Red"
+DYE_GRAY_TERRACOTTA: "Dark-Chocolate Brown" 
+DYE_LIGHT_GRAY_TERRACOTTA: "Mushroom-brown"
+DYE_CYAN_TERRACOTTA: "Iron-gray"
+DYE_PURPLE_TERRACOTTA: "Chrous Fruit Purple"
+DYE_BLUE_TERRACOTTA: "Plum Purple"
+DYE_BROWN_TERRACOTTA: "Podzol Brown" 
+DYE_GREEN_TERRACOTTA: "Mold Green" 
+DYE_RED_TERRACOTTA: "Apple Red"
+DYE_BLACK_TERRACOTTA: "Almost-Black Brown" 
+
+#-------------------------------------[Artwork Title Filter]-------------------------------------#
+#Words in the following list are filtered from artwork titles:
+#
+#You can disable title filtering by setting "swearFilter: false" in your config.yml
+#
+#Filtered words use Regex expressions - you can build and test Regex at [http://regexr.com]
+#You can also add normal words to the list, but note that non-regex words can be easily avoided by players
+ILLEGAL_EXPRESSIONS:
+  - "\\b(f+(\\W|\\d|_)*u+(\\W|\\d|_)*c+(\\W|\\d|_)*k+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*h+(\\W|\\d|_)*i+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(c+(\\W|\\d|_)*u+(\\W|\\d|_)*n+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(r+(\\W|\\d|_)*a+(\\W|\\d|_)*p+(\\W|\\d|_)*(((e+(\\W|\\d|_)*))|i+s+t+))"
+  - "\\b(n+(\\W|\\d|_)*i+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*(e+(\\W|\\d|_)*r+(\\W|\\d|_)*|a+))"
+  - "\\b(w+(\\W|\\d|_)*h+(\\W|\\d|_)*o+(\\W|\\d|_)*r+(\\W|\\d|_)*e+(\\W|\\d|_)*)"
+  - "\\b(s+(\\W|\\d|_)*l+(\\W|\\d|_)*u+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+  - "\\b(f+(\\W|\\d|_)*a+(\\W|\\d|_)*g+(\\W|\\d|_)*g+(\\W|\\d|_)*o+(\\W|\\d|_)*t+(\\W|\\d|_)*)"
+RECIPE_PLAYER_MAP_COPY: Right click to get item.  Will use one empty map!
+RECIPE_PLAYER_MAP_COPY_MISSING: You do not have an empty map to create a copy!

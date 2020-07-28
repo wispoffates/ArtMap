@@ -1,3 +1,10 @@
+# Release 3.6.0
+* Major changes to the way region handlers are built and loaded.
+* PlotSquared 5 support added.
+* SabreFactions support added.
+* Fix Residence compat
+* Fix some lang strings not updated to /art break
+* Fix import export of artist or title
 
 # Release 3.5.7
 * Add ability to disable paintbrush in the config.yml.

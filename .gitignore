@@ -13,6 +13,7 @@ dependency-reduced-pom.xml
 
 license.rtf
 
-/target/
-/.vscode/
+**/target/
+**/.vscode/
+**/.settings/
 .factorypath
