@@ -146,10 +146,12 @@ class PlayerInteractListener implements RegisteredListener {
                 MapArt art = null;
                 try {
                     art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(item));
-                } catch (SQLException | ArtMapException e) {
+                } catch (SQLException e) {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
 					event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
             		return; 
+                } catch (ArtMapException e) {
+                    return; //some maps do not have mapviews and we don't want to spam about it here.
                 }
 
                 if (art != null) {
