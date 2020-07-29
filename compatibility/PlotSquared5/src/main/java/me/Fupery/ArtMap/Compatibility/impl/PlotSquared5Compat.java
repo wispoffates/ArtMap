@@ -7,15 +7,12 @@ import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.GlobalFlagContainer;
 import com.plotsquared.core.plot.flag.types.BooleanFlag;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import me.Fupery.ArtMap.api.Compatability.RegionHandler;
 import me.Fupery.ArtMap.api.Easel.ClickType;
-import me.Fupery.ArtMap.api.Utils.Version;
 
 public class PlotSquared5Compat implements RegionHandler {
 
@@ -24,13 +21,6 @@ public class PlotSquared5Compat implements RegionHandler {
     private final ArtMapUseFlag use = new ArtMapUseFlag(false);
 
     public PlotSquared5Compat() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("PlotSquared");
-        Version version = new Version(plugin);
-        //only loaded v5 support if the version is above 5
-        if (version.isLessThan(5,0,0)) {
-            loaded = false;
-            return;
-        }
         //PlotAPI api = new PlotAPI();
         GlobalFlagContainer.getInstance().addFlag(place);
         GlobalFlagContainer.getInstance().addFlag(use);

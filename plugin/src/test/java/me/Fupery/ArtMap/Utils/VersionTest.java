@@ -86,4 +86,32 @@ public class VersionTest {
         Version version = new Version(mocks.getArtmapMock());
         Assert.assertTrue("Plugin version should be equal.", version.isGreaterOrEqualTo(3,5,3));
     }
+
+
+    @Test
+    public void test_loadRegionHandler() {
+        Assert.assertTrue("4.5 should be in between.",loadRegionHandler(new Version(4,5), new Version(4), new Version(5)));
+        Assert.assertTrue("4.5 should be in between.",loadRegionHandler(new Version(4,5), new Version(4), new Version(9999)));
+        Assert.assertTrue("4 is inclusive.",loadRegionHandler(new Version(4), new Version(4), new Version(5)));
+        Assert.assertFalse("5 is exclusive and should fail.",loadRegionHandler(new Version(5), new Version(4), new Version(5)));
+        Assert.assertFalse("5.1 is outside and should fail.",loadRegionHandler(new Version(5,1), new Version(4), new Version(5)));
+        Assert.assertFalse("3.9 is outside and should fail.",loadRegionHandler(new Version(3,9), new Version(4), new Version(5)));
+        Assert.assertFalse("2 is outside and should fail.",loadRegionHandler(new Version(2), new Version(4), new Version(5)));
+        Assert.assertFalse("7 is outside and should fail.",loadRegionHandler(new Version(7), new Version(4), new Version(5)));
+    }
+
+    //Dumbed down logic of compatibilityManager version test to make sure my logic is correct.
+    private boolean loadRegionHandler(Version test, Version lower, Version upper) {
+        System.out.println("lower: " + lower.compareTo(test));
+        System.out.println("upper: " + upper.compareTo(test));
+        try {
+            if(lower.compareTo(test) == 0 && upper.compareTo(test) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Throwable exception) {
+            return false;
+        }
+    }
 }

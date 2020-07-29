@@ -1,3 +1,6 @@
+# Release 3.6.2
+* Fix compatibility version check.  Should stop PlotSquared4 from thorwing a ClassNotFoundException.
+
 # Release 3.6.1
 * Fix IllegalStateExcpetion with maps that do not have a mapview (likely another plugin).
 

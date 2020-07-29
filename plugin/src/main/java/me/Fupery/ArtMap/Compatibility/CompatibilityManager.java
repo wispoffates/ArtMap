@@ -26,6 +26,7 @@ import me.Fupery.ArtMap.Compatibility.impl.WorldGuardCompat;
 import me.Fupery.ArtMap.api.Compatability.ReflectionHandler;
 import me.Fupery.ArtMap.api.Compatability.RegionHandler;
 import me.Fupery.ArtMap.api.Easel.ClickType;
+import me.Fupery.ArtMap.api.Utils.Version;
 
 public class CompatibilityManager implements RegionHandler {
     private List<RegionHandler> regionHandlers;
@@ -43,8 +44,8 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler("ASkyBlock",ASkyBlockCompat.class, "ASkyBlock");
         loadRegionHandler("uSkyBlock",USkyBlockCompat.class, "uSkyBlock");
         loadRegionHandler("BentoBox",BentoBoxCompat.class, "BentoBox/BSkyBlock");
-        loadRegionHandler("PlotSquared",PlotSquared4Compat.class, "Plot Squared 4");
-        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5");
+        loadRegionHandler("PlotSquared",PlotSquared4Compat.class, "Plot Squared 4", new Version(4), new Version(5));
+        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5", new Version(5), new Version(9999));
         loadRegionHandler("Residence",ResidenceCompat.class, "Residence");
         loadRegionHandler("Towny",TownyCompat.class, "Towny");
         reflectionHandler = loadReflectionHandler();
@@ -105,6 +106,33 @@ public class CompatibilityManager implements RegionHandler {
                     regionHandlers.add(handler);
                 }
             } else {
+                ArtMap.instance().getLogger().info(description + " not detected.  Hooks skipped.");
+            }
+        } catch (Throwable exception) {
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Exception loading region handler for " + description + 
+                " please create a ticket on the Artmap gitlab page with the version of the plugin you are using!",exception);
+        }
+    }
+
+    /**
+     * Load the region handler if pluginName is loaded and meets ther version requirements.
+     * @param pluginName The plugin to check.
+     * @param handlerClass The class to load if it neets requierments.
+     * @param description The description to print when loaded or fails.
+     * @param lower The lowest version [inclusive] to load the handler.
+     * @param upper The Upper version [exclusive] to load the handler.
+     */
+    private void loadRegionHandler(String pluginName, Class<? extends RegionHandler> handlerClass, String description, Version lower, Version upper) {
+        try {
+            if (ArtMap.instance().getServer().getPluginManager().isPluginEnabled(pluginName)) {
+                Version pluginVersion = new Version(ArtMap.instance().getServer().getPluginManager().getPlugin(pluginName));
+                if(lower.compareTo(pluginVersion) == 0 && upper.compareTo(pluginVersion) > 0) {
+                    RegionHandler handler = handlerClass.newInstance();
+                    if (handler.isLoaded()) {
+                        regionHandlers.add(handler);
+                    }
+                }
+            } else {
                 ArtMap.instance().getLogger().info(pluginName + " not detected.  Hooks skipped.");
             }
         } catch (Throwable exception) {
@@ -112,6 +140,7 @@ public class CompatibilityManager implements RegionHandler {
                 " please create a ticket on the Artmap gitlab page with the version of the plugin you are using!",exception);
         }
     }
+
 
     @Override
     public String toString() {

@@ -4,15 +4,11 @@ import com.github.intellectualsites.plotsquared.api.PlotAPI;
 import com.github.intellectualsites.plotsquared.plot.flag.BooleanFlag;
 import com.github.intellectualsites.plotsquared.plot.object.Plot;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import me.Fupery.ArtMap.api.Compatability.RegionHandler;
 import me.Fupery.ArtMap.api.Easel.ClickType;
-import me.Fupery.ArtMap.api.Utils.Version;
 
 public class PlotSquared4Compat implements RegionHandler {
 
@@ -21,13 +17,6 @@ public class PlotSquared4Compat implements RegionHandler {
     private final BooleanFlag use = new BooleanFlag("artmap-use");
 
     public PlotSquared4Compat() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("PlotSquared");
-        Version version = new Version(plugin);
-        //only loaded v5 support if the version is below 4
-        if (version.isGreaterOrEqualTo(5,0,0)) {
-            loaded = false;
-            return;
-        }
         PlotAPI api = new PlotAPI();
         api.addFlag(place);
         api.addFlag(use);
