@@ -18,7 +18,7 @@ import me.Fupery.ArtMap.api.Utils.Version;
 public class TownyCompat implements RegionHandler {
     private boolean loaded = false;
 
-    TownyCompat() throws Exception {
+    public TownyCompat() throws Exception {
         Plugin plugin = Bukkit.getPluginManager().getPlugin("Towny");
         Version version = new Version(plugin);
         if (version.isLessThan(0,92)) {

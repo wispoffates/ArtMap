@@ -26,8 +26,11 @@ public class PlotSquared4Compat implements RegionHandler {
     @Override
     public boolean checkBuildAllowed(Player player, Location location) {
         Plot plot = Plot.getPlot(this.locationWrapper(location));
-
-        return plot == null
+        if(plot == null && locationWrapper(location).isPlotRoad()) {
+            return false;
+        }  
+        
+        return plot == null 
                 || plot.isAdded(player.getUniqueId())
                 || (!plot.isDenied(player.getUniqueId()) && plot.getFlag(place, false));
     }
@@ -35,6 +38,9 @@ public class PlotSquared4Compat implements RegionHandler {
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, ClickType click) {
         Plot plot = Plot.getPlot(this.locationWrapper(entity.getLocation()));
+        if(plot == null && locationWrapper(entity.getLocation()).isPlotRoad()) {
+            return false;
+        }
         return plot == null
                 || plot.isAdded(player.getUniqueId())
                 || (!plot.isDenied(player.getUniqueId()) && plot.getFlag(use, false));

@@ -1,3 +1,13 @@
+# Release 3.6.3
+
+* Remove "hide prefix" option.  It was broken and a pain to mantain.
+* Fix Towny dependency pom.
+* Fix Towny compat loading error.
+* Update AnvilGUI dependency for 1.16.2
+* Remove admin skip of build check.  It doesn't work since the other plugins will still block the build.
+* Attempt to fix UnsupportedOperationException from ProtocolLib.
+* Fix PlotSquared placing signs on road when an easel place is denied.  (Added special check for Roads.)
+
 # Release 3.6.2
 * Fix compatibility version check.  Should stop PlotSquared4 from thorwing a ClassNotFoundException.
 

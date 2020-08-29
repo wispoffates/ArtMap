@@ -61,13 +61,17 @@ public class ProtocolLibReceiver extends PacketReceiver {
         @Override
         public void onPacketReceiving(PacketEvent event) {
             ArtistHandler handler = ArtMap.instance().getArtistHandler();
-            if (!handler.containsPlayer(event.getPlayer()))
-                return;
-            ArtistPacket packet = getPacketType(event.getPacket());
-            if (packet == null)
-                return;
-            if (!onPacketPlayIn(handler, event.getPlayer(), packet))
-                event.setCancelled(true);
+            try {
+                if (!handler.containsPlayer(event.getPlayer()))
+                    return;
+                ArtistPacket packet = getPacketType(event.getPacket());
+                if (packet == null)
+                    return;
+                if (!onPacketPlayIn(handler, event.getPlayer(), packet))
+                    event.setCancelled(true);
+            } catch (UnsupportedOperationException e) {
+                //ProtocolLib sometimes passes a fake player here.  Do nothing if that happens.
+            }
         }
     }
 

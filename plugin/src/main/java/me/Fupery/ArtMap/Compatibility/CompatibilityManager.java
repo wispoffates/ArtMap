@@ -65,7 +65,6 @@ public class CompatibilityManager implements RegionHandler {
 
     @Override
     public boolean checkBuildAllowed(Player player, Location location) {
-        if (player.hasPermission("artmap.admin")) return true; //admins can override
         for (RegionHandler regionHandler : regionHandlers) {
             if (!regionHandler.checkBuildAllowed(player, location)) return false;
         }

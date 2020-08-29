@@ -13,7 +13,6 @@ public class Configuration {
     public final boolean DISABLE_ACTION_BAR;
     public final boolean CUSTOM_RECIPES;
     public final boolean FORCE_ART_KIT;
-    public final boolean HIDE_PREFIX;
     public final boolean FORCE_GUI;
     public final boolean DISABLE_PAINTBRUSH;
 	public final boolean HEAD_PREFETCH;
@@ -33,7 +32,6 @@ public class Configuration {
         this.CUSTOM_RECIPES = configuration.getBoolean("customRecipes");
         this.FORCE_ART_KIT = configuration.getBoolean("forceArtKit");
         this.DISABLE_PAINTBRUSH = configuration.getBoolean("disablePaintbrush");
-        this.HIDE_PREFIX = configuration.getBoolean("hidePrefix");
 		this.FORCE_GUI = configuration.getBoolean("guiOnly", false);
 		this.HEAD_PREFETCH = configuration.getBoolean("headPrefetch", true);
         this.HEAD_PREFETCH_DELAY = configuration.getLong("headPrefetchDelay", 0L);

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>Towny</artifactId>
   <name>Towny</name>
@@ -10,7 +9,7 @@
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
     <artifactId>ArtMap-parent</artifactId>
-    <version>3.6.2</version>
+    <version>3.6.3</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -20,16 +19,16 @@
       <artifactId>ArtMap-api</artifactId>
     </dependency>
     <dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.14.4-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.14.4-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
-			<groupId>towny</groupId>
-			<artifactId>towny</artifactId>
-			<version>0.93</version>
-			<scope>provided</scope>
-		</dependency>
+      <groupId>com.github.TownyAdvanced</groupId>
+      <artifactId>Towny</artifactId>
+      <version>0.96.2.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>
