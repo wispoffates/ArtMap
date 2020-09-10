@@ -16,7 +16,7 @@ public class RedProtectCompat implements RegionHandler {
     private boolean loaded = false;
 	private RedProtectAPI api;
 
-    RedProtectCompat() {
+    public RedProtectCompat() {
        this.api = new RedProtectAPI();
        this.loaded = true;
     }

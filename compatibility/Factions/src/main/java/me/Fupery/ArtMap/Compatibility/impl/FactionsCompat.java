@@ -17,7 +17,7 @@ import me.Fupery.ArtMap.api.Easel.ClickType;
 public class FactionsCompat implements RegionHandler {
     private boolean loaded = false;
 
-    FactionsCompat() {
+    public FactionsCompat() {
         Factions.get();
         EnginePermBuild.get();
         MassiveCore.get();
