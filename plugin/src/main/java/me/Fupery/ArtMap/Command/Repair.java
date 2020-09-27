@@ -151,7 +151,7 @@ public class Repair extends AsyncCommand {
         if(art == null) {
             throw new FileNotFoundException("Artwork with the provided ID does not exist. :: " + id);
         }
-        return ArtMap.instance().getArtDatabase().restoreMap(art.getMap(), repair);
+        return ArtMap.instance().getArtDatabase().restoreMap(art.getMap(), repair, repair);
     }
 
 }

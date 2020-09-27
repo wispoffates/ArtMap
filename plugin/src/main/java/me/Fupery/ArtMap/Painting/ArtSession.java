@@ -65,7 +65,7 @@ public class ArtSession {
 
         // Run tasks
         try {
-            ArtMap.instance().getArtDatabase().restoreMap(map,false);
+            ArtMap.instance().getArtDatabase().restoreMap(map, true, false);
             ArtMap.instance().getScheduler().SYNC.runLater(() -> {
                 if (player.getVehicle() != null)
                     Lang.ActionBar.PAINTING.send(player);

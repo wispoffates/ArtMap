@@ -335,19 +335,20 @@ public final class Database {
      * file.
      * 
      * @param map The map to restore.
-     * @param repair True - attempt to repair the map. False - Do not attempt to repair just notify.
+     * @param softRrepair True - attempt to repair the map but do not modify the files on disk. False - Do not attempt to repair just notify.
+     * @param hardRrepair True - attempt to repair the map even if it means writing to disk. False - Do not attempt to repair just notify.
      * @return True if a map was found to be corruped.
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
-    public boolean restoreMap(Map map, boolean repair) {
+    public boolean restoreMap(Map map, boolean softRepair, boolean hardRepair) {
         try {
-            return restoreMapData(map, repair);
+            return restoreMapData(map, softRepair);
         } catch (Throwable t) {
             ArtMap.instance().getLogger().log(Level.SEVERE,"Map ID:" + map.getMapId() + " is severly corrupted!" ,t);   
         }
-        if(repair) {
+        if(hardRepair) {
             ArtMap.instance().getLogger().warning("Repair flag set attempting dangerous repair.");
             File dataFile = map.getDataFile();
             try {
@@ -361,8 +362,7 @@ public final class Database {
             try {
                 Files.copy(this.getClass().getResourceAsStream("/blank.dat"), dataFile.toPath());
                 ArtMap.instance().getLogger().warning("Minecraft map data file reset.  A server restart might be necessary to continue the repair.");
-                return restoreMapData(map, repair);
-                //return true;
+                return restoreMapData(map, softRepair);
             } catch (IOException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE,"Failed to copy blank map for data reset." ,e);
                 return true;

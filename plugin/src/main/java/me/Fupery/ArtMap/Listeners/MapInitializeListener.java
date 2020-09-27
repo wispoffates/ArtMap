@@ -19,7 +19,7 @@ public class MapInitializeListener implements RegisteredListener {
                     if (!ArtMap.instance().getArtDatabase().containsArtwork(mapId))
                         return;
                     Map map = new Map(mapId);
-                    ArtMap.instance().getArtDatabase().restoreMap(map, false);
+                    ArtMap.instance().getArtDatabase().restoreMap(map, true, false);
                 } catch (Exception e) {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Error with map restore!", e);
                 }
