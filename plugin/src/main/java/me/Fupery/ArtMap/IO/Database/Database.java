@@ -2,6 +2,8 @@ package me.Fupery.ArtMap.IO.Database;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -327,23 +329,64 @@ public final class Database {
         }
     }
 
-    /**
+     /**
      * Restore an artwork from the database if it is found to be corrupted. Used in
      * cases were something has happened to damage or delete an artwork's map data
      * file.
      * 
      * @param map The map to restore.
+     * @param repair True - attempt to repair the map. False - Do not attempt to repair just notify.
+     * @return True if a map was found to be corruped.
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
-    public void restoreMap(Map map) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        byte[] data = map.readData();
-        int oldMapHash = Arrays.hashCode(data);
-        if (maps.containsMap(map.getMapId())
-                && maps.getHash(map.getMapId()) != oldMapHash) {
-            ArtMap.instance().getLogger().info("Map ID:" + map.getMapId() + " is corrupted! Restoring data file...");
-            map.setMap(maps.getMap(map.getMapId()).decompressMap(), true);
+    public boolean restoreMap(Map map, boolean repair) {
+        try {
+            return restoreMapData(map, repair);
+        } catch (Throwable t) {
+            ArtMap.instance().getLogger().log(Level.SEVERE,"Map ID:" + map.getMapId() + " is severly corrupted!" ,t);   
         }
+        if(repair) {
+            ArtMap.instance().getLogger().warning("Repair flag set attempting dangerous repair.");
+            File dataFile = map.getDataFile();
+            try {
+                Files.delete(dataFile.toPath());
+            } catch (NoSuchFileException nsfe) {
+                //this is fine we are going to replace it with blank.dat anyway
+            } catch (IOException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE,"Failed deleting corruped map file." ,e);
+                return true;   
+            }
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/blank.dat"), dataFile.toPath());
+                ArtMap.instance().getLogger().warning("Minecraft map data file reset.  A server restart might be necessary to continue the repair.");
+                return restoreMapData(map, repair);
+                //return true;
+            } catch (IOException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE,"Failed to copy blank map for data reset." ,e);
+                return true;
+            } catch (Throwable t) {
+                ArtMap.instance().getLogger().log(Level.SEVERE,"All attempts to restore the map have failed!  Please report this and post logs at https://gitlab.com/BlockStack/ArtMap/-/issues" ,t);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean restoreMapData(Map map, boolean repair)
+            throws NoSuchFieldException, IllegalAccessException, SQLException {
+        byte[] data = map.readData();
+            int oldMapHash = Arrays.hashCode(data);
+            if (maps.containsMap(map.getMapId())
+                    && maps.getHash(map.getMapId()) != oldMapHash) {
+                ArtMap.instance().getLogger().warning("Map ID:" + map.getMapId() + " is corrupted! ");
+                if(repair) {
+                    ArtMap.instance().getLogger().warning("Repair flag set attempting to repair.");
+                    map.setMap(maps.getMap(map.getMapId()).decompressMap(), true);
+                }
+                return true;
+            }
+            return false;
     }
 }

@@ -65,7 +65,7 @@ public class ArtSession {
 
         // Run tasks
         try {
-            ArtMap.instance().getArtDatabase().restoreMap(map);
+            ArtMap.instance().getArtDatabase().restoreMap(map,false);
             ArtMap.instance().getScheduler().SYNC.runLater(() -> {
                 if (player.getVehicle() != null)
                     Lang.ActionBar.PAINTING.send(player);
@@ -118,15 +118,9 @@ public class ArtSession {
     }
 
     private void addKit(Player player) {
-        PlayerInventory inventory = player.getInventory();
-        /*
-         * ItemStack leftOver = inventory.addItem(inventory.getItemInOffHand()).get(0);
-         * inventory.setItemInOffHand(new ItemStack(Material.AIR)); if (leftOver != null
-         * && leftOver.getType() != Material.AIR)
-         * player.getWorld().dropItemNaturally(player.getLocation(), leftOver);
-         */
-        this.inventory = inventory.getContents();
-        inventory.setStorageContents(ArtItem.getArtKit(0));
+        PlayerInventory pInv = player.getInventory();
+        this.inventory = pInv.getContents();
+        pInv.setStorageContents(ArtItem.getArtKit(0));
         // restore hotbar
         if (artkitHotbars.containsKey(player.getUniqueId())) {
             ItemStack[] hotbar = artkitHotbars.get(player.getUniqueId());
@@ -140,21 +134,21 @@ public class ArtSession {
     public void nextKitPage(Player player) {
         if (this.artkitPage < 2) {
             this.artkitPage++;
-            this.setKitPage(player, this.artkitPage);
+            this.updateKitPage(player);
         }
     }
 
     public void prevKitPage(Player player) {
         if (this.artkitPage > 0) {
             this.artkitPage--;
-            this.setKitPage(player, this.artkitPage);
+            this.updateKitPage(player);
         }
     }
 
     /*
      * Set the contents of the inventory without replacing the hotkey bar.
      */
-    private void setKitPage(Player player, int page) {
+    private void updateKitPage(Player player) {
         ItemStack[] kit = ArtItem.getArtKit(this.artkitPage);
             ItemStack[] current = player.getInventory().getStorageContents();
             System.arraycopy(current, 0, kit, 0, 9);

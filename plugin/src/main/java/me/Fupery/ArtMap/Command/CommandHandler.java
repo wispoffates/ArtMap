@@ -50,6 +50,8 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("convert", new CommandConvert());
 
+		commands.put("repair", new Repair());
+
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
@@ -82,7 +84,7 @@ public class CommandHandler implements CommandExecutor {
 			}
 		});
 		
-		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|artwork|paintbrush:<title>> [amount]", true) {
+		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|paintbrush|artwork:<title>> [amount]", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 				Player player = Bukkit.getPlayer(args[1]);

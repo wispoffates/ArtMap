@@ -1,3 +1,13 @@
+# Release 3.6.5
+
+* Add repair command to be used to detect and fix blank artwork.
+* Update blank.dat with one that works for 1.13 plus.
+
+# Release 3.6.4
+
+* Fix RedProtect Compatibility exception.
+* Fix Factions Compatibility exception.
+
 # Release 3.6.3
 
 * Remove "hide prefix" option.  It was broken and a pain to mantain.

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.gitlab.blockstack</groupId>
 		<artifactId>ArtMap-parent</artifactId>
-		<version>3.6.4</version>
+		<version>3.6.5</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<build>
@@ -117,62 +117,62 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>ASkyBlock</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>BentoBox</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Factions</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>GriefPrevention</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared4</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared5</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>RedProtect</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Residence</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>SabreFactions</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Towny</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>USkyBlock</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>WorldGuard</artifactId>
-			<version>3.6.4</version>
+			<version>3.6.5</version>
 		</dependency>
 		<!--  Mojang dependency -->
 		<dependency>
