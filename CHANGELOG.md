@@ -1,3 +1,7 @@
+# Release 3.6.6
+
+* Fix WorldGuard putting "+" in the dev version numbers
+
 # Release 3.6.5
 
 * Add repair command to be used to detect and fix blank artwork.

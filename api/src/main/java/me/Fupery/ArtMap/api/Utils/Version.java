@@ -26,6 +26,10 @@ public class Version implements Comparable<Version> {
             if(str.contains(";")) {
                 str = str.substring(0, str.indexOf(';'));
             }
+            //and this "7.0.4+f7ff984"
+            if(str.contains("+")) {
+                str = str.substring(0, str.indexOf('+'));
+            }
             numbers[i] = Integer.parseInt(str);
         }
         this.numbers = numbers;
