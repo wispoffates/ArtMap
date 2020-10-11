@@ -1,3 +1,11 @@
+# Release 3.6.7
+
+* Fix artwork previews.
+* Fix little bugs all over the gui menus.
+* Move datatables into the repo so we don't need the external dependency anymore.
+* Pull components into artmap from InvMenu so we don't need the external dependency anymore.
+
+
 # Release 3.6.6
 
 * Fix WorldGuard putting "+" in the dev version numbers

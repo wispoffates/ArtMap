@@ -371,7 +371,7 @@ public final class Database {
                 return true;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean restoreMapData(Map map, boolean repair)

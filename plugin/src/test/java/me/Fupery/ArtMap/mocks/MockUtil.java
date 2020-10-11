@@ -247,7 +247,7 @@ public class MockUtil {
          FileConfiguration fileConfig = new YamlConfiguration();
          fileConfig.load("target/plugins/Artmap/config.yml");
          when(mockArtmap.getConfig()).thenReturn(fileConfig);
-         Configuration config = new Configuration(mockArtmap, mockCompatibilityManager);
+         Configuration config = new Configuration(mockArtmap);
          when(mockArtmap.getConfiguration()).thenReturn(config);
          // Mock the description
          File pluginYml = new File(getClass().getResource("/plugin.yml").getPath());

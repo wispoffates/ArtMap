@@ -3,9 +3,8 @@ package me.Fupery.ArtMap.Easel;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 
-import com.github.Fupery.InvMenu.Utils.SoundCompat;
-
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.API.SoundCompat;
 
 public enum EaselEffect {
 	SPAWN(location -> {/*

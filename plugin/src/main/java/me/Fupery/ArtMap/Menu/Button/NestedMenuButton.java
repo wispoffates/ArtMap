@@ -4,9 +4,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
-import com.github.Fupery.InvMenu.Utils.SoundCompat;
-
 import me.Fupery.ArtMap.ArtMap;
+import me.Fupery.ArtMap.Menu.API.SoundCompat;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public class NestedMenuButton extends Button {

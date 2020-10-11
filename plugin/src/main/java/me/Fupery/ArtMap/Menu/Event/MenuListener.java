@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Menu.Event;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Menu.HelpMenu.ArtistArtworksMenu;
 import org.bukkit.Bukkit;
@@ -14,7 +15,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,37 +41,13 @@ public class MenuListener implements Listener {
         }
     }
 
-    private void handleClick(InventoryClickEvent event) {
-        Inventory top = event.getWhoClicked().getOpenInventory().getTopInventory();
-        Inventory bottom = event.getWhoClicked().getOpenInventory().getBottomInventory();
-
-        if (event.getClickedInventory() == top) {
-            event.setResult(Event.Result.DENY);
-            event.setCancelled(true);
-
-        } else if (event.getClickedInventory() == bottom) {
-
-            switch (event.getAction()) {
-                case MOVE_TO_OTHER_INVENTORY:
-                case HOTBAR_MOVE_AND_READD:
-                case COLLECT_TO_CURSOR:
-                case UNKNOWN:
-                    event.setResult(Event.Result.DENY);
-                    event.setCancelled(true);
-                    return;
-                default:
-                    break;
-            }
-        }
-    }
-
     @EventHandler
     public void onMenuInteract(final InventoryClickEvent event) {
         if (!handler.isTrackingPlayer((Player) event.getWhoClicked())) {
             return;
         }
 
-        handleClick(event);
+        event.setCancelled(true);
 
         final Player player = (Player) event.getWhoClicked();
 

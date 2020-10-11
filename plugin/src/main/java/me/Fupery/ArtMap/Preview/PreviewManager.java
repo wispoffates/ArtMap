@@ -45,11 +45,16 @@ public class PreviewManager {
     }
 
     void endPreview(UUID uuid) {
-        endPreview(ArtMap.instance().getScheduler().callSync(() -> Bukkit.getPlayer(uuid)));
+        ArtMap.instance().getScheduler().SYNC.run(() -> {
+            Player player = Bukkit.getPlayer(uuid);
+            endPreview(player);
+        });
     }
 
     public boolean endPreview(Player player) {
-        if (!isPreviewing(player.getUniqueId())) return false;
+        if (!isPreviewing(player.getUniqueId())) {
+            return false;
+        }
         Preview preview = getPreview(player);
         activePreviews.remove(player.getUniqueId());
         return preview.end(player);

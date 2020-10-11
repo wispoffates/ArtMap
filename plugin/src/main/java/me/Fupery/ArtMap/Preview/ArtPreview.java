@@ -8,9 +8,9 @@ import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.github.Fupery.InvMenu.Utils.SoundCompat;
-
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
+import me.Fupery.ArtMap.Menu.API.SoundCompat;
 
 public class ArtPreview extends TimedPreview {
 
@@ -24,10 +24,11 @@ public class ArtPreview extends TimedPreview {
     public boolean start(Player player) {
         super.start(player);
         PlayerInventory inventory = player.getInventory();
-        if (inventory.getItemInMainHand().getType() != Material.AIR){
+        if (inventory.getItemInOffHand().getType() != Material.AIR){
+            Lang.EMPTY_HAND_PREVIEW.send(player);
             return false;
         }
-        inventory.setItemInMainHand(preview);
+        inventory.setItemInOffHand(preview);
         return true;
     }
 
@@ -38,7 +39,10 @@ public class ArtPreview extends TimedPreview {
         if (player.getItemOnCursor().equals(preview)) {
             player.setItemOnCursor(null);
         } 
-        player.getInventory().removeItem(preview);// TODO: 5/08/2016
+        if (player.getInventory().getItemInOffHand().equals(preview)) {
+            player.getInventory().setItemInOffHand(null);
+        }
+        player.getInventory().removeItem(preview);
         return true;
     }
 

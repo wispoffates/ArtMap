@@ -38,7 +38,7 @@ public class LangTest {
         ArtMap mockPlugin = this.mocks.getArtmapMock();
         CompatibilityManager mockCompatibilityManager = mock(CompatibilityManager.class);
         when(ArtMap.instance().getCompatManager()).thenReturn(mockCompatibilityManager);
-        Configuration config = new Configuration(mockPlugin, mockCompatibilityManager);
+        Configuration config = new Configuration(mockPlugin);
         Lang.load(mockPlugin, config);
         String[] needCanvas = Lang.ActionBar.NEED_CANVAS.get();
         Assert.assertFalse("NEED_CANVAS should not have returned empty!", needCanvas.length==0);

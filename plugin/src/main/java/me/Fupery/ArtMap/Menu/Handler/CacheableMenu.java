@@ -7,10 +7,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.Fupery.InvMenu.Utils.MenuType;
-
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.API.MenuTemplate;
+import me.Fupery.ArtMap.Menu.API.MenuType;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 

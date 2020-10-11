@@ -166,7 +166,7 @@ public class ArtMap extends JavaPlugin {
 		try {
 			pluginInstance = this;
 			saveDefaultConfig();
-			config = new Configuration(this, compatManager);
+			config = new Configuration(this);
 			reflection = new Reflection();
 			scheduler = new Scheduler(this);
 			bukkitVersion = new VersionHandler(this);

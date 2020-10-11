@@ -7,7 +7,9 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 class PlayerSwapHandListener implements RegisteredListener {
     @EventHandler
     public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-        if (ArtMap.instance().getPreviewManager().endPreview(event.getPlayer())) event.setCancelled(true);
+        if (ArtMap.instance().getPreviewManager().endPreview(event.getPlayer())) {
+            event.setCancelled(true);
+        }
     }
 
     @Override

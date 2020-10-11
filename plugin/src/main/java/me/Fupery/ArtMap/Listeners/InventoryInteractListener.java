@@ -25,7 +25,7 @@ class InventoryInteractListener implements RegisteredListener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-		checkPreviewing((Player) event.getWhoClicked(), event);
+        checkPreviewing((Player) event.getWhoClicked(), event);
         checkArtKitPagination(((Player) event.getWhoClicked()), event.getCurrentItem(), event);
         
         //prevent Artkit items from going into inventories they shouldn't like
@@ -66,7 +66,9 @@ class InventoryInteractListener implements RegisteredListener {
     }
 
     private void checkPreviewing(Player player, Cancellable event) {
-        if (ArtMap.instance().getPreviewManager().endPreview(player)) event.setCancelled(true);
+        if (ArtMap.instance().getPreviewManager().endPreview(player)) {
+            event.setCancelled(true);
+        }
     }
 
 	private void checkArtKitPagination(Player player, ItemStack itemStack, Cancellable event) {

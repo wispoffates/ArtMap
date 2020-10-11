@@ -3,7 +3,6 @@ package me.Fupery.ArtMap.Config;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
 
 public class Configuration {
     public final String  LANGUAGE;
@@ -19,8 +18,10 @@ public class Configuration {
     public final long	 HEAD_PREFETCH_DELAY;
     public final long    HEAD_PREFETCH_PERIOD;
     public final boolean HEAD_FETCH_MOJANG;
+    public final int     INK_USES;
+    public final boolean LIMITED_INK_USES;
 
-    public Configuration(ArtMap plugin, CompatibilityManager manager) {
+    public Configuration(ArtMap plugin) {
         FileConfiguration configuration = plugin.getConfig();
         this.LANGUAGE = configuration.getString("language");
         String world = configuration.getString("world");
@@ -37,5 +38,7 @@ public class Configuration {
         this.HEAD_PREFETCH_DELAY = configuration.getLong("headPrefetchDelay", 0L);
         this.HEAD_PREFETCH_PERIOD = configuration.getLong("headPrefetchPeriod", 10000L);
         this.HEAD_FETCH_MOJANG = configuration.getBoolean("headFetchMojang", true);
+        this.INK_USES = configuration.getInt("inkUses");
+        this.LIMITED_INK_USES = INK_USES > 0;
     }
 }

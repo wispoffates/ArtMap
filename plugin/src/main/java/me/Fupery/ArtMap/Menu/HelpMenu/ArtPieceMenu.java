@@ -14,16 +14,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 
-import com.github.Fupery.InvMenu.Utils.SoundCompat;
-
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
+import me.Fupery.ArtMap.Menu.API.SoundCompat;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
+import me.Fupery.ArtMap.Preview.ArtPreview;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -99,16 +99,8 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 			if (clickType == ClickType.LEFT) {
 				ItemStack offHand = player.getInventory().getItemInOffHand();
 				if (offHand.getType() == Material.AIR || isPreviewItem(offHand)) {
-					SoundCompat.BLOCK_CLOTH_FALL.play(player);
-					ItemStack preview = artwork.getMapItem();
-					MapMeta meta = (MapMeta) preview.getItemMeta();
-					meta.setMapView(ArtMap.getMap(artwork.getMapId()));
-					List<String> lore = getItemMeta().getLore();
-					lore.set(0, ArtItem.PREVIEW_KEY);
-					meta.setLore(lore);
-					preview.setItemMeta(meta);
 					ArtMap.instance().getMenuHandler().closeMenu(player, MenuCloseReason.SPECIAL);
-					player.getInventory().setItemInOffHand(preview);
+					ArtMap.instance().getPreviewManager().startPreview(player, new ArtPreview(artwork));
 					ArtMap.instance().getMenuHandler().openMenu(player, this.artworkMenu);
 				} else {
 					Lang.EMPTY_HAND_PREVIEW.send(player);
