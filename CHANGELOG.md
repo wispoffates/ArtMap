@@ -1,3 +1,11 @@
+# Release 3.7.0
+
+* Add `/artmap search` command to do text based search of artwork.
+* Search provides clickable links that can preview artwork and retreive it (for admins).
+* Update AnvilGUI to support 1.16.4.
+* Fix null in copied artwork artist.
+* Fix handling of artist names for artists no longer in the local server cache.
+
 # Release 3.6.7
 
 * Fix artwork previews.

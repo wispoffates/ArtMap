@@ -259,7 +259,20 @@ public final class Database {
      */
     public UUID[] listArtists() throws SQLException {
 		return artworks.listArtists();
-	}
+    }
+    
+    public String[] searchArtists(String search) {
+        //TODO: Make this pull from table in Schema V4+
+        return ArtMap.instance().getHeadsCache().searchCache(search);
+    }
+
+    public MapArt[] searchArtworks(String search, UUID playerId) throws SQLException {
+        if(playerId != null) {
+            return this.artworks.searchArtwork(search, playerId);
+        } else {
+            return this.artworks.searchArtwork(search);
+        }
+    }
 
     /**
      * Prepare to close the database.

@@ -45,10 +45,14 @@ import me.Fupery.ArtMap.Exception.HeadFetchException;
  */
 public class HeadsCache {
 
-	static private JsonParser				parser				= new JsonParser();
-	static private String					API_PROFILE_LINK	= "https://sessionserver.mojang.com/session/minecraft/profile/";
+	private static JsonParser				parser				= new JsonParser();
+	private static String					API_PROFILE_LINK	= "https://sessionserver.mojang.com/session/minecraft/profile/";
 
 	private static final Map<UUID, TextureData>	textureCache	= Collections.synchronizedMap( new HashMap<>());
+	/** Map to convert names to UUIDs for players that have never logged in to the server.
+	 * This is temporary till DB schema update that adds names to db.
+	 */
+	private static final Map<String, UUID> nameToUUID = new HashMap<>();
 	private static File						cacheFile;
 	private ArtMap plugin;
 
@@ -71,6 +75,10 @@ public class HeadsCache {
 				this.initHeadCache();
 			}, plugin.getConfiguration().HEAD_PREFETCH_DELAY);
 		}
+		//int the nameToUUID
+		textureCache.entrySet().stream().forEach(entry -> {
+			nameToUUID.put(entry.getValue().name, entry.getKey());
+		});
 	}
 
 	public void updateCache(UUID playerId) throws HeadFetchException {
@@ -127,7 +135,6 @@ public class HeadsCache {
 			} else {
 				ArtMap.instance().getLogger().warning("HeadCache load was null? Creating new empty cache.");
 			}
-            reader.close();
         } catch (Exception e) {
             ArtMap.instance().getLogger().log(Level.SEVERE, "Failure parsing head cache! Will start with an empty cache.", e);
         }
@@ -181,6 +188,36 @@ public class HeadsCache {
 	 */
 	public boolean isHeadCached(UUID playerId) {
 		return textureCache.containsKey(playerId);
+	}
+
+	/**
+	 * Retrieve the name of the player from the cache.
+	 * @param playerId The id of the player to lookup.
+	 * @return The name of the player or null if it wasn't cached.
+	 */
+	public String getPlayerName(UUID playerId) {
+		if(textureCache.containsKey(playerId)) {
+			return textureCache.get(playerId).name;
+		}
+		return null;
+	}
+
+	/**
+	 * Search the cache for a artist name that matches the search term.
+	 * @param term The search term.
+	 * @return An array of matching names and an empty array if none or found.
+	 */
+	public String[] searchCache(String term) {
+		return nameToUUID.keySet().stream().filter( name -> name.contains(term)).toArray(String[]::new);
+	}
+
+	/**
+	 * Retrieve the player id for the given name from the cache.
+	 * @param playername The playername to get the ID of.
+	 * @return Optionally the player id if cached.
+	 */
+	public Optional<UUID> getPlayerUUID(String playername) {
+		return Optional.ofNullable(nameToUUID.get(playername));
 	}
 
 	/**

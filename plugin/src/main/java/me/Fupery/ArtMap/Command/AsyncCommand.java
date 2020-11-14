@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Command;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,8 +11,6 @@ abstract class AsyncCommand {
     protected final String usage;
     private final String permission;
     private final boolean consoleAllowed;
-    private int minArgs;
-    private int maxArgs;
 
     AsyncCommand(String permission, String usage, boolean consoleAllowed) {
         this.permission = permission;
@@ -22,9 +19,6 @@ abstract class AsyncCommand {
         if (usage == null) {
             throw new IllegalArgumentException("Usage must not be null");
         }
-		String[] args = usage.replace("/art ", "").split("\\s+");
-        maxArgs = args.length;
-        minArgs = maxArgs - (usage.split("\\[").length-1);
         this.usage = usage;
     }
 
@@ -38,9 +32,6 @@ abstract class AsyncCommand {
 
             } else if (!consoleAllowed && !(sender instanceof Player)) {
                 returnMsg.message = Lang.NO_CONSOLE.get();
-
-            } else if (args.length < minArgs || args.length > maxArgs) {
-                returnMsg.message = Lang.PREFIX + ChatColor.RED + " " + usage;
 
             } else {
                 runCommand(sender, args, returnMsg);

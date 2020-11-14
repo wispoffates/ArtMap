@@ -63,6 +63,19 @@ SAVE_ARTWORK_2: "§4§lor use '/art break' while seating at the easel if you are
 GENERIC_ERROR: "§cSorry, An error occured contact a server admin."
 PAINTBRUSH_FORCED: "§4§lPlease use the paint brush for saving!"
 PAINTBRUSH_DISABLED: "§4§lSaving with the paint brush is disabled. Please use /art save!"
+
+#---------------------------------------[Search]------------------------------------------#
+SEARCH_USAGE: "§6Use §e/art search [--mine|--player <playername>] <title> §6to search for artwork."
+SEARCH_PREVIEW_BUTTON: "Preview"
+SEARCH_PREVIEW_HOVER: "Click to preview the artwork."
+SEARCH_GIVE_BUTTON: "Give"
+SEARCH_GIVE_HOVER: "Click to receive a copy of the artwork."
+SEARCH_ARTIST_HOVER: "Click to search artist."
+SEARCH_ARTISTS: "Artists Found"
+SEARCH_ARTWORKS: "Artworks Found"
+SEARCH_TITLE: "Art Search"
+SEARCH_PAGE: "Page"
+
 #---------------------------------------[Help menu]---------------------------------------#
 #Menu titles
 MENU_RECIPE: "Choose a Recipe"

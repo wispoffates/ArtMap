@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.MapArt;
 
 final class ArtTable extends SQLiteTable {
@@ -53,12 +54,57 @@ final class ArtTable extends SQLiteTable {
         }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
     }
 
+    MapArt[] searchArtwork(String title) throws SQLException {
+        return new QueuedQuery<MapArt[]>() {
+
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, '%' + title + '%');
+            }
+
+            @Override
+			protected MapArt[] read(ResultSet results) throws SQLException {
+                ArrayList<MapArt> artworks = new ArrayList<>();
+                while (results.next()) {
+                    artworks.add(readArtwork(results));
+                }
+                return artworks.toArray(new MapArt[artworks.size()]);
+            }
+        }.execute("SELECT * FROM " + TABLE + " WHERE title LIKE ? ORDER BY artist;");
+    }
+
+    MapArt[] searchArtwork(String title, UUID playerId) throws SQLException {
+        return new QueuedQuery<MapArt[]>() {
+
+            @Override
+			protected void prepare(PreparedStatement statement) throws SQLException {
+                statement.setString(1, '%' + title + '%');
+                statement.setString(2, playerId.toString());
+            }
+
+            @Override
+			protected MapArt[] read(ResultSet results) throws SQLException {
+                ArrayList<MapArt> artworks = new ArrayList<>();
+                while (results.next()) {
+                    artworks.add(readArtwork(results));
+                }
+                return artworks.toArray(new MapArt[artworks.size()]);
+            }
+        }.execute("SELECT * FROM " + TABLE + " WHERE title LIKE ? AND artist = ? ORDER BY title;");
+    }
+
     MapArt readArtwork(ResultSet set) throws SQLException {
         String title = set.getString("title");
         int id = set.getInt("id");
         UUID artist = UUID.fromString(set.getString("artist"));
         String date = set.getString("date");
-        return new MapArt(id, title, artist, Bukkit.getOfflinePlayer(artist).getName(),date);
+        String name = "Unknown";
+        if(ArtMap.instance().getHeadsCache().isHeadCached(artist)) {
+            name = ArtMap.instance().getHeadsCache().getPlayerName(artist);
+        } else {
+            name = Bukkit.getOfflinePlayer(artist).getName();
+        }
+        return new MapArt(id, title, artist,name,date);
     }
 
 
@@ -193,6 +239,7 @@ final class ArtTable extends SQLiteTable {
 
             @Override
 			protected void prepare(PreparedStatement statement) {
+                //no values to set
             }
 
             @Override

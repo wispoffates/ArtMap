@@ -52,6 +52,10 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("repair", new Repair());
 
+		commands.put("search", new Search());
+
+		commands.put("page", new Page());
+
 		commands.put("palette", new AsyncCommand("artmap.admin", "/art palette", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {

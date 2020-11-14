@@ -6,13 +6,11 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Preview.ArtPreview;
-import me.Fupery.ArtMap.Utils.ItemUtils;
 
 class CommandPreview extends AsyncCommand {
 
@@ -26,23 +24,14 @@ class CommandPreview extends AsyncCommand {
             return false;
         }
 
-        if (player.hasPermission("artmap.admin")) {
-            ArtMap.instance().getScheduler().SYNC.run(() -> {
-                ItemStack currentItem = player.getInventory().getItemInMainHand();
-                player.getInventory().setItemInMainHand(art.getMapItem());
-                ItemUtils.giveItem(player, currentItem);
-            });
+        ArtMap.instance().getPreviewManager().endPreview(player);
 
-        } else {
-
-            ArtMap.instance().getPreviewManager().endPreview(player);
-
-            if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
-                return false;
-            }
-
-            ArtMap.instance().getPreviewManager().startPreview(player, new ArtPreview(art));
+        if (player.getInventory().getItemInMainHand().getType() != Material.AIR) {
+            return false;
         }
+
+        ArtMap.instance().getPreviewManager().startPreview(player, new ArtPreview(art));
+        
         return true;
     }
 

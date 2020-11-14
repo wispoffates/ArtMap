@@ -60,6 +60,7 @@ import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
 import me.Fupery.ArtMap.Config.Configuration;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
+import me.Fupery.ArtMap.Heads.HeadsCache;
 import me.Fupery.ArtMap.IO.Database.Map.Size;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.ArtMap.Utils.Scheduler;
@@ -317,6 +318,10 @@ public class MockUtil {
          Arrays.fill(mapOutput, Byte.valueOf("0"));
          when(mockReflection.getMap(any(MapView.class))).thenReturn(mapOutput);
          when(mockArtmap.getReflection()).thenReturn(mockReflection);
+
+         //mock HeadsCahce
+         HeadsCache cache = mock(HeadsCache.class);
+         when(mockArtmap.getHeadsCache()).thenReturn(cache);
 
          this.mockArtmap = mockArtmap;
          return this;

@@ -33,6 +33,10 @@ class CommandSave extends AsyncCommand {
             Lang.PAINTBRUSH_FORCED.send(sender);
             return;
         }
+        if(args.length<2) {
+            Lang.SAVE_USAGE.send(sender);
+            return;
+        }
 
         final String title = args[1];
 
