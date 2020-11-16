@@ -327,7 +327,7 @@ public class MockUtil {
          return this;
     }
 
-    public Player getRandomMockPlayer() {
+    private Player getRandomMockPlayer() {
         List<Entry<UUID,Player>> playerList = mockPlayers.entrySet().stream().collect(Collectors.toList());
         Collections.shuffle(playerList);
         return playerList.get(0).getValue();     
@@ -346,7 +346,7 @@ public class MockUtil {
         return players.toArray(new Player[count]);
     }
 
-    public Canvas getRandomMockCanvas() {
+    private Canvas getRandomMockCanvas() {
         List<Entry<Integer,Canvas>> canvasList = mockCanvases.entrySet().stream().collect(Collectors.toList());
         Collections.shuffle(canvasList);
         return canvasList.get(0).getValue();     

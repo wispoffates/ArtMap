@@ -140,9 +140,10 @@ public class CommandHandler implements CommandExecutor {
             public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
                 if (sender instanceof Player) {
                     ArtMap.instance().getScheduler().SYNC.run(() -> {
-                        if (args.length > 0 && sender.hasPermission("artmap.admin")) {
-                            Lang.Array.CONSOLE_HELP.send(sender);
-                        }//todo fix formatting here
+                        if (args.length > 0) {
+							Lang.Array.CONSOLE_HELP.send(sender);
+							return;
+                        }
                         PlayerOpenMenuEvent event = new PlayerOpenMenuEvent((Player) sender);
                         Bukkit.getServer().getPluginManager().callEvent(event);
                         MenuHandler menuHandler = ArtMap.instance().getMenuHandler();
@@ -175,7 +176,6 @@ public class CommandHandler implements CommandExecutor {
 
 			if (commands.containsKey(fixedArgs[0].toLowerCase())) {
 				commands.get(fixedArgs[0].toLowerCase()).runPlayerCommand(sender, fixedArgs);
-
             } else {
                 Lang.HELP.send(sender);
             }

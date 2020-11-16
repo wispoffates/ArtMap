@@ -69,7 +69,9 @@ public class TextPagination {
             header.addExtra(ChatColor.GRAY + " **");
         }
         // current page text
-        String middle = ChatColor.GOLD + headerText + " :: " + ChatColor.YELLOW + Lang.SEARCH_PAGE.get() + " " + ChatColor.RED +  currentPage + " of " + lastpage;
+        String middle = ChatColor.GOLD + headerText + " :: " + ChatColor.YELLOW + Lang.SEARCH_PAGE.get() + " " 
+            + ChatColor.RED +  currentPage + Lang.SEARCH_PAGE_SEPERATOR.get() + lastpage;
+            
         int edgeSize = ((MAX_COLUMNS - middle.length())/2)-4;
         StringBuilder sb = new StringBuilder(edgeSize);
         for(int i=0; i<edgeSize;i++) {
@@ -85,7 +87,7 @@ public class TextPagination {
             forwardArrow.setClickEvent(new ClickEvent(Action.RUN_COMMAND, "/artmap page " + id.toString() + " " + (currentPage+1)));
             header.addExtra(forwardArrow);
         } else {
-            header.addExtra(ChatColor.DARK_GRAY + "**");
+            header.addExtra(ChatColor.GRAY + "**");
         }
         return header;
     }

@@ -17,7 +17,7 @@ import me.Fupery.ArtMap.Menu.Button.StaticButton;
 public class DyeMenu extends ListMenu {
 
     public DyeMenu() {
-		super("Dyes for Painting", ArtMap.instance().getMenuHandler().MENU.HELP, 0);
+		super(Lang.MENU_DYES.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
     }
 
     @Override

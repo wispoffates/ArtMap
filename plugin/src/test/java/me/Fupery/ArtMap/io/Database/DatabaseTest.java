@@ -54,9 +54,9 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
 
-        Player player = mocks.getRandomMockPlayer();
+        Player player = mocks.getRandomMockPlayers(1)[0];
 
-        MapArt savedArt = db.saveArtwork(mocks.getRandomMockCanvas(), "test", player);
+        MapArt savedArt = db.saveArtwork(mocks.getRandomMockCanvases(1)[0], "test", player);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
     }
@@ -66,7 +66,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
 
-        Player player = mocks.getRandomMockPlayer();
+        Player player = mocks.getRandomMockPlayers(1)[0];
         // mock CompressedMap
         CompressedMap mockCompressedMap = CompressedMap.compress(1, new byte[Map.Size.MAX.value]);
         MapArt art = new MapArt(1, "testArt", player.getUniqueId(), player.getName(), new Date());
@@ -84,7 +84,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
 
-        Player player = mocks.getRandomMockPlayer();
+        Player player = mocks.getRandomMockPlayers(1)[0];
         // mock CompressedMap
         CompressedMap mockCompressedMap = CompressedMap.compress(1, new byte[Map.Size.MAX.value]);
         MapArt art = new MapArt(1, "testArt", player.getUniqueId(), player.getName(), new Date());
@@ -113,8 +113,8 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
 
-        Player player = mocks.getRandomMockPlayer();
-        Canvas canvas = mocks.getRandomMockCanvas();
+        Player player = mocks.getRandomMockPlayers(1)[0];
+        Canvas canvas = mocks.getRandomMockCanvases(1)[0];
 
         Map map = new Map(canvas.getMapId());
         db.saveInProgressArt(map, new byte[Map.Size.MAX.value]);
@@ -146,8 +146,8 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
-        Player player = mocks.getRandomMockPlayer();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
+        Player player = mocks.getRandomMockPlayers(1)[0];
 
         MapArt savedArt = db.saveArtwork(mockCanvas, "test", player);
         Assert.assertNotNull("Database save returned null!", savedArt);
@@ -163,12 +163,11 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
-        Canvas mockCanvas2 = mocks.getRandomMockCanvas();
-        Canvas mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas2);
-        Player player = mocks.getRandomMockPlayer();
+        Canvas[] mockCanvases = mocks.getRandomMockCanvases(2);
+        Canvas mockCanvasCopy = mocks.mockCanvasCopy(mockCanvases[1]);
+        Player player = mocks.getRandomMockPlayers(1)[0];
 
-        MapArt savedArt = db.saveArtwork(mockCanvas, "test", player);
+        MapArt savedArt = db.saveArtwork(mockCanvases[0], "test", player);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
         // This save should throw an exception
@@ -182,7 +181,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
         CanvasCopy mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas);
         Player[] players = mocks.getRandomMockPlayers(2);
 
@@ -199,7 +198,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
         CanvasCopy mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas);
         Player[] players = mocks.getRandomMockPlayers(2);
 
@@ -216,7 +215,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
         CanvasCopy mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas);
         Player[] players = mocks.getRandomMockPlayers(2);
 
@@ -234,7 +233,7 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
         CanvasCopy mockCanvasCopy = mocks.mockCanvasCopy(mockCanvas);
         Player[] players = mocks.getRandomMockPlayers(2);
 
@@ -252,8 +251,8 @@ public class DatabaseTest {
         Database db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
-        Canvas mockCanvas = mocks.getRandomMockCanvas();
-        Player player = mocks.getRandomMockPlayer();
+        Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
+        Player player = mocks.getRandomMockPlayers(1)[0];
 
         MapArt savedArt = db.saveArtwork(mockCanvas, "test", player);
         Assert.assertNotNull("Database save returned null!", savedArt);

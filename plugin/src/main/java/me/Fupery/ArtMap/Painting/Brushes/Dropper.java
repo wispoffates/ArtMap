@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.BasicPalette;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CachedPixel;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
@@ -33,7 +34,7 @@ public class Dropper extends Brush {
                 dye = getPixelAt(pixel[0], pixel[1]).getColour();
                 ArtDye artdye = ((BasicPalette)ArtMap.instance().getDyePalette()).getDye(dye);
                 Bukkit.getScheduler().runTask(ArtMap.instance(), ()->{
-                    this.player.sendMessage("Picked up Dye colour: " + artdye.name() + " :: " + artdye.getMaterial().name() + " :: " + dye);
+                    this.player.sendMessage(Lang.ITEM_SPONGE_MESSAGE + ": " + artdye.name() + " :: " + artdye.getMaterial().name() + " :: " + dye);
                 });
             }
         } else {

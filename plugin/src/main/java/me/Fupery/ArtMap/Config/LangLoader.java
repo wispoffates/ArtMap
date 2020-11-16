@@ -65,7 +65,7 @@ class LangLoader {
             BufferedWriter writer = new BufferedWriter(new FileWriter(langFile, true));
             for (Entry<String,String> ent : missingStrings.entrySet()) {
                 writer.newLine();
-                writer.write(ent.getKey() + ": " + ent.getValue());
+                writer.write(ent.getKey() + ": \"" + ent.getValue() + "\"");
             }
             writer.close();
         } catch (IOException e) {

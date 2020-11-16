@@ -1,3 +1,16 @@
+# Release 3.7.1
+
+* /art help now prints something useful
+* Add traslatable strings for:
+  * "by" in search text
+  * "of" in search text
+  * Sponge color pickup message
+  * Dyes for Painting help menu
+* Fix adding of untranslated text to lang.yml
+* Fix a bit of miscoloring in the search text
+* Make unit tests a bit more consistent
+
+
 # Release 3.7.0
 
 * Add `/artmap search` command to do text based search of artwork.
@@ -12,7 +25,6 @@
 * Fix little bugs all over the gui menus.
 * Move datatables into the repo so we don't need the external dependency anymore.
 * Pull components into artmap from InvMenu so we don't need the external dependency anymore.
-
 
 # Release 3.6.6
 
