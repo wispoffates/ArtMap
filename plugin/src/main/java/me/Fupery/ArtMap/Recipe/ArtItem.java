@@ -22,6 +22,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Colour.ArtDye;
 import me.Fupery.ArtMap.Colour.DyeType;
 import me.Fupery.ArtMap.Colour.Palette;
+import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
 public class ArtItem {
@@ -68,7 +69,7 @@ public class ArtItem {
 				if (pg != 0) {
 					ItemStack back = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
 					ItemMeta meta = back.getItemMeta();
-					meta.setDisplayName("Back");
+					meta.setDisplayName(Lang.ARTKIT_PREV.get());
 					meta.setLore(Arrays.asList("Artkit:Back"));
 					back.setItemMeta(meta);
 					itemStack[27] = back;
@@ -77,7 +78,7 @@ public class ArtItem {
 				if (pg < pages - 1) {
 					ItemStack next = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
 					ItemMeta meta = next.getItemMeta();
-					meta.setDisplayName("Next");
+					meta.setDisplayName(Lang.ARTKIT_NEXT.get());
 					meta.setLore(Arrays.asList("Artkit:Next"));
 					next.setItemMeta(meta);
 					itemStack[35] = next;

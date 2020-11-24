@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap-parent</artifactId>
-	<version>3.7.1</version>
+	<version>3.7.2</version>
 	<description>Make pixel art!</description>
 	<packaging>pom</packaging>
 
@@ -20,6 +20,7 @@
 		<module>compatibility/BentoBox</module>
 		<module>compatibility/Factions</module>
 		<module>compatibility/GriefPrevention</module>
+		<module>compatibility/GriefDefender</module>
 		<module>compatibility/PlotSquared4</module>
 		<module>compatibility/PlotSquared5</module>
 		<module>compatibility/RedProtect</module>
@@ -112,7 +113,7 @@
 			<dependency>
 				<groupId>com.gitlab.blockstack</groupId>
 				<artifactId>ArtMap-api</artifactId>
-				<version>3.7.1</version>
+				<version>3.7.2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

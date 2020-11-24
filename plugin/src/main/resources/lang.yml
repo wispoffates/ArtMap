@@ -114,6 +114,8 @@ ITEM_NAME_COAL: "§e•§6§lShade§e•"
 ITEM_NAKE_FEATHER: "Feather"
 ITEM_NAME_SPONGE: "§e•§6§lEyedropper§e•"
 ITEM_SPONGE_MESSAGE: "Picked up Dye colour"
+ARTKIT_NEXT: "Next"
+ARTKIT_PREV: "Prev"
 #---------------------------------------[Menu Buttons]---------------------------------------#
 HELP_GETTING_STARTED:
   - "§6§l⊱§e§lGetting Started§6§l⊰"

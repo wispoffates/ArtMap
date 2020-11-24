@@ -1,3 +1,9 @@
+# Release 3.7.2
+
+* Fix 'by' in search not being able to be translated.
+* Add basic GriefDefender protection support.
+* Add translation support for Next and Prev buttons in artkit.
+
 # Release 3.7.1
 
 * /art help now prints something useful
@@ -9,7 +15,6 @@
 * Fix adding of untranslated text to lang.yml
 * Fix a bit of miscoloring in the search text
 * Make unit tests a bit more consistent
-
 
 # Release 3.7.0
 

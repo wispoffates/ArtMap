@@ -76,7 +76,7 @@ public class Search extends AsyncCommand {
 
         if(!mine && playerName == null) {
             String[] artists = ArtMap.instance().getArtDatabase().searchArtists(searchTerm);
-            text.add(new TextComponent("------------- " +Lang.SEARCH_ARTISTS.get() + ": " + artists.length + " ---------------"));
+            text.add(new TextComponent("------------- " + Lang.SEARCH_ARTISTS.get() + ": " + artists.length + " ---------------"));
             //clickable links for each artist
             for(String artist : artists) {
                 text.add(this.clickableArtist(artist));
@@ -104,7 +104,7 @@ public class Search extends AsyncCommand {
     private TextComponent clickableArtwork(Player user, MapArt art) {
         TextComponent text = new TextComponent(art.getTitle());
         text.setColor(ChatColor.AQUA);
-        text.addExtra(ChatColor.WHITE + " by " + ChatColor.GRAY + art.getArtistName());
+        text.addExtra(ChatColor.WHITE + Lang.SEARCH_BY.get() + ChatColor.GRAY + art.getArtistName());
         int textLen = art.getTitle().length() + art.getArtistName().length();
         StringBuilder sb = new StringBuilder();
         for(int i=textLen; i<(50-textLen); i++) {

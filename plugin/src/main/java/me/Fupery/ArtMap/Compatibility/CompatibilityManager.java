@@ -14,6 +14,7 @@ import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatibility.impl.ASkyBlockCompat;
 import me.Fupery.ArtMap.Compatibility.impl.BentoBoxCompat;
 import me.Fupery.ArtMap.Compatibility.impl.FactionsCompat;
+import me.Fupery.ArtMap.Compatibility.impl.GriefDefenderCompat;
 import me.Fupery.ArtMap.Compatibility.impl.GriefPreventionCompat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared4Compat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared5Compat;
@@ -38,6 +39,7 @@ public class CompatibilityManager implements RegionHandler {
         //Disable as it is 1.12 and lower
         //loadRegionHandler("Factions",FactionsCompat.class, "Factions");
         loadRegionHandler("Factions",SabreFactionsCompat.class, "Sabre Factions");
+        loadRegionHandler("GriefDefender",GriefDefenderCompat.class,"Grief Defender");
         loadRegionHandler("GriefPrevention",GriefPreventionCompat.class,"Grief Prevention");
         loadRegionHandler("RedProtect",RedProtectCompat.class, "Red Protect");
         //likely can be removed as 1.12 and lower
