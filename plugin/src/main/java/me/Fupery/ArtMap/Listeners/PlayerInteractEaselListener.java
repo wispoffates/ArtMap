@@ -20,7 +20,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.Easel.EaselEvent;

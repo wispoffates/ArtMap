@@ -159,7 +159,7 @@ public class Easel {
 
         setItem(new ItemStack(Material.AIR));
         if (canvas != null) {
-			location.getWorld().dropItem(location, canvas.getDroppedItem());
+			location.getWorld().dropItem(location, canvas.getEaselItem());
         } else {
             if (item.getType() != Material.AIR) {
                 location.getWorld().dropItemNaturally(location, item);

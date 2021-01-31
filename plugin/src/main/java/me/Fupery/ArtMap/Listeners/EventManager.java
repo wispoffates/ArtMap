@@ -24,10 +24,6 @@ public class EventManager {
         listeners.add(new PlayerDismountListener());
         listeners.add(new PlayerJoinEventListener());
         PluginManager manager = plugin.getServer().getPluginManager();
-        //MarriageMaster
-        if(manager.isPluginEnabled("MarriageMaster")) {
-            listeners.add(new MarriageMasterListener());
-        }
         for (RegisteredListener listener : listeners) manager.registerEvents(listener, plugin);
     }
 

@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Menu.Event;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Menu.HelpMenu.ArtistArtworksMenu;
 import org.bukkit.Bukkit;
@@ -27,7 +26,6 @@ public class MenuListener implements Listener {
     public MenuListener(MenuHandler handler, JavaPlugin plugin) {
         this.handler = handler;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        Bukkit.getPluginManager().registerEvents(new SwapHandListener(), plugin);
     }
 
     private void fireMenuEvent(MenuEvent event) {
@@ -94,12 +92,10 @@ public class MenuListener implements Listener {
         }
     }
 
-    private class SwapHandListener implements Listener {
-        @EventHandler
-        public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
-            if (handler.isTrackingPlayer(event.getPlayer())) {
-                event.setCancelled(true);
-            }
+    @EventHandler
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        if (handler.isTrackingPlayer(event.getPlayer())) {
+            event.setCancelled(true);
         }
     }
 }

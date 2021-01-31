@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

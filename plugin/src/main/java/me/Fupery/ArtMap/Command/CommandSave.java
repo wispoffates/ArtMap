@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;

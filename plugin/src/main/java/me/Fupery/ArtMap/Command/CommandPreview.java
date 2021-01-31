@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Preview.ArtPreview;
 

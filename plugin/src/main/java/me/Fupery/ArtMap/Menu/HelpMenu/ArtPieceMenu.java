@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -15,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -34,7 +36,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	private MapArt artwork;
 
 	public ArtPieceMenu(ArtistArtworksMenu parent, MapArt artwork, Player viewer) {
-		super(artwork.getTitle(), 0);
+		super(String.format(Lang.MenuTitle.MENU_ARTWORK.get(), artwork.getTitle()),0);
 		this.parent = parent;
 		this.artwork = artwork;
 		this.viewer = viewer;
@@ -60,15 +62,18 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Button[] getListItems() {
-		List<Button> buttons = new ArrayList<>();
-		buttons.add(new PreviewButton(this, this.artwork, viewer));
-		if (this.viewer.hasPermission("artmap.admin") || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
-			buttons.add(new DeleteButton(this.parent, this.artwork));
-			buttons.add(new RenameButton(this.parent, this.artwork));
-		}
-
-		return buttons.toArray(new Button[0]);
+	protected Future<Button[]> getListItems() {
+		FutureTask<Button[]> task = new FutureTask<> (()->{
+			List<Button> buttons = new ArrayList<>();
+			buttons.add(new PreviewButton(this, this.artwork, viewer));
+			if (this.viewer.hasPermission("artmap.admin") || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
+				buttons.add(new DeleteButton(this.parent, this.artwork));
+				buttons.add(new RenameButton(this.parent, this.artwork));
+			}
+			return buttons.toArray(new Button[0]);
+		});
+		ArtMap.instance().getScheduler().SYNC.run(task);
+		return task;
 	}
 
 	private static class PreviewButton extends Button {

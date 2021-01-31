@@ -23,7 +23,7 @@ import me.Fupery.ArtMap.api.Easel.ClickType;
 public class SabreFactionsCompat implements RegionHandler {
     private boolean loaded = false;
 
-    SabreFactionsCompat() {
+    public SabreFactionsCompat() {
         Factions.getInstance();
         loaded = true;
     }

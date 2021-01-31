@@ -7,11 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Painting.Brush;
 import me.Fupery.ArtMap.Painting.CachedPixel;
 import me.Fupery.ArtMap.Painting.CanvasRenderer;
+import me.Fupery.ArtMap.api.Colour.ArtDye;
+import me.Fupery.ArtMap.api.Colour.Palette;
 
 public class Dye extends Brush {
     private ArrayList<CachedPixel> dirtyPixels;

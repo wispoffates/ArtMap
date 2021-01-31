@@ -1,10 +1,13 @@
 package me.Fupery.ArtMap.Menu.Handler;
 
+import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Event.MenuFactory;
 import me.Fupery.ArtMap.Menu.Event.MenuListener;
 import me.Fupery.ArtMap.Menu.HelpMenu.*;
+import me.Fupery.ArtMap.api.Config.Lang;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -21,38 +24,39 @@ public final class MenuHandler {
         new MenuListener(this, plugin);
     }
 
-    private CacheableMenu getMenu(Player viewer) {
-        return openMenus.get(viewer.getUniqueId());
-    }
-
     public boolean isTrackingPlayer(Player player) {
-        return openMenus.containsKey(player.getUniqueId());
+        String invTitle = player.getOpenInventory().getTitle();
+        return invTitle.startsWith(Lang.MenuTitle.MENU_HEADER.get());
     }
 
     public void openMenu(Player viewer, CacheableMenu menu) {
-        if (openMenus.containsKey(viewer.getUniqueId())) closeMenu(viewer, MenuCloseReason.SWITCH);
-        else viewer.closeInventory();//todo check if this works
-        openMenus.put(viewer.getUniqueId(), menu);
+        if (isTrackingPlayer(viewer)) {
+            closeMenu(viewer, MenuCloseReason.SWITCH);
+        } else {
+            viewer.closeInventory();//todo check if this works
+        }
+        openMenus.put(viewer.getUniqueId(),menu);
         menu.open(viewer);
     }
 
     public void fireClickEvent(Player viewer, int slot, ClickType clickType) {
-        if (!openMenus.containsKey(viewer.getUniqueId())) return;
-        getMenu(viewer).click(viewer, slot, clickType);
+        if (!isTrackingPlayer(viewer)) return;
+        this.openMenus.get(viewer.getUniqueId()).click(viewer, slot, clickType);
     }
 
     public void refreshMenu(Player viewer) {
-        if (!openMenus.containsKey(viewer.getUniqueId())) return;
-        getMenu(viewer).refresh(viewer);
+        if (!isTrackingPlayer(viewer)) return;
+        this.openMenus.get(viewer.getUniqueId()).refresh(viewer);
     }
 
     public void closeMenu(Player viewer, MenuCloseReason reason) {
-        if (!openMenus.containsKey(viewer.getUniqueId())) return;
-        CacheableMenu menu = getMenu(viewer);
-        openMenus.remove(viewer.getUniqueId());
+        if (!isTrackingPlayer(viewer)) return;
+        CacheableMenu menu = openMenus.get(viewer.getUniqueId());
         menu.close(viewer, reason);
         if (menu instanceof ChildMenu && reason == MenuCloseReason.BACK) {
             openMenu(viewer, ((ChildMenu) menu).getParent(viewer));
+        } else {
+            openMenus.remove(viewer.getUniqueId());
         }
     }
 

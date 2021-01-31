@@ -3,7 +3,7 @@ main: me.Fupery.ArtMap.ArtMap
 version: ${project.version}
 description: ${project.description}
 depend: [ProtocolLib]
-softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock, Residence, MarriageMaster]
+softdepend: [WorldGuard, Factions, Denizen, GriefPrevention, RedProtect, Landlord, iDisguise, ASkyBlock, Residence, MarriageMaster, PlotSquared, Essentials, BentoBox, CMI, GriefDefender]
 author: [Wispoffates,(Original) Fupery]
 api-version: 1.13
 
@@ -12,7 +12,7 @@ commands:
       aliases: artmap
       usage:  |
         <command> save <title> : Save your artwork
-        <command> break : Remove current artwork and break easel
+        <command> clear : Reset the artwork on an easel 
         <command> delete <title> : Remove your artwork
         <command> preview <title> : Preview an artwork
         <command> help : Display help
@@ -44,3 +44,7 @@ permissions:
       artmap.artist: true
       artmap.artkit: true
     default: op
+
+  artmap.prevent.afk:
+    description: Player will not be kicked for being AFK at easel. Supports Eseentials and CMI.
+    default: false

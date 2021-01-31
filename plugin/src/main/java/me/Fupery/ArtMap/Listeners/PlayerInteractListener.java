@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
 import me.Fupery.ArtMap.Exception.ArtMapException;

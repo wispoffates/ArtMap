@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 
 public class Repair extends AsyncCommand {

@@ -19,7 +19,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.Exception.DuplicateArtworkException;
@@ -67,7 +67,7 @@ public final class Database {
     }
 
     /**
-     * Retrieve artwork by its title.
+     * Retrieve artwork by its id.
      * 
      * @param id The ID of the artwork.
      * @return The artwork or null if it is not in the database.
@@ -75,6 +75,17 @@ public final class Database {
      */
     public MapArt getArtwork(int id) throws SQLException {
         return artworks.getArtwork(id);
+    }
+
+    /**
+     * Check if an unsaved artwork exists.
+     * 
+     * @param id The ID of the artwork.
+     * @return True if an unsaved artwork exists.
+     * @throws SQLException
+     */
+    public boolean containsUnsavedArtwork(int id) throws SQLException {
+        return maps.containsMap(id);
     }
 
     /**
@@ -336,7 +347,7 @@ public final class Database {
     public void deleteInProgressArt(Map map) throws SQLException, NoSuchFieldException, IllegalAccessException {
         //double check we are not deleting a saved artwork with this method
         if(artworks.getArtwork(map.getMapId()) == null) {
-            map.setMap(Map.BLANK_MAP);
+            //map.setMap(Map.BLANK_MAP);
             maps.deleteMap(map.getMapId());
             //idQueue.offer(map.getMapId());
         }

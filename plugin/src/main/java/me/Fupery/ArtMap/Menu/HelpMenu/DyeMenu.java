@@ -2,26 +2,29 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.DyeType;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.StaticButton;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.api.Colour.ArtDye;
+import me.Fupery.ArtMap.api.Colour.DyeType;
 
 public class DyeMenu extends ListMenu {
 
     public DyeMenu() {
-		super(Lang.MENU_DYES.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
+		super(Lang.MenuTitle.MENU_DYES.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
     }
 
     @Override
-	protected Button[] getListItems() {
+	protected Future<Button[]> getListItems() {
 		List<Button> buttons = new ArrayList<>();
         ArtDye[] dyes = ArtMap.instance().getDyePalette().getDyes(DyeType.DYE);
 		buttons.add(new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_DYES.get()));
@@ -30,7 +33,7 @@ public class DyeMenu extends ListMenu {
 		for (ArtDye dye : dyes) {
 			buttons.add(new DyeButton(dye));
         }
-		return buttons.toArray(new Button[0]);
+		return CompletableFuture.completedFuture(buttons.toArray(new Button[0]));
 	}
 
 	private static class DyeButton extends Button {
@@ -48,9 +51,7 @@ public class DyeMenu extends ListMenu {
 				return;
 			}
 			if(clickType.isRightClick()) {
-				player.getInventory().addItem(dye.toItem());
-			} else {
-				player.getOpenInventory().setCursor(dye.toItem());
+				ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, dye.toItem()));
 			}
 		}
 		

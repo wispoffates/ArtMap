@@ -10,9 +10,16 @@
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
     <artifactId>ArtMap-parent</artifactId>
-    <version>3.7.2</version>
+    <version>3.8.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
+
+  <repositories>
+    <repository>
+			<id>uSkyBlock-mvn-repo</id>
+			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
+		</repository>
+  </repositories>
 
   <dependencies>
     <dependency>

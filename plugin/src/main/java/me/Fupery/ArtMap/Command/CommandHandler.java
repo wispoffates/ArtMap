@@ -19,10 +19,11 @@ import org.bukkit.map.MapView.Scale;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Event.PlayerOpenMenuEvent;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
@@ -36,7 +37,7 @@ public class CommandHandler implements CommandExecutor {
 
 		commands.put("save", new CommandSave());
 
-		commands.put("break", new CommandBreak());
+		commands.put("clear", new CommandClear());
 
 		commands.put("delete", new CommandDelete());
 
@@ -88,7 +89,7 @@ public class CommandHandler implements CommandExecutor {
 			}
 		});
 		
-		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|paintbrush|artwork:<title>> [amount]", true) {
+		commands.put("give", new AsyncCommand("artmap.admin", "/art give <player> <easel|canvas|paintbrush|unsaved:<id>|artwork:<title>> [amount]", true) {
 			@Override
 			public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
 				Player player = Bukkit.getPlayer(args[1]);
@@ -100,6 +101,21 @@ public class CommandHandler implements CommandExecutor {
 						item = ArtMaterial.CANVAS.getItem();
 					} else if (args[2].equalsIgnoreCase("paintbrush")) {
 						item = ArtMaterial.PAINT_BRUSH.getItem();
+					} else if (args[2].contains("unsaved:")) {
+						String[] strings = args[2].split(":");
+						if (strings.length > 1) {
+							int id = Integer.parseInt(strings[1]);
+							try {
+								if(!ArtMap.instance().getArtDatabase().containsUnsavedArtwork(id)) {
+									sender.sendMessage(Lang.PREFIX + ChatColor.RED + "No unsaved artwork with that ID.");
+									return;
+								}
+								item = new ArtItem.InProgressArtworkItem(id).toItemStack();
+							} catch( Exception e) {
+								sender.sendMessage(Lang.PREFIX + ChatColor.RED + "Error retrieving art! Check logs for details.");
+								ArtMap.instance().getLogger().log(Level.SEVERE, "Error retrieving art!", e);
+							}
+						}
 					} else if (args[2].contains("artwork:")) {
 						String[] strings = args[2].split(":");
 						if (strings.length > 1) {
@@ -198,7 +214,7 @@ public class CommandHandler implements CommandExecutor {
 		for (String arg : args) {
 			// handle quoted single word
 			if (arg.startsWith("\"") && arg.endsWith("\"")) {
-				newArgs.add(arg.replaceAll("\"", ""));
+				newArgs.add(arg.replace("\"", ""));
 				continue;
 			}
 

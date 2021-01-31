@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.gitlab.blockstack</groupId>
 		<artifactId>ArtMap-parent</artifactId>
-		<version>3.7.2</version>
+		<version>3.8.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<build>
@@ -102,76 +102,113 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>21.0</version>
+            <scope>provided</scope>
+        </dependency>
+		<dependency>
 			<groupId>com.github.WesJD</groupId>
 			<artifactId>AnvilGUI</artifactId>
 			<version>5d0f592c63</version>
 			<scope>compile</scope>
 		</dependency>
-		<!--Artmap Compatibility addons-->
+		<!--Artmap Spigot/Paper version compatibility-->
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>Spigot_1_13</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>Spigot_1_14</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>Spigot_1_16</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<!--Artmap plugin compatibility addons-->
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>ASkyBlock</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>BentoBox</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>CMI</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>Essentials</artifactId>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Factions</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>GriefDefender</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>GriefPrevention</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>MarriageMaster</artifactId>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared4</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared5</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>RedProtect</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Residence</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>SabreFactions</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Towny</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>USkyBlock</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>WorldGuard</artifactId>
-			<version>3.7.2</version>
+			<version>3.8.0</version>
 		</dependency>
 		<!--  Mojang dependency -->
 		<dependency>
@@ -201,7 +238,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.aufdemrand</groupId>
-			<artifactId>denizin</artifactId>
+			<artifactId>denizen</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
@@ -210,11 +247,6 @@
 			<artifactId>idisguise-core</artifactId>
 			<version>5.7.2</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>at.pcgamingfreaks</groupId>
-			<artifactId>MarriageMaster-API</artifactId>
-			<version>2.1</version>
 		</dependency>
 		<!-- Tests -->
 		<!-- Where does this come from in NMS? -->

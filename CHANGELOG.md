@@ -1,9 +1,27 @@
+# Release 3.8.0
+
+* Removes `/art break`. Use shift right click to break an easel.
+* When an easel is broken for any reason the art is no longer cleared.
+* Maps that are broken off an easel should now be able to be replaced.
+* New option on `/art give` '/art give <player_to_give> unsaved:<id>` to retrieve copy of unsaved artwork.
+* Add support for the 5 new colors introduced in 1.16. (Must be running a 1.16 server to use.)
+* To reset a canvas on an easel use /art clear.
+* Restructure of plugin compatibility layer.
+* Add AFK prevention with Essentials and CMI. Controlled by artmap.prevent.afk. (Off by default)
+* Attempt to fix Factions UUID compatibility. (This and SabreFactions are going to be problematic as the use the same plugin name and versions)
+* Fix an error that caused artwork to appear blank if it is loaded in the art menu before being seen in the world.
+* Fix a bug that allowed removal items from the help menu.
+* If artbrush is disabled it will no longer show in menu.
+* Artists menu paging is now much quicker (especially with a large number of artists).
+* A few more translation fixes. (Sponge and others)
+* There is now a MENU_HEADER.  This can be translated but must exist and be unique or the Artmap menus will break.
+
 # Release 3.7.2
 
 * Fix 'by' in search not being able to be translated.
 * Add basic GriefDefender protection support.
 * Add translation support for Next and Prev buttons in artkit.
-
+ 
 # Release 3.7.1
 
 * /art help now prints something useful

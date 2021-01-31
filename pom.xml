@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap-parent</artifactId>
-	<version>3.7.2</version>
+	<version>3.8.0</version>
 	<description>Make pixel art!</description>
 	<packaging>pom</packaging>
 
@@ -16,11 +16,19 @@
 
 	<modules>
 		<module>api</module>
+		<!-- spigot/paper compatibility -->
+		<module>compatibility/Spigot_1_13</module>
+		<module>compatibility/Spigot_1_14</module>
+		<module>compatibility/Spigot_1_16</module>
+		<!-- plugin compatibility -->
 		<module>compatibility/ASkyBlock</module>
 		<module>compatibility/BentoBox</module>
+		<module>compatibility/CMI</module>
+		<module>compatibility/Essentials</module>
 		<module>compatibility/Factions</module>
 		<module>compatibility/GriefPrevention</module>
 		<module>compatibility/GriefDefender</module>
+		<module>compatibility/MarriageMaster</module>
 		<module>compatibility/PlotSquared4</module>
 		<module>compatibility/PlotSquared5</module>
 		<module>compatibility/RedProtect</module>
@@ -52,24 +60,14 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<repository>
-			<id>bintray-tastybento-maven-repo</id>
-			<name>bintray</name>
-			<url>http://dl.bintray.com/tastybento/maven-repo</url>
-		</repository>
+		<!-- iDisguise -->
 		<repository>
 			<id>robingrether-repo</id>
 			<url>http://repo.robingrether.de/</url>
 		</repository>
-		<!--
 		<repository>
 			<id>citizen</id>
 			<url>http://repo.citizensnpcs.co</url>
-		</repository>
-		-->
-		<repository>
-			<id>uSkyBlock-mvn-repo</id>
-			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
 		</repository>
 		<repository>
 			<id>codemc-repo</id>
@@ -80,23 +78,9 @@
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
 		<repository>
-			<id>IntellectualSites</id>
-			<url>https://mvn.intellectualsites.com/content/groups/public/</url>
-		</repository>
-		<repository>
 			<id>mojang</id>
 			<name>Mojang's Repository</name>
 			<url>https://libraries.minecraft.net/</url>
-		</repository>
-		<!-- Marriage master-->
-		<repository>
-			<id>pcgf-repo</id>
-			<url>https://repo.pcgamingfreaks.at/repository/everything</url>
-		</repository>
-		<!-- My Repo with all the things I couldn't find in the other repos -->
-		<repository>
-			<id>troytech-public-repo</id>
-			<url>https://nexus.troytech.info/repository/public/</url>
 		</repository>
 	</repositories>
 
@@ -113,7 +97,7 @@
 			<dependency>
 				<groupId>com.gitlab.blockstack</groupId>
 				<artifactId>ArtMap-api</artifactId>
-				<version>3.7.2</version>
+				<version>3.8.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

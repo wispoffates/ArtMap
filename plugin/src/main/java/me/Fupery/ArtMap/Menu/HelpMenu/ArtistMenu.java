@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -16,7 +18,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Exception.HeadFetchException;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -30,7 +32,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	private static boolean haveWarnedUser = false;
 
 	public ArtistMenu(Player viewer) {
-		super(ChatColor.BLUE + Lang.MENU_ARTIST.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
+		super(ChatColor.BLUE + Lang.MenuTitle.MENU_ARTIST.get(), ArtMap.instance().getMenuHandler().MENU.HELP, 0);
 		this.viewer = viewer;
 	}
 
@@ -40,56 +42,60 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Button[] getListItems() {
-		UUID[] artists;
-		try {
-			artists = ArtMap.instance().getArtDatabase().listArtists(this.viewer.getUniqueId());
-		} catch (SQLException e) {
-			ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
-			return new Button[0];
-		}
-		List<Button> buttons = new LinkedList<>();
-
-		int notCached = artists.length - ArtMap.instance().getHeadsCache().getCacheSize();
-		if (notCached > 1 && !haveWarnedUser) {
-			this.viewer.sendMessage(MessageFormat.format(
-					"ArtMap: {0} artist(s) currently not cached you might get some incorrect heads until they are all loaded.", notCached));
-			haveWarnedUser = true;
-		}
-
-		//load the player button first
-		ArtworkListButton playerButton = null;
-		try {
-			playerButton = new ArtworkListButton(viewer.getUniqueId(), true);
-		} catch (HeadFetchException e) {
-			//reload without head data
+	protected Future<Button[]> getListItems() {
+		FutureTask<Button[]> task = new FutureTask<> (()->{
+			UUID[] artists;
 			try {
-				playerButton = new ArtworkListButton(viewer.getUniqueId(), false);
-			} catch (HeadFetchException e1) {
-				//this one won't fail
+				artists = ArtMap.instance().getArtDatabase().listArtists(this.viewer.getUniqueId());
+			} catch (SQLException e) {
+				ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+				return new Button[0];
 			}
-		}
+			List<Button> buttons = new LinkedList<>();
 
-		// skip 0 as it is the viewer
-		boolean fetchHead = true;
-		for (int i = 1; i < artists.length; i++) {
+			int notCached = artists.length - ArtMap.instance().getHeadsCache().getCacheSize();
+			if (notCached > 1 && !haveWarnedUser) {
+				this.viewer.sendMessage(MessageFormat.format(
+						"ArtMap: {0} artist(s) currently not cached you might see some incorrect heads until they are all loaded.", notCached));
+				haveWarnedUser = true;
+			}
+
+			//load the player button first
+			ArtworkListButton playerButton = null;
 			try {
-				buttons.add(new ArtworkListButton(artists[i], fetchHead));
+				playerButton = new ArtworkListButton(viewer.getUniqueId(), true);
 			} catch (HeadFetchException e) {
-				//try again with the fetch set to false as it will fail over and over
-				fetchHead = false;
+				//reload without head data
 				try {
-					buttons.add(new ArtworkListButton(artists[i], fetchHead));
+					playerButton = new ArtworkListButton(viewer.getUniqueId(), false);
 				} catch (HeadFetchException e1) {
-					// this one won't fail 
+					//this one won't fail
 				}
 			}
-		}
-		// sort the list
-		buttons.sort((Button o1, Button o2) -> o1.getItemMeta().getDisplayName().toLowerCase()
-				.compareTo(o2.getItemMeta().getDisplayName().toLowerCase()));
-		buttons.add(0, playerButton); // add viewer first
-		return buttons.toArray(new Button[0]);
+
+			// skip 0 as it is the viewer
+			boolean fetchHead = true;
+			for (int i = 1; i < artists.length; i++) {
+				try {
+					buttons.add(new ArtworkListButton(artists[i], fetchHead));
+				} catch (HeadFetchException e) {
+					//try again with the fetch set to false as it will fail over and over
+					fetchHead = false;
+					try {
+						buttons.add(new ArtworkListButton(artists[i], fetchHead));
+					} catch (HeadFetchException e1) {
+						// this one won't fail 
+					}
+				}
+			}
+			// sort the list
+			buttons.sort((Button o1, Button o2) -> o1.getItemMeta().getDisplayName().toLowerCase()
+					.compareTo(o2.getItemMeta().getDisplayName().toLowerCase()));
+			buttons.add(0, playerButton); // add viewer first
+			return buttons.toArray(new Button[0]);
+		});
+		ArtMap.instance().getScheduler().ASYNC.run(task);
+		return task;
 	}
 
 	public Player getViewer() {

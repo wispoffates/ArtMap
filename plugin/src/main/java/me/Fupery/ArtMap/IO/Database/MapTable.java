@@ -117,6 +117,7 @@ final class MapTable extends SQLiteTable {
 
             @Override
 			protected void prepare(PreparedStatement statement) {
+                //not needed
             }
 
             @Override

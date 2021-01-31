@@ -1,18 +1,27 @@
 package me.Fupery.ArtMap.Painting;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Colour.ArtDye;
+import me.Fupery.ArtMap.api.Colour.DyeType;
+import me.Fupery.ArtMap.api.Colour.Palette;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Event.PlayerMountEaselEvent;
 import me.Fupery.ArtMap.IO.Database.Map;
@@ -21,8 +30,11 @@ import me.Fupery.ArtMap.Painting.Brushes.Dye;
 import me.Fupery.ArtMap.Painting.Brushes.Fill;
 import me.Fupery.ArtMap.Painting.Brushes.Flip;
 import me.Fupery.ArtMap.Recipe.ArtItem;
+import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.api.Painting.IArtSession;
 
-public class ArtSession {
+public class ArtSession implements IArtSession {
     private final CanvasRenderer canvas;
     private final Brush DYE;
     private final Brush FILL;
@@ -51,7 +63,7 @@ public class ArtSession {
         this.map = map;
     }
 
-    boolean start(Player player) throws SQLException, IOException {
+    public boolean start(Player player) throws SQLException, IOException {
         PlayerMountEaselEvent event = new PlayerMountEaselEvent(player, easel);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if (event.isCancelled()) {
@@ -112,7 +124,7 @@ public class ArtSession {
         return null;
     }
 
-    void updatePosition(float yaw, float pitch) {
+    public void updatePosition(float yaw, float pitch) {
         canvas.setYaw(yaw);
         canvas.setPitch(pitch);
     }
@@ -120,7 +132,7 @@ public class ArtSession {
     private void addKit(Player player) {
         PlayerInventory pInv = player.getInventory();
         this.inventory = pInv.getContents();
-        pInv.setStorageContents(ArtItem.getArtKit(0));
+        pInv.setStorageContents(this.getArtKit(0));
         // restore hotbar
         if (artkitHotbars.containsKey(player.getUniqueId())) {
             ItemStack[] hotbar = artkitHotbars.get(player.getUniqueId());
@@ -132,7 +144,7 @@ public class ArtSession {
     }
 
     public void nextKitPage(Player player) {
-        if (this.artkitPage < 2) {
+        if (this.artkitPage < this.numPages()-1) {
             this.artkitPage++;
             this.updateKitPage(player);
         }
@@ -149,10 +161,10 @@ public class ArtSession {
      * Set the contents of the inventory without replacing the hotkey bar.
      */
     private void updateKitPage(Player player) {
-        ItemStack[] kit = ArtItem.getArtKit(this.artkitPage);
-            ItemStack[] current = player.getInventory().getStorageContents();
-            System.arraycopy(current, 0, kit, 0, 9);
-            player.getInventory().setStorageContents(kit);
+        ItemStack[] kit = this.getArtKit(this.artkitPage);
+        ItemStack[] current = player.getInventory().getStorageContents();
+        System.arraycopy(current, 0, kit, 0, 9);
+        player.getInventory().setStorageContents(kit);
     }
 
     public boolean removeKit(Player player) {
@@ -194,7 +206,7 @@ public class ArtSession {
         return easel;
     }
 
-    void end(Player player) throws SQLException, IOException {
+    public void end(Player player) throws SQLException, IOException {
         try {
             player.leaveVehicle();
             removeKit(player);
@@ -202,7 +214,7 @@ public class ArtSession {
             canvas.stop();
             persistMap(true);
             active = false;
-        } catch(Exception e) {
+        } catch (Exception e) {
             player.sendMessage("Error saving painting on easel. Check logs for more details.");
             ArtMap.instance().getLogger().log(Level.SEVERE, "Error saving painting on easel.", e);
         }
@@ -218,7 +230,7 @@ public class ArtSession {
         dirty = false;
     }
 
-    boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -232,5 +244,87 @@ public class ArtSession {
 
     void sendMap(Player player) {
         if (dirty) map.update(player);
+    }
+
+    /**
+     * Clear the current map on the easel.
+     * 
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws SQLException
+     */
+    public void clearMap() throws NoSuchFieldException, IllegalAccessException, SQLException, IOException {
+        canvas.clear();
+        this.persistMap(true);
+       //map.clear();
+    }
+
+    /* Artkit */
+    private static WeakReference<List<ItemStack[]>> kitReference = new WeakReference<>(new LinkedList<>());
+
+    private int numPages() {
+        int numDyes = ArtMap.instance().getDyePalette().getDyes(DyeType.DYE).length;
+        return (int) Math.ceil(numDyes / 18d);
+    }
+
+	// 27 inv slots + 9 hotbar slots = 36 slots
+	private ItemStack[] getArtKit(int page) {
+		// check the cache
+		if (kitReference.get() != null && !kitReference.get().isEmpty()) {
+			return kitReference.get().get(page).clone();
+		}
+		synchronized(kitReference) {
+			if (kitReference.get() != null && !kitReference.get().isEmpty()) {
+				return kitReference.get().get(page).clone();
+			}
+			kitReference = new WeakReference<>(new LinkedList<>());
+			Palette palette = ArtMap.instance().getDyePalette();
+			int numDyes = palette.getDyes(DyeType.DYE).length;
+			int pages = (int) Math.ceil(numDyes / 18d);
+			for (int pg = 0; pg < pages; pg++) {
+				ItemStack[] itemStack = new ItemStack[36]; // 27 inv slots
+				Arrays.fill(itemStack, new ItemStack(Material.AIR));
+
+				for (int j = 0; j < 18; j++) {
+					if (((pg * 18) + j) >= numDyes) {
+						break;
+					}
+					ArtDye dye = palette.getDyes(DyeType.DYE)[(pg * 18) + j];
+					itemStack[j + 9] = ItemUtils.addKey(dye.toItem(), ArtItem.KIT_KEY);
+				}
+
+				// if not first page add back button
+				if (pg != 0) {
+					ItemStack back = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
+					ItemMeta meta = back.getItemMeta();
+					meta.setDisplayName(Lang.ARTKIT_PREV.get());
+					meta.setLore(Arrays.asList("Artkit:Back"));
+					back.setItemMeta(meta);
+					itemStack[27] = back;
+				}
+				// if not last page add next button
+				if (pg < pages - 1) {
+					ItemStack next = new ItemStack(Material.MAGENTA_GLAZED_TERRACOTTA);
+					ItemMeta meta = next.getItemMeta();
+					meta.setDisplayName(Lang.ARTKIT_NEXT.get());
+					meta.setLore(Arrays.asList("Artkit:Next"));
+					next.setItemMeta(meta);
+					itemStack[35] = next;
+				}
+
+				itemStack[29] = ArtMaterial.FEATHER.getItem();
+				itemStack[30] = ArtMaterial.COAL.getItem();
+				itemStack[31] = ArtMaterial.COMPASS.getItem();
+				itemStack[32] = ArtMaterial.PAINTBUCKET.getItem();
+				itemStack[33] = ArtMaterial.SPONGE.getItem();
+				if(!ArtMap.instance().getConfiguration().DISABLE_PAINTBRUSH) {
+					itemStack[34] = ArtMaterial.PAINT_BRUSH.getItem();
+				}
+				kitReference.get().add(itemStack);
+			}
+		}
+
+		return kitReference.get().get(page).clone();
     }
 }

@@ -19,12 +19,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
-import me.Fupery.ArtMap.Colour.BasicPalette;
-import me.Fupery.ArtMap.Colour.Palette;
 import me.Fupery.ArtMap.Command.CommandHandler;
 import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
-import me.Fupery.ArtMap.Config.Configuration;
-import me.Fupery.ArtMap.Config.Lang;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Heads.HeadsCache;
 import me.Fupery.ArtMap.IO.PixelTableManager;
@@ -41,9 +37,13 @@ import me.Fupery.ArtMap.Preview.PreviewManager;
 import me.Fupery.ArtMap.Recipe.RecipeLoader;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.ArtMap.Utils.Scheduler;
+import me.Fupery.ArtMap.api.IArtMap;
+import me.Fupery.ArtMap.api.Colour.Palette;
+import me.Fupery.ArtMap.api.Config.Configuration;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.api.Utils.VersionHandler;
 
-public class ArtMap extends JavaPlugin {
+public class ArtMap extends JavaPlugin implements IArtMap {
 
 	private static ArtMap pluginInstance = null;
 	private MenuHandler menuHandler;
@@ -167,6 +167,7 @@ public class ArtMap extends JavaPlugin {
 			pluginInstance = this;
 			saveDefaultConfig();
 			config = new Configuration(this);
+			Lang.load(this, config);
 			reflection = new Reflection();
 			scheduler = new Scheduler(this);
 			bukkitVersion = new VersionHandler(this);
@@ -174,8 +175,7 @@ public class ArtMap extends JavaPlugin {
 			protocolHandler = new ProtocolHandler();
 			artistHandler = new ArtistHandler();
 			cacheManager = new ChannelCacheManager();
-			Lang.load(this, config);
-			dyePalette = new BasicPalette();
+			dyePalette = compatManager.getPalette();
 			database = new Database(this);
 			dbUpgradeNeeded = this.checkIfDatabaseUpgradeNeeded();
 			this.getLogger().info(" MC version: " + bukkitVersion.toString() ) ;

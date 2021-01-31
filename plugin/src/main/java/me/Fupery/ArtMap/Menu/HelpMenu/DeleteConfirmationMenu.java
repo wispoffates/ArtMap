@@ -3,6 +3,8 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -12,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -27,7 +29,7 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 	private MapArt artwork;
 
 	public DeleteConfirmationMenu(ArtistArtworksMenu parent, MapArt artwork, boolean adminViewing) {
-		super(HelpMenu.DELETE_NAME, 0);
+		super(Lang.MenuTitle.MENU_DELETE.get(), 0);
 		this.parent = parent;
 		this.adminViewing = adminViewing;
 		this.artwork = artwork;
@@ -44,10 +46,10 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Button[] getListItems() {
+	protected Future<Button[]> getListItems() {
 		List<Button> buttons = new ArrayList<>();
 		buttons.add(new AcceptButton(this.parent, this.artwork, adminViewing));
-		return buttons.toArray(new Button[0]);
+		return CompletableFuture.completedFuture(buttons.toArray(new Button[0]));
 	}
 
 	private static class AcceptButton extends Button {

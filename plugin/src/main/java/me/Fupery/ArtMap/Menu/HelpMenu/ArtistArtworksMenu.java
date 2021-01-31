@@ -3,6 +3,8 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -13,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
@@ -40,7 +42,7 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
 
     private static String processTitle(String artistName) {
         String name = artistName;
-        String title = ChatColor.DARK_BLUE + Lang.MENU_ARTWORKS.get();
+        String title = ChatColor.DARK_BLUE + Lang.MenuTitle.MENU_ARTWORKS.get();
         String processedName = String.format(title, name);
         if (processedName.length() <= 32)
             return processedName;
@@ -67,30 +69,34 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     }
 
     @Override
-    protected Button[] getListItems() {
-        MapArt[] artworks;
-        try {
-            artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
-        } catch (SQLException e) {
-            ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
-            return new Button[0];
-        }
-        Button[] buttons;
-
-        if (artworks != null && artworks.length > 0) {
-            buttons = new Button[artworks.length];
-
-            for (int i = 0; i < artworks.length; i++) {
-                if(artworks[i].getArtistName() == null) {
-                    artworks[i] = artworks[i].setAristName(this.artistName);
-                }
-                buttons[i] = new PreviewButton(this, artworks[i], adminViewing);
+    protected Future<Button[]> getListItems() {
+        FutureTask<Button[]> task = new FutureTask<> (()->{
+            MapArt[] artworks;
+            try {
+                artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
+            } catch (SQLException e) {
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
+                return new Button[0];
             }
+            Button[] buttons;
 
-        } else {
-            buttons = new Button[0];
-        }
-        return buttons;
+            if (artworks != null && artworks.length > 0) {
+                buttons = new Button[artworks.length];
+
+                for (int i = 0; i < artworks.length; i++) {
+                    if(artworks[i].getArtistName() == null) {
+                        artworks[i] = artworks[i].setAristName(this.artistName);
+                    }
+                    buttons[i] = new PreviewButton(this, artworks[i], adminViewing);
+                }
+
+            } else {
+                buttons = new Button[0];
+            }
+            return buttons;
+        });
+        ArtMap.instance().getScheduler().SYNC.run(task);
+        return task;
     }
 
     private class PreviewButton extends Button {

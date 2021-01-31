@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
@@ -89,8 +89,12 @@ public final class EaselEvent {
 				// Edit an artwork on the easel
 				ArtMap.instance().getScheduler().ASYNC.run(() -> {
 					MapArt art;
+					int id;
+					boolean unsaved;
 					try {
-						art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(itemInHand));
+						id = ItemUtils.getMapID(itemInHand);
+						art = ArtMap.instance().getArtDatabase().getArtwork(id);
+						unsaved = ArtMap.instance().getArtDatabase().containsUnsavedArtwork(id);
 					} catch(Exception e) {
 						player.sendMessage("Error placing art on the Easel!");
 						ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing art on easel for edit!",e );
@@ -110,6 +114,9 @@ public final class EaselEvent {
 								player.sendMessage("Error placing art on the Easel!");
 								ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing art on easel for edit!",e );
 							}
+						} else if ( unsaved ) {
+							Canvas canvas = new Canvas(id);
+							mountCanvas(itemInHand, canvas);
 						} else {
 							Lang.ActionBar.NEED_CANVAS.send(player);
 							easel.playEffect(EaselEffect.USE_DENIED);
@@ -123,11 +130,12 @@ public final class EaselEvent {
 			return;
 
 		case SHIFT_RIGHT_CLICK:
+			/*
 			if (easel.hasItem()) {
 				this.player.sendMessage(Lang.SAVE_ARTWORK.get());
 				this.player.sendMessage(Lang.SAVE_ARTWORK_2.get());
 				return;
-			}
+			}*/
 			easel.breakEasel();
 		}
 	}

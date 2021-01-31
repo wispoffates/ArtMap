@@ -25,17 +25,17 @@ COMMAND_BACKUP: "backup"
 COMMAND_LOOKUP: "lookup"
 COMMAND_EXPORT: "export"
 COMMAND_IMPORT: "import"
-COMMAND_REPAIR: "import"
+COMMAND_REPAIR: "repair"
+COMMAND_CLEAR: "clear"
 HELP: "§6Use §e/art help §6for a list of commands."
 SAVE_USAGE: "§6Use §e/art save <title> §6to save your artwork."
 SAVE_SUCCESS: "§6Successfully saved '%s'!"
 SAVE_FAILURE: "§cFailed to save '%s'. Artwork must have a unique name!"
-EASEL_HELP: "§3§lRight-Click to start painting, Use /art break to break the easel."
+EASEL_HELP: "§3§lRight-Click to start painting, Use sneak right-click to break the easel."
 REPAIR_USAGE: "§6Use §e/art repair <-scan|-repair> [ID|Name|-all] to attempt to repair blank artwork."
 PAINTING: "§b§lClick the canvas with Dyes to paint."
 DELETED: "§6Sucessfully deleted '%s'."
 PREVIEWING: "§6Previewing artwork '%s'."
-RECIPE_HEADER: "Recipe for §a[%s]"
 NO_CONSOLE: "§cThis command can only be used by players."
 PLAYER_NOT_FOUND: "§cPlayer '%s' could not be found."
 INVALID_POS: "§4§lYou can't place an easel there!"
@@ -80,12 +80,17 @@ SEARCH_BY: " by " #spaces before and after matter
 
 #---------------------------------------[Help menu]---------------------------------------#
 #Menu titles
+MENU_HEADER: "[Art]"  #This can be changed but must exist and be unique or the menus will break.
 MENU_RECIPE: "Choose a Recipe"
 MENU_ARTIST: "Click an Artist"
 MENU_ARTWORKS: "%s's Art" # '%s' will be replaced by the player's name
+MENU_ARTWORK: "Artwork %s"
+RECIPE_HEADER: "Recipe for §a[%s]"
 MENU_DYES: "Dyes for painting"
 MENU_HELP: "Choose a help topic"
 MENU_TOOLS: "Hover for usage" #Hover over a tool to view how it is used
+MENU_DELETE: "Confirm Delete"
+
 BUTTON_CLICK: "Click to View"
 BUTTON_DELETE_NAME: "Delete"
 BUTTON_DELETE_TEXT: "Clicking this will delete every copy of the artwork in the world!"
@@ -279,7 +284,14 @@ DYE_BLUE_TERRACOTTA: "Plum Purple"
 DYE_BROWN_TERRACOTTA: "Podzol Brown" 
 DYE_GREEN_TERRACOTTA: "Mold Green" 
 DYE_RED_TERRACOTTA: "Apple Red"
-DYE_BLACK_TERRACOTTA: "Almost-Black Brown" 
+DYE_BLACK_TERRACOTTA: "Almost-Black Brown"
+DYE_CRIMSON_NYLIUM: "Crimson Nylium"
+DYE_CRIMSON_STEM: "Crimson Stem"
+DYE_CRIMSON_HYPHAE: "Crimson Gyphae"
+DYE_WARPNED_NYLIUM: "Warped Nylium"
+DYE_WARPED_STEM: "Warped Stem"
+DYE_WARPED_HYPHAE: "Warped Hyphae"
+DYE_WARPED_WART_BLOCK: "Warped Wart"
 
 #-------------------------------------[Artwork Title Filter]-------------------------------------#
 #Words in the following list are filtered from artwork titles:

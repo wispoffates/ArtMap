@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,7 +11,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.MenuType;
@@ -27,21 +29,21 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
     private boolean adminMenu;
 
     public RecipeMenu(boolean adminMenu) {
-		super(ChatColor.DARK_BLUE + Lang.MENU_RECIPE.get(), new MenuType(9));
+		super(ChatColor.DARK_BLUE + Lang.MenuTitle.MENU_RECIPE.get(), new MenuType(9));
         this.adminMenu = adminMenu;
     }
 
     @Override
-    public Button[] getButtons() {
+    public Future<Button[]> getButtons() {
 		String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
-        return new Button[]{
+        return CompletableFuture.completedFuture(new Button[] {
 		        new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
 		        new StaticButton(Material.AIR),
                 new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
 				new RecipeButton(ArtMaterial.PAINT_BRUSH),
-        };
+        });
     }
 
     @Override

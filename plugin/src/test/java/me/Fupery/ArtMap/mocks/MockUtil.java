@@ -52,12 +52,12 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Colour.ArtDye;
-import me.Fupery.ArtMap.Colour.BasicDye;
-import me.Fupery.ArtMap.Colour.DyeType;
-import me.Fupery.ArtMap.Colour.Palette;
+import me.Fupery.ArtMap.api.Colour.ArtDye;
+import me.Fupery.ArtMap.api.Colour.BasicDye;
+import me.Fupery.ArtMap.api.Colour.DyeType;
+import me.Fupery.ArtMap.api.Colour.Palette;
 import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
-import me.Fupery.ArtMap.Config.Configuration;
+import me.Fupery.ArtMap.api.Config.Configuration;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.Heads.HeadsCache;
@@ -284,6 +284,11 @@ public class MockUtil {
                  BasicDye dye = mock(BasicDye.class);
                  when(dye.getColour()).thenReturn(Byte.valueOf("0"));
                  return dye;
+             }
+
+             @Override
+             public ArtDye getDye(byte color) {
+                 return null;
              }
          });
 

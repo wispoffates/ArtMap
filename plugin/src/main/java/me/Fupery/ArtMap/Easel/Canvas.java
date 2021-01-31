@@ -14,7 +14,7 @@ import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
-import me.Fupery.ArtMap.Recipe.ArtMaterial;
+import me.Fupery.ArtMap.Recipe.ArtItem.InProgressArtworkItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 
 /**
@@ -47,16 +47,8 @@ public class Canvas {
 		return new Canvas(mapId);
 	}
 
-	public ItemStack getDroppedItem() {
-		return ArtMaterial.CANVAS.getItem();
-	}
-
 	public ItemStack getEaselItem() {
-		ItemStack mapItem = new ItemStack(Material.FILLED_MAP);
-		MapMeta meta = (MapMeta) mapItem.getItemMeta();
-		meta.setMapView(ArtMap.getMap(this.mapId));
-		mapItem.setItemMeta(meta);
-		return mapItem;
+		return new InProgressArtworkItem(this.mapId).toItemStack();
 	}
 
 	public int getMapId() {
@@ -83,10 +75,12 @@ public class Canvas {
 			this.original = ArtMap.instance().getArtDatabase().getArtwork(originalName);
 		}
 
+		/*
 		@Override
 		public ItemStack getDroppedItem() {
 			return this.original.getMapItem();
 		}
+		*/
 
 		@Override
 		public ItemStack getEaselItem() {

@@ -15,8 +15,8 @@ import org.junit.rules.ExpectedException;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
-import me.Fupery.ArtMap.Config.Configuration;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Configuration;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
 public class LangTest {

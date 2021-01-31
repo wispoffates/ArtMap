@@ -24,7 +24,7 @@ public class VersionHandler {
         version = bv;
     }
 
-    private static BukkitVersion checkVersion() {
+    public static BukkitVersion checkVersion() {
         Version version = Version.getBukkitVersion();
         if (version.isLessThan(1, 14)) return BukkitVersion.v1_13;
         else if (version.isLessThan(1, 15)) return BukkitVersion.v1_14;
@@ -116,45 +116,6 @@ public class VersionHandler {
             Material mat = Material.getMaterial(matName, false);
             if(mat == null) {
                 plugin.getLogger().warning("Failed to get sign material! :: " + matName);
-                mat = Material.BEDROCK;
-            }
-            return mat;
-        }
-
-        public Material getRedDye() {
-            String matName = "RED_DYE";
-            if( this.isEqualTo(BukkitVersion.v1_13)) {
-                matName = "ROSE_RED";
-            } 
-            Material mat = Material.getMaterial(matName, false);
-            if(mat == null) {
-                plugin.getLogger().warning("Failed to get red dye material! :: " + matName);
-                mat = Material.BEDROCK;
-            }
-            return mat;
-        }
-
-        public Material getGreenDye() {
-            String matName = "GREEN_DYE";
-            if( this.isEqualTo(BukkitVersion.v1_13)) {
-                matName = "CACTUS_GREEN";
-            } 
-            Material mat = Material.getMaterial(matName, false);
-            if(mat == null) {
-                plugin.getLogger().warning("Failed to get green dye material! :: " + matName);
-                mat = Material.BEDROCK;
-            }
-            return mat;
-        }
-
-        public Material getYellowDye() {
-            String matName = "YELLOW_DYE";
-            if( this.isEqualTo(BukkitVersion.v1_13)) {
-                matName = "DANDELION_YELLOW";
-            } 
-            Material mat = Material.getMaterial(matName, false);
-            if(mat == null) {
-                plugin.getLogger().warning("Failed to get green dye material! :: " + matName);
                 mat = Material.BEDROCK;
             }
             return mat;

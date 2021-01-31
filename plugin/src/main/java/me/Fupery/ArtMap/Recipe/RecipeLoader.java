@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Recipe;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Configuration;
+import me.Fupery.ArtMap.api.Config.Configuration;
 import me.Fupery.ArtMap.IO.YamlReader;
 
 public class RecipeLoader {

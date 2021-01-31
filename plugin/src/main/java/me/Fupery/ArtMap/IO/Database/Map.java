@@ -54,14 +54,14 @@ public class Map {
     }
 
     public void setRenderer(MapRenderer renderer) {
-        MapView mapView = getMap();
-        if (mapView == null) {
+        MapView view = getMap();
+        if (view == null) {
             ArtMap.instance().getLogger().warning("MapView is null! :: " + this.getMapId());
             return;
         }
-        mapView.getRenderers().forEach(mapView::removeRenderer);
+        view.getRenderers().forEach(view::removeRenderer);
         if (renderer != null) {
-            mapView.addRenderer(renderer);
+            view.addRenderer(renderer);
         }
     }
 
@@ -81,10 +81,14 @@ public class Map {
     }
 
     public MapView getMap() {
-        if(this.mapView != null) {
-            return this.mapView;
+        if(this.mapView == null) {
+            this.mapView = ArtMap.getMap(this.mapId);
         }
-        return ArtMap.getMap(this.mapId);
+        return this.mapView;
+    }
+
+    public void clear() throws NoSuchFieldException, IllegalAccessException {
+        setMap(BLANK_MAP,false);
     }
 
     public void setMap(byte[] map) throws NoSuchFieldException, IllegalAccessException {
@@ -92,7 +96,9 @@ public class Map {
     }
 
     public void setMap(byte[] map, boolean updateRenderer) throws NoSuchFieldException, IllegalAccessException {
-        MapView mapView = getMap();
+        if(this.mapView == null) {
+            getMap();
+        }
         ArtMap.instance().getReflection().setWorldMap(mapView, map);
         if (updateRenderer) {
             MapRenderer renderer = new GenericMapRenderer(map);

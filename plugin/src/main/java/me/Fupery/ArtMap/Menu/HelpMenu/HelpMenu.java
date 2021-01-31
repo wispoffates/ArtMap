@@ -1,11 +1,14 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Menu.API.BasicMenu;
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Button.LinkedButton;
@@ -23,18 +26,18 @@ public class HelpMenu extends BasicMenu {
 	public static final String ACCEPT_TEXT = ChatColor.GREEN + Lang.BUTTON_ACCEPT_TEXT.get();
 
     public HelpMenu() {
-        super(ChatColor.DARK_BLUE + Lang.MENU_HELP.get(), InventoryType.HOPPER);
+        super(ChatColor.DARK_BLUE + Lang.MenuTitle.MENU_HELP.get(), InventoryType.HOPPER);
     }
 
     @Override
-    public Button[] getButtons() {
+    public Future<Button[]> getButtons() {
         MenuHandler.MenuList list = ArtMap.instance().getMenuHandler().MENU;
-        return new Button[]{
+        return CompletableFuture.completedFuture(new Button[] {
 		        new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.HELP_GETTING_STARTED.get()),
 		        new LinkedButton(list.RECIPE, Material.CRAFTING_TABLE, Lang.Array.HELP_RECIPES.get()),
-		        new LinkedButton(list.DYES, ArtMap.instance().getBukkitVersion().getVersion().getRedDye(), Lang.Array.HELP_DYES.get()),
+		        new LinkedButton(list.DYES, Material.BLUE_DYE, Lang.Array.HELP_DYES.get()),
 		        new LinkedButton(list.TOOLS, Material.WRITABLE_BOOK, Lang.Array.HELP_TOOLS.get()),
 		        new LinkedButton(list.ARTIST, Material.PAINTING, Lang.Array.HELP_LIST.get())
-        };
+        });
     }
 }

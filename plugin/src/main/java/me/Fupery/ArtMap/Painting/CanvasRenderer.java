@@ -2,6 +2,8 @@ package me.Fupery.ArtMap.Painting;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.api.Painting.ICanvasRenderer;
+import me.Fupery.ArtMap.api.Painting.Pixel;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -11,7 +13,7 @@ import org.bukkit.map.MapView;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CanvasRenderer extends MapRenderer {
+public class CanvasRenderer extends MapRenderer implements ICanvasRenderer {
     // todo refine producer/consumer pattern
     private final int resolutionFactor;
     private final int axisLength;
@@ -60,17 +62,17 @@ public class CanvasRenderer extends MapRenderer {
     }
 
     //adds pixel at location
-    void addPixel(int x, int y, byte colour) {
+    public void addPixel(int x, int y, byte colour) {
         pixelBuffer[x][y] = colour;
         dirtyPixels.add(new byte[]{((byte) x), ((byte) y)});
     }
 
-    byte getPixel(int x, int y) {
+    public byte getPixel(int x, int y) {
         return pixelBuffer[x][y];
     }
 
     //finds the corresponding pixel for the yaw & pitch clicked
-    byte[] getCurrentPixel() {
+    public byte[] getCurrentPixel() {
         byte[] pixel = new byte[2];
 
         pixel[0] = ((byte) cursor.getX());
@@ -85,7 +87,7 @@ public class CanvasRenderer extends MapRenderer {
         return pixel;
     }
 
-    byte[] getMap() {
+    public byte[] getMap() {
         byte[] colours = new byte[128 * 128];
         boolean wasActive = active.compareAndSet(true, false);
         for (int x = 0; x < (axisLength); x++) {
@@ -103,6 +105,14 @@ public class CanvasRenderer extends MapRenderer {
         }
         if (wasActive) active.set(true);
         return colours;
+    }
+
+    public void clear() {
+        for (int x = 0; x < (axisLength); x++) {
+            for (int y = 0; y < (axisLength); y++) {
+                addPixel(x, y, ArtMap.instance().getDyePalette().getDefaultColour().getColour());
+            }
+        }
     }
 
     final private void loadMap() {
@@ -123,7 +133,7 @@ public class CanvasRenderer extends MapRenderer {
         }
     }
 
-    void stop() {
+    public void stop() {
         active.set(false);
         dirtyPixels.clear();
         cursor = null;
@@ -133,15 +143,15 @@ public class CanvasRenderer extends MapRenderer {
         return new Pixel(this, x, y, getPixel(x, y));
     }
 
-    boolean isDirty() {
+    public boolean isDirty() {
         return dirtyPixels.size() > 0;
     }
 
-    boolean isOffCanvas() {
+    public boolean isOffCanvas() {
         return cursor.isOffCanvas();
     }
 
-    byte[][] getPixelBuffer() {
+    public byte[][] getPixelBuffer() {
         return pixelBuffer.clone();
     }
 
@@ -153,11 +163,11 @@ public class CanvasRenderer extends MapRenderer {
         cursor.setPitch(pitch);
     }
 
-    int getAxisLength() {
+    public int getAxisLength() {
         return axisLength;
     }
 
-    MapView getMapView() {
+    public MapView getMapView() {
         return map.getMap();
     }
 }

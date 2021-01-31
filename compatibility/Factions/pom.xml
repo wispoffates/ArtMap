@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
     <artifactId>ArtMap-parent</artifactId>
-    <version>3.7.2</version>
+    <version>3.8.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -29,13 +29,15 @@
 			<groupId>com.massivecraft</groupId>
 			<artifactId>Factions</artifactId>
 			<version>2.14.0</version>
-			<scope>provided</scope>
+      <systemPath>${project.basedir}/dependencies/Factions-2.14.0.jar</systemPath>
+  		<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.massivecraft</groupId>
 			<artifactId>MassiveCore</artifactId>
 			<version>2.14.0</version>
-			<scope>provided</scope>
+			<systemPath>${project.basedir}/dependencies/MassiveCore-2.14.0.jar</systemPath>
+  		<scope>system</scope>
 		</dependency>
   </dependencies>
 </project>

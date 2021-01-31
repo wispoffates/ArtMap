@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
     <artifactId>ArtMap-parent</artifactId>
-    <version>3.7.2</version>
+    <version>3.8.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -29,7 +29,8 @@
 			<groupId>br.net.fabiozumbi12</groupId>
 			<artifactId>RedProtect</artifactId>
 			<version>7.3.0</version>
-			<scope>provided</scope>
+			<systemPath>${project.basedir}/dependencies/RedProtect-7.3.0.jar</systemPath>
+  		<scope>system</scope>
 		</dependency>
   </dependencies>
 </project>

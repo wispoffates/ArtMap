@@ -2,6 +2,9 @@ package me.Fupery.ArtMap.Menu.API;
 
 import me.Fupery.ArtMap.Menu.Button.Button;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
+
+import java.util.concurrent.Future;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -41,5 +44,5 @@ public interface MenuTemplate {
     /**
      * @return A list of itemstack buttons that fill the menu
      */
-    Button[] getButtons();
+    Future<Button[]> getButtons();
 }

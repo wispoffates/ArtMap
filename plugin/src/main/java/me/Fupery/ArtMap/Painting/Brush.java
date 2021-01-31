@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.Fupery.ArtMap.api.Painting.Pixel;
+
 public abstract class Brush {
 
     protected int cooldownMilli = 150;

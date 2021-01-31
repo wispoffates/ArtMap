@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Config.Lang;
+import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
@@ -29,10 +29,11 @@ import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
 import me.Fupery.ArtMap.Painting.Brush.BrushAction;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
+import me.Fupery.ArtMap.api.Painting.IArtistHandler;
 import net.wesjd.anvilgui.AnvilGUI;
 import net.wesjd.anvilgui.AnvilGUI.Response;
 
-public class ArtistHandler {
+public class ArtistHandler implements IArtistHandler {
 
 	private final ConcurrentHashMap<UUID, ArtSession> artists;
 	// todo replaced synchronised methods with read/write lock
