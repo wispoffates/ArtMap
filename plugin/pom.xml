@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.gitlab.blockstack</groupId>
 		<artifactId>ArtMap-parent</artifactId>
-		<version>3.8.0</version>
+		<version>3.8.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<build>
@@ -52,6 +52,12 @@
 									<exclude>org.bukkit:*</exclude>
 								</excludes>
 							</artifactSet>
+							<relocations>
+								<relocation>
+									<pattern>net.wesjd.anvilgui.</pattern>
+									<shadedPattern>me.fupery.shade.</shadedPattern>
+								</relocation>
+							</relocations>
 						</configuration>
 					</execution>
 				</executions>
@@ -117,98 +123,98 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Spigot_1_13</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Spigot_1_14</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Spigot_1_16</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<!--Artmap plugin compatibility addons-->
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>ASkyBlock</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>BentoBox</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>CMI</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Essentials</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Factions</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>GriefDefender</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>GriefPrevention</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>MarriageMaster</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared4</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared5</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>RedProtect</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Residence</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>SabreFactions</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Towny</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>USkyBlock</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>WorldGuard</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1</version>
 		</dependency>
 		<!--  Mojang dependency -->
 		<dependency>

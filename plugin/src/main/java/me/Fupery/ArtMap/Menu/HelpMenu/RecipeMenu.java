@@ -35,15 +35,25 @@ public class RecipeMenu extends BasicMenu implements ChildMenu {
 
     @Override
     public Future<Button[]> getButtons() {
-		String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
-        return CompletableFuture.completedFuture(new Button[] {
-		        new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
-		        new StaticButton(Material.AIR),
+        String[] back = { ChatColor.RED.toString() + ChatColor.BOLD + LEFT_ARROW };
+        if(ArtMap.instance().getConfiguration().DISABLE_PAINTBRUSH) {
+            return CompletableFuture.completedFuture(new Button[] {
+                new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
+                new StaticButton(Material.AIR),
                 new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
                 new RecipeButton(ArtMaterial.EASEL),
                 new RecipeButton(ArtMaterial.CANVAS),
-				new RecipeButton(ArtMaterial.PAINT_BRUSH),
-        });
+            });
+        } else {
+            return CompletableFuture.completedFuture(new Button[] {
+                new LinkedButton(ArtMap.instance().getMenuHandler().MENU.HELP, Material.MAGENTA_GLAZED_TERRACOTTA, back), 
+                new StaticButton(Material.AIR),
+                new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_RECIPES.get()),
+                new RecipeButton(ArtMaterial.EASEL),
+                new RecipeButton(ArtMaterial.CANVAS),
+                new RecipeButton(ArtMaterial.PAINT_BRUSH),
+            });
+        }
     }
 
     @Override

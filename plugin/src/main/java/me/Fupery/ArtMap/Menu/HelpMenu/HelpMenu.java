@@ -35,7 +35,7 @@ public class HelpMenu extends BasicMenu {
         return CompletableFuture.completedFuture(new Button[] {
 		        new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.HELP_GETTING_STARTED.get()),
 		        new LinkedButton(list.RECIPE, Material.CRAFTING_TABLE, Lang.Array.HELP_RECIPES.get()),
-		        new LinkedButton(list.DYES, Material.BLUE_DYE, Lang.Array.HELP_DYES.get()),
+		        new LinkedButton(list.DYES, Material.CYAN_DYE, Lang.Array.HELP_DYES.get()),
 		        new LinkedButton(list.TOOLS, Material.WRITABLE_BOOK, Lang.Array.HELP_TOOLS.get()),
 		        new LinkedButton(list.ARTIST, Material.PAINTING, Lang.Array.HELP_LIST.get())
         });

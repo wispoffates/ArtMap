@@ -1,6 +1,5 @@
 package me.Fupery.ArtMap.Menu.Handler;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.Event.MenuCloseReason;
 import me.Fupery.ArtMap.Menu.Event.MenuFactory;
@@ -52,7 +51,9 @@ public final class MenuHandler {
     public void closeMenu(Player viewer, MenuCloseReason reason) {
         if (!isTrackingPlayer(viewer)) return;
         CacheableMenu menu = openMenus.get(viewer.getUniqueId());
-        menu.close(viewer, reason);
+        if(menu != null) {
+            menu.close(viewer, reason);
+        }
         if (menu instanceof ChildMenu && reason == MenuCloseReason.BACK) {
             openMenu(viewer, ((ChildMenu) menu).getParent(viewer));
         } else {
