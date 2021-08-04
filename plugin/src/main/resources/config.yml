@@ -44,3 +44,6 @@ headPrefetchPeriod: 10000
 
 #Import delay (default is 100ms which is 10 artworks second)
 importDelay: 250
+
+#Blacklist - Comma separated list of commands that players can't use while at an easel
+blacklist:
