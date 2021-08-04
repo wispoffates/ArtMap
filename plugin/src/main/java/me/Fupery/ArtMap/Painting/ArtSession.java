@@ -141,6 +141,9 @@ public class ArtSession implements IArtSession {
             }
             player.getInventory().setItemInOffHand(hotbar[9]);
         }
+		else {
+            player.getInventory().setItemInOffHand(null);
+		}
     }
 
     public void nextKitPage(Player player) {
@@ -208,7 +211,8 @@ public class ArtSession implements IArtSession {
 
     public void end(Player player) throws SQLException, IOException {
         try {
-            player.leaveVehicle();
+            //player.leaveVehicle();
+			player.teleport(player.getLocation().add(0, 0.25, 0 ));
             removeKit(player);
             easel.removeUser();
             canvas.stop();
