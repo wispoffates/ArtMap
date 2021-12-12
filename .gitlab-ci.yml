@@ -1,13 +1,11 @@
-# This file is a template, and might need editing before it works on your project.
-# Build JAVA applications using Apache Maven (http://maven.apache.org)
-# For docker image tags see https://hub.docker.com/_/maven/
-#
-# For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-
-# This template will build and test your projects
-# * Caches downloaded dependencies and plugins between invocation.
-# * Verify but don't deploy merge requests.
-# * Deploy built artifacts from master branch only.
+stages:
+  - generate-release
+  - sast
+  - build
+  - coverage
+  - integration
+  - publish
+  - release
 
 variables:
   # This will suppress any download for dependencies and plugins or upload messages which would clutter the console log.
@@ -18,35 +16,122 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
-# This template uses jdk8 for verifying and deploying images
-image: maven:3.3.9-jdk-8
-
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
   paths:
     - .m2/repository
 
-# For merge requests do not `deploy` but only run `verify`.
-# See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-.verify: &verify
-  stage: test
+################################################################################################
+# Build
+################################################################################################
+
+# All versions <=1.16
+.jdk8:
+  image: maven:3.8-openjdk-8
+
+# 1.17
+.jdk16:
+  image: maven:3.8-openjdk-16
+
+# 1.18+
+.jdk17:
+  image: maven:3.8-openjdk-17
+
+#use maven verify we don't need to pollute the cache with the build artifacts
+.build:
+  stage: build
   script:
     - 'mvn $MAVEN_CLI_OPTS verify'
-  except:
-    - master
+  artifacts:
+    paths:
+      - plugin/target/*.jar                             #Grab the built jars
+      - plugin/target/site/jacoco/jacoco.xml
+    reports:
+      junit:
+        - plugin/target/surefire-reports/TEST-*.xml
+        - plugin/target/failsafe-reports/TEST-*.xml
+        
+build:jdk8:
+  extends: [.jdk8, .build]
 
-# Verify merge requests using JDK8
-verify:jdk8:
-  <<: *verify
+build:jdk16:
+  extends: [.jdk16, .build]
 
-# To deploy packages from CI, create a ci_settings.xml file
-# For deploying packages to GitLab's Maven Repository: See https://docs.gitlab.com/ee/user/project/packages/maven_repository.html#creating-maven-packages-with-gitlab-cicd for more details.
-# Please note: The GitLab Maven Repository is currently only available in GitLab Premium / Ultimate.
-# For `master` branch run `mvn deploy` automatically.
-deploy:jdk8:
-  stage: deploy
+build:jdk17:
+  extends: [.jdk17, .build]
+
+coverage:
+  stage: coverage
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    - 'mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml'
+    # convert report from jacoco to cobertura, using relative project path
+    - python /opt/cover2cover.py plugin/target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/plugin/src/main/java/ > plugin/target/site/cobertura.xml
+  needs: ["build:jdk17"]
+  artifacts:
+    reports:
+      cobertura: plugin/target/site/cobertura.xml
+
+################################################################################################
+# Publish
+################################################################################################
+
+.publish:
+  stage: publish
+  script:
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file *.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$NEXT_VERSION/ArtMap-$JDK-$NEXT_VERSIO.jar"'
   only:
     - master
+
+publishjdk8:
+  extends: .publish
+  needs: ["build:jdk8"]
+  variables:
+    JDK: "JDK8"
+
+publish:jdk16:
+  extends: .publish
+  needs: ["build:jdk16"]
+  variables:
+    JDK: "JDK16"
+
+publish:jdk17:
+  extends: .publish
+  needs: ["build:jdk17"]
+  variables:
+    JDK: "JDK17"
+
+################################################################################################
+# Integration - Just some debugging for now - Intention is to use docker and test startup on various MC versions
+################################################################################################
+
+integration:
+  stage: integration
+  needs: ["build:jdk17"]
+  script:
+    - echo $NEXT_VERSION
+    - echo $CURRENT_VERSION
+
+################################################################################################
+# Versioning Release
+################################################################################################
+
+#Generates the version number and adds it to build.env so its available for later steps
+generate-release:
+  image: node:16-buster-slim
+  stage: generate-release
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
+    - npm install -g semantic-release @semantic-release/gitlab
+    - npm install @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
+  script:
+    - semantic-release --dry-run
+    - cat build.env
+  only:
+    - master
+
+release:
+  stage: release
+  extends: generate-release
+  script:
+    - semantic-release

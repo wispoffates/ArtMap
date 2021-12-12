@@ -47,7 +47,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -302,8 +301,10 @@ public class MockUtil {
              }
              
          });
-         FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("SYNC"), mockTaskScheduler);
-         FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("ASYNC"), mockTaskScheduler);
+         mockScheduler.ASYNC = mockTaskScheduler;
+         mockScheduler.SYNC = mockTaskScheduler;
+         //FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("SYNC"), mockTaskScheduler);
+         //FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("ASYNC"), mockTaskScheduler);
          when(mockArtmap.getScheduler()).thenReturn(mockScheduler);
 
          //Mock getting resource

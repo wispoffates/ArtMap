@@ -26,7 +26,7 @@ public class ArtMapTest {
     @Before
     public void setup() throws Exception {
         this.mocks = new MockUtil();
-        this.mocks.mockServer("1.15.2-R0.1-MOCK");
+        this.mocks.mockServer("1.14.4-R0.1-MOCK");
     }
 
     @Test

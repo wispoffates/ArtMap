@@ -14,7 +14,7 @@ import java.util.logging.Level;
 public class Scheduler {
     //todo add checks that ArtMap isn't disabled
     private final ArtMap plugin;
-    public final TaskScheduler SYNC = new TaskScheduler() {
+    public TaskScheduler SYNC = new TaskScheduler() {
         @Override
         public BukkitTask run(Runnable runnable) {
             return Bukkit.getScheduler().runTask(plugin, runnable);
@@ -30,7 +30,7 @@ public class Scheduler {
             return Bukkit.getScheduler().runTaskTimer(plugin, runnable, startDelay, period);
         }
     };
-    public final TaskScheduler ASYNC = new TaskScheduler() {
+    public TaskScheduler ASYNC = new TaskScheduler() {
         @Override
         public BukkitTask run(Runnable runnable) {
             return Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
