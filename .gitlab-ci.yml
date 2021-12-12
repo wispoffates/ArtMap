@@ -129,7 +129,7 @@ release:maven-release:
     - git checkout master
     - mvn versions::set -DnewVersion=${NEXT_VERSION}
     - mvn versions::commit 
-    - git add -a .
+    - git add -A .
     - git commit -m "${COMMIT_MESSAGE}"
     - git push
 
