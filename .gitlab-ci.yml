@@ -129,10 +129,8 @@ release:maven-release:
     - git checkout master
     - mvn versions::set -DnewVersion=${NEXT_VERSION}
     - mvn versions::commit 
-    - git add -A .
+    - git add .
     - git commit -m "${COMMIT_MESSAGE}"
-    - git push
-
 
 #Generates the version number and adds it to build.env so its available for later steps
 release:generate-release:
