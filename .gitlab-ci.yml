@@ -79,7 +79,7 @@ coverage:
 .publish:
   stage: publish
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/taget/ArtMap-*.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$NEXT_VERSION/ArtMap-$JDK-$NEXT_VERSION.jar"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/taget/ArtMap-${CURRENT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
   only:
     - master
 
@@ -115,9 +115,25 @@ integration:
 ################################################################################################
 # Versioning Release
 ################################################################################################
+release:maven-release:
+  extends: .jdk17
+  stage: release
+  needs: ["generate-release"]
+  before_script:
+    - git remote set-url origin https://${CI_USERNAME}:${GITLAB_TOKEN}@gitlab.com/${CI_PROJECT_NAME}.git
+    - git config --global user.email '${GITLAB_USER_EMAIL}'
+    - git config --global user.name '${GITLAB_USER_ID}'
+  script:
+    - git checkout master
+    - mvn versions::set ${NEXT_VERSION}
+    - mvn versions::commit 
+    - git add -a .
+    - git commit -m "chore(release): [skip ci] Release ${NEXT_VERSION}"
+    - git push
+
 
 #Generates the version number and adds it to build.env so its available for later steps
-generate-release:
+release:generate-release:
   image: node:16-buster-slim
   stage: generate-release
   before_script:
@@ -125,7 +141,7 @@ generate-release:
     - npm install -g semantic-release @semantic-release/gitlab
     - npm install @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
   script:
-    - semantic-release --dry-run --debug
+    - semantic-release --dry-run
     - cat build.env
   artifacts:
     reports:
@@ -133,8 +149,8 @@ generate-release:
   only:
     - master
 
-release:
+release:tag:
   stage: release
-  extends: generate-release
+  extends: release:generate-release
   script:
     - semantic-release
