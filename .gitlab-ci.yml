@@ -79,7 +79,7 @@ coverage:
 .publish:
   stage: publish
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/taget/ArtMap-${CURRENT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/target/ArtMap-${CURRENT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
   only:
     - master
 
@@ -118,7 +118,7 @@ integration:
 release:maven-release:
   extends: .jdk17
   stage: release
-  needs: ["release:generate-release"]
+  needs: ["release:generate-release","publish:jdk17"]
   variables:
     COMMIT_MESSAGE: "chore(release): [skip ci] Release ${NEXT_VERSION}"
   before_script:
