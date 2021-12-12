@@ -8,9 +8,9 @@ plugins:
   - "@semantic-release/changelog"
   - "@semantic-release/git"
   - "@semantic-release/gitlab"
-  - ["@semantic-release/exec", {
+  - ["@semantic-release/exec",
       "generateNotes": "echo \"NEXT_VERSION=${nextRelease.version}\" >> build.env && echo \"CURRENT_VERSION=${lastRelease.version}\" >> build.env"
-    }]
+    ]
 
 verifyConditions:
   - '@semantic-release/git'
