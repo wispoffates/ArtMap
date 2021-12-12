@@ -9,8 +9,8 @@ plugins:
   - "@semantic-release/git"
   - "@semantic-release/gitlab"
   - ["@semantic-release/exec", {
-      "verifyReleaseCmd": "echo 'exec is working'",
-      "generateNotesCmd": 'echo "NEXT_VERSION=${nextRelease.version}" >> build.env && echo "CURRENT_VERSION=${lastRelease.version}" >> build.env'
+      "verifyReleaseCmd": "echo \"NEXT_VERSION=${nextRelease.version}\" >> build.env && echo \"CURRENT_VERSION=${lastRelease.version}\" >> build.env",
+      "generateNotesCmd": "echo \"NEXT_VERSION=${nextRelease.version}\" >> build.env && echo \"CURRENT_VERSION=${lastRelease.version}\" >> build.env"
     }]
 
 verifyConditions:
