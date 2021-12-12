@@ -132,6 +132,7 @@ release:maven-release:
     - git add .
     - git status
     - git commit -m "${COMMIT_MESSAGE}"
+    - git push --dry-run
   only:
     - master
 
@@ -158,4 +159,3 @@ release:tag:
   needs: ["release:maven-release"]
   script:
     - semantic-release
-  when: manual
