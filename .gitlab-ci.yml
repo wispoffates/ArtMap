@@ -138,6 +138,7 @@ release:maven-release:
 release:generate-release:
   image: node:16-buster-slim
   stage: generate-release
+  needs: ["release:maven-release"]
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install -g semantic-release @semantic-release/gitlab
