@@ -119,6 +119,8 @@ release:maven-release:
   extends: .jdk17
   stage: release
   needs: ["generate-release"]
+  variables:
+    COMMIT_MESSAGE: "chore(release): [skip ci] Release ${NEXT_VERSION}"
   before_script:
     - git remote set-url origin https://${CI_USERNAME}:${GITLAB_TOKEN}@gitlab.com/${CI_PROJECT_NAME}.git
     - git config --global user.email '${GITLAB_USER_EMAIL}'
@@ -128,7 +130,7 @@ release:maven-release:
     - mvn versions::set ${NEXT_VERSION}
     - mvn versions::commit 
     - git add -a .
-    - git commit -m "chore(release): [skip ci] Release ${NEXT_VERSION}"
+    - git commit -m "${COMMIT_MESSAGE}"
     - git push
 
 
