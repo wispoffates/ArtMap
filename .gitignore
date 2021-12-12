@@ -6,10 +6,11 @@
 .settings/*
 target/*
 *.iml
+.m2/
 
 *.DS_STORE
 
-dependency-reduced-pom.xml
+**/dependency-reduced-pom.xml
 
 license.rtf
 
