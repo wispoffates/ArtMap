@@ -85,19 +85,19 @@ coverage:
 
 publishjdk8:
   extends: .publish
-  needs: ["generate-release","build:jdk8"]
+  needs: ["release:generate-release","build:jdk8"]
   variables:
     JDK: "JDK8"
 
 publish:jdk16:
   extends: .publish
-  needs: ["generate-release","build:jdk16"]
+  needs: ["release:generate-release","build:jdk16"]
   variables:
     JDK: "JDK16"
 
 publish:jdk17:
   extends: .publish
-  needs: ["generate-release","build:jdk17"]
+  needs: ["release:generate-release","build:jdk17"]
   variables:
     JDK: "JDK17"
 
@@ -107,7 +107,7 @@ publish:jdk17:
 
 integration:
   stage: integration
-  needs: ["generate-release","build:jdk17"]
+  needs: ["release:generate-release","build:jdk17"]
   script:
     - echo $NEXT_VERSION
     - echo $CURRENT_VERSION
@@ -118,7 +118,7 @@ integration:
 release:maven-release:
   extends: .jdk17
   stage: release
-  needs: ["generate-release"]
+  needs: ["release:generate-release"]
   variables:
     COMMIT_MESSAGE: "chore(release): [skip ci] Release ${NEXT_VERSION}"
   before_script:
