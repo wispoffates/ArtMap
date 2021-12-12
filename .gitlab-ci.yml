@@ -125,8 +125,11 @@ generate-release:
     - npm install -g semantic-release @semantic-release/gitlab
     - npm install @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
   script:
-    - semantic-release --dry-run
+    - semantic-release --dry-run --debug
     - cat build.env
+  artifacts:
+    reports:
+      dotenv: build.env
   only:
     - master
 
