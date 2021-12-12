@@ -85,19 +85,19 @@ coverage:
 
 publishjdk8:
   extends: .publish
-  needs: ["generage-release","build:jdk8"]
+  needs: ["generate-release","build:jdk8"]
   variables:
     JDK: "JDK8"
 
 publish:jdk16:
   extends: .publish
-  needs: ["generage-release","build:jdk16"]
+  needs: ["generate-release","build:jdk16"]
   variables:
     JDK: "JDK16"
 
 publish:jdk17:
   extends: .publish
-  needs: ["generage-release","build:jdk17"]
+  needs: ["generate-release","build:jdk17"]
   variables:
     JDK: "JDK17"
 
