@@ -79,25 +79,25 @@ coverage:
 .publish:
   stage: publish
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file *.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$NEXT_VERSION/ArtMap-$JDK-$NEXT_VERSIO.jar"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/taget/ArtMap-*.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$NEXT_VERSION/ArtMap-$JDK-$NEXT_VERSION.jar"'
   only:
     - master
 
 publishjdk8:
   extends: .publish
-  needs: ["build:jdk8"]
+  needs: ["generage-release","build:jdk8"]
   variables:
     JDK: "JDK8"
 
 publish:jdk16:
   extends: .publish
-  needs: ["build:jdk16"]
+  needs: ["generage-release","build:jdk16"]
   variables:
     JDK: "JDK16"
 
 publish:jdk17:
   extends: .publish
-  needs: ["build:jdk17"]
+  needs: ["generage-release","build:jdk17"]
   variables:
     JDK: "JDK17"
 
@@ -107,7 +107,7 @@ publish:jdk17:
 
 integration:
   stage: integration
-  needs: ["build:jdk17"]
+  needs: ["generage-release","build:jdk17"]
   script:
     - echo $NEXT_VERSION
     - echo $CURRENT_VERSION
