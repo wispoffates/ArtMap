@@ -1,0 +1,67 @@
+---
+branches: ['+([0-9])?(.{+([0-9]),x}).x', 'master']
+preset: "angular"
+tagFormat: "${version}"
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/changelog"
+  - "@semantic-release/git"
+  - "@semantic-release/gitlab"
+  - ["@semantic-release/exec", {
+      "generateNotes": "echo \"NEXT_VERSION=${nextRelease.version}\" >> build.env && echo \"CURRENT_VERSION=${lastRelease.version}\" >> build.env"
+    }]
+
+verifyConditions:
+  - '@semantic-release/git'
+  - "@semantic-release/gitlab"
+analyzeCommits:
+  - path: "@semantic-release/commit-analyzer"
+    releaseRules:
+    - type: "feat"
+      release: "patch"
+    - type: "fix"
+      release: "patch"
+    - type: "patch"
+      release: "patch"
+    - type: "minor"
+      release: "minor"
+    - type: "breaking"
+      release: "major"
+generateNotes:
+  - path: "@semantic-release/release-notes-generator"
+    writerOpts:
+      groupBy: "type"
+      commitGroupsSort:
+        - "feat"
+        - "fix"
+      commitsSort: "header"
+    types:
+    - type: "feat"
+    - section: "Features"
+    # List fixes
+    - type: "fix"
+    - section: "Bug Fixes"
+    # Uninmportent fix (CI testing, etc)
+    - type: "chore"
+    - hidden: true
+    - type: "docs"
+    - hidden: true
+    - type: "doc"
+    - hidden: true
+    - type: "style"
+    - hidden: true
+    - type: "refactor"
+    - hidden: true
+    - type: "perf"
+    - hidden: true
+    - type: "test"
+    - hidden: true
+    presetConfig: true
+  - path: "@semantic-release/exec"
+prepare:
+  - path: "@semantic-release/git"
+  - path: "@semantic-release/changelog"
+    changelogFile: "CHANGELOG.md"
+publish:
+  - path: "@semantic-release/gitlab"

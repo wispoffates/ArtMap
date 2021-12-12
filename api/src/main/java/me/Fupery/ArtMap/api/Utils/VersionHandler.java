@@ -20,8 +20,9 @@ public class VersionHandler {
      * Unit tests
      * Do not use this.
      */
-    public VersionHandler(BukkitVersion bv) {
+    public VersionHandler(BukkitVersion bv, JavaPlugin plugin) {
         version = bv;
+        this.plugin = plugin;
     }
 
     public static BukkitVersion checkVersion() {

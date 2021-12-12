@@ -35,7 +35,7 @@
     <dependency>
       <groupId>com.plotsquared</groupId>
       <artifactId>PlotSquared-Core</artifactId>
-      <version>5.13.0</version>
+      <version>5.13.11</version>
     </dependency>
   </dependencies>
 </project>

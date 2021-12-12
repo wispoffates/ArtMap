@@ -50,12 +50,10 @@
 			<id>sk89q-repo</id>
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
-		<!-- Something wrong with protocollib maven cert
 		<repository>
 			<id>dmulloy2-repo</id>
 			<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
 		</repository>
-		-->
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
@@ -63,11 +61,11 @@
 		<!-- iDisguise -->
 		<repository>
 			<id>robingrether-repo</id>
-			<url>http://repo.robingrether.de/</url>
+			<url>https://www.robingrether.de/mc/repo</url>
 		</repository>
 		<repository>
 			<id>citizen</id>
-			<url>http://repo.citizensnpcs.co</url>
+			<url>https://repo.citizensnpcs.co</url>
 		</repository>
 		<repository>
 			<id>codemc-repo</id>
@@ -102,37 +100,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>3.1.12.2</version>
-				<configuration>
-					<plugins>
-						<plugin>
-							<groupId>com.mebigfatguy.fb-contrib</groupId>
-							<artifactId>fb-contrib</artifactId>
-							<version>7.4.7</version>
-						</plugin>
-					</plugins>
-					<effort>High</effort>
-					<threshold>Low</threshold>
-					<timeout>1200000</timeout>
-					<maxHeap>1024</maxHeap>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>site</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
 	<scm>
 		<url>https://gitlab.com/BlockStack/ArtMap</url>
 		<developerConnection>wispoffates</developerConnection>
@@ -141,11 +108,4 @@
 		<system>gitlab</system>
 		<url>https://gitlab.com/BlockStack/ArtMap/issues</url>
 	</issueManagement>
-	<distributionManagement>
-		<repository>
-			<id>BlockStack</id>
-			<name>BlockStack</name>
-			<url>https://nexus.troytech.info/repository/BlockStack/</url>
-		</repository>
-	</distributionManagement>
 </project>

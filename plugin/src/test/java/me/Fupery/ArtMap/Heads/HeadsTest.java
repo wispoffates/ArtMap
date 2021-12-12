@@ -25,7 +25,7 @@ public class HeadsTest {
     @BeforeClass
     public static void setup() throws Exception {
         mocks = new MockUtil();
-        mocks.mockServer("1.15.2-R0.1-MOCK").mockArtMap();
+        mocks.mockServer("1.14.4-R0.1-MOCK").mockArtMap();
         mockPlugin = mocks.mockDataFolder(new File("target/plugins/Artmap/")).mockLogger().getPluginMock();
         mockArtMap = mocks.getArtmapMock();
     }

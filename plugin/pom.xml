@@ -66,21 +66,6 @@
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-compiler-plugin</artifactId>
 			    <version>3.8.1</version>
-			    <configuration>
-			    	<fork>true</fork>
-			        <compilerArgs>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-			            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED</arg>
-			        </compilerArgs>
-			    </configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -142,7 +127,7 @@
 		<dependency>
 			<groupId>net.wesjd</groupId>
     		<artifactId>anvilgui</artifactId>
-    		<version>1.5.1-SNAPSHOT</version>
+    		<version>1.5.3-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--Artmap Spigot/Paper version compatibility-->
@@ -297,9 +282,15 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>3.4.6</version>
+			<version>4.1.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.12.3</version>
+			<scope>test</scope>
+		  </dependency>
 	</dependencies>
 	<scm>
 		<url>https://gitlab.com/BlockStack/ArtMap</url>
@@ -309,13 +300,6 @@
 		<system>gitlab</system>
 		<url>https://gitlab.com/BlockStack/ArtMap/issues</url>
 	</issueManagement>
-	<distributionManagement>
-		<repository>
-			<id>BlockStack</id>
-			<name>BlockStack</name>
-			<url>https://nexus.troytech.info/repository/BlockStack/</url>
-		</repository>
-	</distributionManagement>
 	<pluginRepositories>
 	    <pluginRepository>
 			<id>apache.snapshots</id>
