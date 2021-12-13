@@ -115,10 +115,13 @@ integration:
 ################################################################################################
 # Versioning Release
 ################################################################################################
+
+#Updates POM versions to keep them in line with the release
+#Only pushes if there are changes
 release:maven-release:
   extends: .jdk17
   stage: release
-  needs: ["release:generate-release","publish:jdk17"]
+  needs: ["release:generate-release","publish:jdk17","release:tag"]
   variables:
     COMMIT_MESSAGE: "chore(release): [skip ci] Release ${NEXT_VERSION}"
   before_script:
@@ -128,15 +131,20 @@ release:maven-release:
   script:
     - git checkout master
     - mvn versions::set -DnewVersion=${NEXT_VERSION}
-    - mvn versions::commit 
+    - mvn versions::commit mvn
     - git add .
-    - git status
-    - git commit -m "${COMMIT_MESSAGE}"
-    - git push
+    - |-
+      CHANGES=$(git status --porcelain | wc -l)
+      if [ "$CHANGES" -gt "0" ]; then
+        git status
+        git commit -m "${COMMIT_MESSAGE}"
+        git push
+      fi
   only:
     - master
 
 #Generates the version number and adds it to build.env so its available for later steps
+#Git pull is needed because maven-release pushes and causes this to break
 release:generate-release:
   image: node:16-buster-slim
   stage: generate-release
@@ -144,7 +152,6 @@ release:generate-release:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
     - npm install -g semantic-release @semantic-release/gitlab
     - npm install @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
-    - git pull
   script:
     - semantic-release --dry-run
     - cat build.env
@@ -157,6 +164,6 @@ release:generate-release:
 release:tag:
   stage: release
   extends: release:generate-release
-  needs: ["release:maven-release"]
+  needs: ["publish:jdk17"]
   script:
     - semantic-release
