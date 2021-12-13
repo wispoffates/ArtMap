@@ -1,8 +1,17 @@
 # Changelog
 
+## Release 3.9.1
+
+* 1.18.1 Support - Basic testing done so make sure you have backups.
+
+## Release 3.9.0'
+
+* Gitlab CI - Automates the releases and testing to save me some time.
+* 3 JDK builds - Builds now available for JDK 8,16,17
+
 ## Release 3.8.1
 
-* Fix 1.13 /art menu failing to open
+* Fix 1.13 `/art menu` failing to open
 * Attempt to fix AnvilGUI errors by avoiding a class conflict with other plugins.
 * Paintbrush will no longer show in the recipe menu when disabled.
 * Fix a possible NPE if a player is in a mneu when an `/art reload` is called.
