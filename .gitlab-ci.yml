@@ -132,7 +132,7 @@ release:maven-release:
     - git add .
     - git status
     - git commit -m "${COMMIT_MESSAGE}"
-    - git push --dry-run
+    - git push
   only:
     - master
 
