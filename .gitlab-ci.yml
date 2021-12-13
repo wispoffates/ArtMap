@@ -131,7 +131,7 @@ release:maven-release:
   script:
     - git checkout master
     - mvn versions::set -DnewVersion=${NEXT_VERSION}
-    - mvn versions::commit mvn
+    - mvn versions::commit
     - git add .
     - |-
       CHANGES=$(git status --porcelain | wc -l)
