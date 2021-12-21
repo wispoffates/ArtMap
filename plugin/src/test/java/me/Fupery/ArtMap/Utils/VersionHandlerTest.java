@@ -79,8 +79,8 @@ public class VersionHandlerTest {
         BukkitVersion version = VersionHandler.getLatest();
         Assert.assertTrue("Should be greater than 1.15 :: " + version.toString(), version.isGreaterThan(BukkitVersion.v1_15));
         Assert.assertTrue("Should be greater than or equal to to 1.16 :: " + version.toString(), version.isGreaterOrEqualTo(BukkitVersion.v1_16));
-        Assert.assertTrue("Should equal to 1.16 :: " + version.toString(), version.isEqualTo(BukkitVersion.v1_16));
-        Assert.assertTrue("Should less than or equal to 1.16", version.isLessOrEqualTo(BukkitVersion.v1_16));
+        Assert.assertTrue("Should equal to 1.18 :: " + version.toString(), version.isEqualTo(BukkitVersion.v1_18));
+        Assert.assertTrue("Should less than or equal to 1.18", version.isLessOrEqualTo(BukkitVersion.v1_18));
         //Assert.assertTrue("Should be less than to 1.15", version.isLessThan(BukkitVersion.v1_15));
     }
 
