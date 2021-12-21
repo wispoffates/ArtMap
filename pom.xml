@@ -20,6 +20,7 @@
 		<module>compatibility/Spigot_1_13</module>
 		<module>compatibility/Spigot_1_14</module>
 		<module>compatibility/Spigot_1_16</module>
+		<module>compatibility/Spigot_1_18</module>
 		<!-- plugin compatibility -->
 		<module>compatibility/ASkyBlock</module>
 		<module>compatibility/BentoBox</module>

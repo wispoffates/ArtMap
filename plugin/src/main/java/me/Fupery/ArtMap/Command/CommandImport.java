@@ -135,7 +135,7 @@ class CommandImport extends AsyncCommand {
             msg.message = Lang.COMMAND_EXPORT.get();
             return;
         }
-        sender.sendMessage("Import complete.");
+        sender.sendMessage("Import complete. Check the console for errors.");
     }
 
     //Slows the import down a bit to keep from lagging the main thread (10 per second)

@@ -223,14 +223,14 @@ public class CommandExport extends AsyncCommand {
                     // null artistname since its dropped when importing into the database.
                     MapArt mapArt = new MapArt(map.getMapId(), this.title, this.artist, null, this.date);
                     ArtMap.instance().getArtDatabase().saveArtwork(mapArt, cMap);
-                    sender.sendMessage(this.title + " :: Import Successful!");
+                    ArtMap.instance().getLogger().info(this.title + " :: Import Successful!");
                 } catch (DuplicateArtworkException dae) {
                     if (sender != null) {
-                        sender.sendMessage(this.title + " :: Import Failed! :: " + dae.getMessage());
+                        ArtMap.instance().getLogger().warning(this.title + " :: Import Failed! :: " + dae.getMessage());
                     }
                 } catch (Exception e) {
                     if (sender != null) {
-                        sender.sendMessage(this.title + " :: Import Failed! :: " + e.getMessage());
+                        ArtMap.instance().getLogger().warning(this.title + " :: Import Failed! :: " + e.getMessage());
                     }
                     ArtMap.instance().getLogger().log(Level.SEVERE,
                             this.title + " :: Import Failed! :: " + e.getMessage(), e);

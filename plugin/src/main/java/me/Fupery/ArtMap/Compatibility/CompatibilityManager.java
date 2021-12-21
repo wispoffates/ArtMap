@@ -20,6 +20,7 @@ import me.Fupery.ArtMap.Compatibility.impl.MarriageMasterCompat;
 import me.Fupery.ArtMap.Compatibility.impl.Palette_1_13;
 import me.Fupery.ArtMap.Compatibility.impl.Palette_1_14;
 import me.Fupery.ArtMap.Compatibility.impl.Palette_1_16;
+import me.Fupery.ArtMap.Compatibility.impl.Palette_1_18;
 import me.Fupery.ArtMap.Compatibility.impl.EssentialsCompat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared4Compat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared5Compat;
@@ -83,8 +84,10 @@ public class CompatibilityManager implements RegionHandler {
             palette = new Palette_1_13();
         } else if(version.isLessThan(BukkitVersion.v1_16)) {
             palette = new Palette_1_14();
-        } else {
+        } else if(version.isLessThan(BukkitVersion.v1_18)) {
             palette = new Palette_1_16();
+        } else {
+            palette = new Palette_1_18();
         }
     }
 

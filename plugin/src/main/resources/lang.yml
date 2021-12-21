@@ -292,6 +292,9 @@ DYE_WARPNED_NYLIUM: "Warped Nylium"
 DYE_WARPED_STEM: "Warped Stem"
 DYE_WARPED_HYPHAE: "Warped Hyphae"
 DYE_WARPED_WART_BLOCK: "Warped Wart"
+DYE_DEEPSLATE: "Cobbled Deepslate"
+DYE_RAW_IRON: "Raw Iron"
+DYE_GLOW_LICHEN: "Glow Lichen"
 
 #-------------------------------------[Artwork Title Filter]-------------------------------------#
 #Words in the following list are filtered from artwork titles:
