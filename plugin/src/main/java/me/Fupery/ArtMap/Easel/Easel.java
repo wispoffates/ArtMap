@@ -147,7 +147,7 @@ public class Easel {
 
     /**
      * Removes the current item mounted on the easel. If the item is an unsaved
-     * canvas, a canvas will be dropped at the easel. If the item is an edited
+     * canvas, an in progress artwork will be dropped at the easel. If the item is an edited
      * artwork, a copy of the original artwork wil be dropped.
      * 
      * @throws SQLException

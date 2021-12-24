@@ -4,11 +4,8 @@ package me.Fupery.ArtMap.Listeners;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.Cancellable;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.api.Config.Lang;
@@ -34,7 +31,7 @@ class PlayerCommandPreListener implements RegisteredListener {
 			ArtMap.instance().getArtistHandler().getCurrentSession(event.getPlayer()).isInArtKit()){
 			String message = event.getMessage().toLowerCase();
 			if(message.startsWith("/") && blacklist.contains(message.substring(1))) {
-				event.setCancelled​(true);
+				event.setCancelled(true);
 				event.getPlayer().sendMessage(Lang.PREFIX + ChatColor.RED + "This command can't be used at an easle.");
 			}
 		}

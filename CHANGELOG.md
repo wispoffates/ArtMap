@@ -1,5 +1,14 @@
 # Changelog
 
+## Release 3.9.3
+
+* Fix - Placing Unfinished artwork back on the easel after it being broken off.
+* Fix - Newer MC versions need a Title or the annoucement silently fails causing artmap warnings not to show.
+
+## Release 3.9.2
+
+* Add 3 new colors added in 1.18.
+
 ## Release 3.9.1
 
 * 1.18.1 Support - Basic testing done so make sure you have backups.

@@ -12,6 +12,7 @@ import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Easel.ClickType;
@@ -84,8 +85,8 @@ public final class EaselEvent {
 					return;
 				}
 				map.update(player);
-				mountCanvas(itemInHand, new Canvas(map));
-			} else if (material == ArtMaterial.MAP_ART) {
+				mountCanvas(itemInHand, new Canvas(map,player.getName()));
+			} else if (ArtItem.isArtwork(itemInHand)) {
 				// Edit an artwork on the easel
 				ArtMap.instance().getScheduler().ASYNC.run(() -> {
 					MapArt art;
@@ -115,7 +116,7 @@ public final class EaselEvent {
 								ArtMap.instance().getLogger().log(Level.SEVERE, "Error placing art on easel for edit!",e );
 							}
 						} else if ( unsaved ) {
-							Canvas canvas = new Canvas(id);
+							Canvas canvas = new Canvas(id, player.getName());
 							mountCanvas(itemInHand, canvas);
 						} else {
 							Lang.ActionBar.NEED_CANVAS.send(player);
