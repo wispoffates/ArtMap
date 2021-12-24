@@ -42,6 +42,6 @@ public class LangTest {
         Lang.load(mockPlugin, config);
         String[] needCanvas = Lang.ActionBar.NEED_CANVAS.get();
         Assert.assertFalse("NEED_CANVAS should not have returned empty!", needCanvas.length==0);
-
+        Assert.assertEquals("§4§lPlace a canvas on the easel to paint. §3§l/art §4§lfor more info.", needCanvas[0]);
     }
 }

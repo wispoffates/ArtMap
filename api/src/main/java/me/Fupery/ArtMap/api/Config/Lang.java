@@ -117,7 +117,7 @@ public enum Lang implements LangSet<String> {
                 if(messages.length>1) {
                     p.sendTitle(messages[0], messages[1], 20, 40 , 20);
                 } else {
-                    p.sendTitle("", messages[0], 20, 40 , 20);
+                    p.sendTitle("ArtMap", messages[0], 20, 40 , 20);
                 }
             }
         }

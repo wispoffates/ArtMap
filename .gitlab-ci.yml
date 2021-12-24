@@ -107,7 +107,7 @@ publish:jdk17:
 
 integration:
   stage: integration
-  needs: ["release:generate-release","build:jdk17"]
+  needs: ["build:jdk17"]
   script:
     - echo $NEXT_VERSION
     - echo $CURRENT_VERSION
