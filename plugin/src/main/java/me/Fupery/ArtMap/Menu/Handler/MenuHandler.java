@@ -18,14 +18,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MenuHandler {
     public final MenuList MENU = new MenuList();
     private final ConcurrentHashMap<UUID, CacheableMenu> openMenus = new ConcurrentHashMap<>();
+    private String menuKey;
     
     public MenuHandler(JavaPlugin plugin) {
         new MenuListener(this, plugin);
+
+        //condense the color codes to a single replaceable character
+        menuKey = showColorCodes(Lang.MenuTitle.MENU_HEADER.get().trim().toLowerCase());
+        //strip any color code of the end of the menukey since it can be overriden by a starting color code on menu title.
+        if(menuKey.lastIndexOf("$") == menuKey.length()-2) {
+            menuKey = menuKey.substring(0, menuKey.length()-2).trim(); //extra trim in case there was a space between the last word and the color code
+        }
+    }
+
+    private String showColorCodes(String input) {
+        return input.replace('§', '$').replace('&', '$');
     }
 
     public boolean isTrackingPlayer(Player player) {
-        String invTitle = player.getOpenInventory().getTitle();
-        return invTitle.startsWith(Lang.MenuTitle.MENU_HEADER.get());
+        //condense the color codes to a single replaceable character, Lowercase to avoid colorcodes changing case
+        String invTitle = showColorCodes(player.getOpenInventory().getTitle()).toLowerCase();
+        return invTitle.startsWith(menuKey);
     }
 
     public void openMenu(Player viewer, CacheableMenu menu) {

@@ -14,13 +14,6 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <repositories>
-    <repository>
-      <id>IntellectualSites</id>
-      <url>https://mvn.intellectualsites.com/content/groups/public/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>com.gitlab.blockstack</groupId>
@@ -36,6 +29,8 @@
       <groupId>com.plotsquared</groupId>
       <artifactId>PlotSquared-Core</artifactId>
       <version>5.13.11</version>
+      <systemPath>${project.basedir}/dependencies/PlotSquared-Core-5.13.11.jar</systemPath>
+  		<scope>system</scope>
     </dependency>
   </dependencies>
 </project>

@@ -39,6 +39,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
@@ -193,6 +194,9 @@ public class MockUtil {
             if(mat == Material.FILLED_MAP || mat == Material.MAP) {
                 MapMeta meta = mock(MapMeta.class);
                 return(meta);
+            } else if(mat == Material.PLAYER_HEAD) {
+                SkullMeta skull = mock(SkullMeta.class);
+                return skull;
             } else {
                 ItemMeta meta = mock(ItemMeta.class);
                 return meta;
@@ -253,6 +257,8 @@ public class MockUtil {
          File pluginYml = new File(getClass().getResource("/plugin.yml").getPath());
          PluginDescriptionFile desc = new PluginDescriptionFile(new FileInputStream(pluginYml));
          Mockito.when(mockArtmap.getDescription()).thenReturn(desc);
+         // Mock the server return
+         when(mockArtmap.getServer()).thenReturn(this.mockServer);
  
          // Mock the scheduler
          Scheduler mockScheduler = mock(Scheduler.class);

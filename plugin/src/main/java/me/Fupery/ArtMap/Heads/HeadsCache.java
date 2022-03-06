@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import javax.annotation.Nullable;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.bukkit.Material;
@@ -86,8 +85,10 @@ public class HeadsCache {
 	}
 
 	private void initHeadCache() {
-		int loaded = 0;
+		int cached = 0;
 		int mojang = 0;
+		int server = 0;
+		int failed = 0;
 		int artistsCount = 0;
 		try {
 			UUID[] artists = plugin.getArtDatabase().listArtists(UUID.randomUUID());
@@ -97,24 +98,42 @@ public class HeadsCache {
 			for (int i = 1; i < artists.length; i++) {
 				//check cache
 				if(this.isHeadCached(artists[i])) {
-					loaded++;
+					cached++;
 				} else {
-					//hard retrieve from mojang
-					SkullMeta head = this.getHeadMeta(artists[i]);
-					if (head != null) {
-						mojang++;
+					//Update the cache
+					HeadCacheResponeType response = this.updateTexture(artists[i]);
+					switch (response) {
+						case MOJANG_API:
+							mojang++;
+							Thread.sleep(plugin.getConfiguration().HEAD_PREFETCH_PERIOD); //go real slow
+							break;
+						case CACHE:
+							// cached is counted above to prevent unnecessary loading
+							break;
+						case NONE:
+							failed++;
+							if(plugin.getConfiguration().HEAD_FETCH_MOJANG) {
+								//go slow if we failed an api call
+								Thread.sleep(plugin.getConfiguration().HEAD_PREFETCH_PERIOD); 
+							}
+							break;
+						case SERVER:
+							server++;
+							break;
+						default:
+							break;
+
 					}
-					Thread.sleep(plugin.getConfiguration().HEAD_PREFETCH_PERIOD); //go real slow
 				}
 			}
 		} catch (Exception e) {
-			//fall out so we don't error too many times
+			plugin.getLogger().log(Level.SEVERE, "Exception during prefetch!",e);
 		}
-		if((loaded+mojang) == 0 && artistsCount>1) {
+		if((cached+mojang) == 0 && artistsCount>1) {
 			plugin.getLogger().warning("Could not preload any player heads! Is the server in offline mode and not behind a Bungeecord?");
 		} else {
-			plugin.getLogger().info(MessageFormat.format("Loaded {0} from disk cache, and {1} from mojang out of {2} artists.", loaded, mojang,artistsCount - 1));
-			if(loaded+mojang < artistsCount) {
+			plugin.getLogger().info(MessageFormat.format("Loaded {0} from disk cache, {1} from server, and {2} from mojang out of {3} artists with {4} failures", cached, server, mojang, artistsCount - 1, failed));
+			if(cached+mojang < artistsCount) {
 				plugin.getLogger().info("Remaining artists will be loaded when needed.");
 			}
 		}
@@ -164,20 +183,20 @@ public class HeadsCache {
 	 * @return The Skull.
 	 * @throws HeadFetchException
 	 */
-	public ItemStack getHead(UUID playerId) throws HeadFetchException {
+	protected ItemStack getHead(UUID playerId) throws HeadFetchException {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
-		SkullMeta meta = getHeadMeta(playerId);
-		if (meta == null) { //try loading it the normal way
-			meta = (SkullMeta) head.getItemMeta();
+		Optional<SkullMeta> meta = getHeadMeta(playerId);
+		if (!meta.isPresent()) { //try loading it the normal way
+			SkullMeta headmeta = (SkullMeta) head.getItemMeta();
 			OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
 			if(player.hasPlayedBefore()) {
-				meta.setOwningPlayer(player);
-				meta.setDisplayName(player.getName());
-				head.setItemMeta(meta);
+				headmeta.setOwningPlayer(player);
+				headmeta.setDisplayName(player.getName());
+				head.setItemMeta(headmeta);
 			}
 			return head; 
 		}
-		head.setItemMeta(meta);
+		head.setItemMeta(meta.get());
 		return head;
 	}
 
@@ -227,28 +246,14 @@ public class HeadsCache {
 	 * @return The Skull meta.
 	 * @throws HeadFetchException
 	 */
-	@Nullable
-	public SkullMeta getHeadMeta(UUID playerId) throws HeadFetchException {
+	public Optional<SkullMeta> getHeadMeta(UUID playerId) throws HeadFetchException {
 		// is it in the cache?
 		if (!textureCache.containsKey(playerId)) {
 			this.updateTexture(playerId);
 		}
 		TextureData data = textureCache.get(playerId);
 		if (data == null) {
-			//If mojang is disabled try and get it
-			if(!plugin.getConfiguration().HEAD_FETCH_MOJANG) {
-				ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
-				SkullMeta meta = getHeadMeta(playerId);
-				meta = (SkullMeta) head.getItemMeta();
-				OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
-				if(player.hasPlayedBefore()) {
-					meta.setOwningPlayer(player);
-					meta.setDisplayName(player.getName());
-					head.setItemMeta(meta);
-					return meta;
-				}
-			}
-			return null;
+			return Optional.empty();
 		}
 		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
 		PropertyMap propertyMap = profile.getProperties();
@@ -265,19 +270,46 @@ public class HeadsCache {
 		Reflections.getField(headMetaClass, "profile", GameProfile.class).set(headMeta, profile);
 		headMeta.setDisplayName(data.name);
 
-		return (SkullMeta) headMeta;
+		return Optional.of((SkullMeta) headMeta);
 	}
 
-	protected void updateTexture(UUID playerId) throws HeadFetchException {
-		//check if the user has disabled fetching heads from mojang
-		if(!plugin.getConfiguration().HEAD_FETCH_MOJANG) {
-			return;
+	protected HeadCacheResponeType updateTexture(UUID playerId) throws HeadFetchException {
+		//Try and get the head texture from the server
+		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
+		SkullMeta meta = (SkullMeta) head.getItemMeta();
+		OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
+		//Dont try from the server if they havent been on it recently
+		if(player.hasPlayedBefore()) {
+			meta.setOwningPlayer(player);
+			meta.setDisplayName(player.getName());
+			head.setItemMeta(meta);
+			GameProfile profile = Reflections.getField(meta.getClass(), "profile", GameProfile.class).get(meta);
+			PropertyMap propertyMap = profile.getProperties();
+			//ArtMap.instance().getLogger().info("Here 1! " + propertyMap.keySet().stream().map(Object::toString).collect(Collectors.joining(",")));
+			if(propertyMap != null && propertyMap.containsKey("textures")) {
+				Optional<Property> prop = profile.getProperties().get("textures").stream().findFirst();
+				//ArtMap.instance().getLogger().info("Here 2! " + player.getName());
+				if(prop.isPresent()) {
+					//ArtMap.instance().getLogger().info("Here 3! " + player.getName());
+					TextureData data = new TextureData(player.getName(),prop.get().getValue());
+					textureCache.put(playerId, data);
+					this.saveCacheFile(cacheFile);
+					nameToUUID.put(player.getName(), player.getUniqueId());
+					return HeadCacheResponeType.SERVER;
+				}
+			}
 		}
-		Optional<TextureData> data = getSkinUrl(playerId);
-		if(data.isPresent()) {
-			textureCache.put(playerId, data.get());
-			this.saveCacheFile(cacheFile);
+		//Use the mojang if the local server look up dies
+		if(plugin.getConfiguration().HEAD_FETCH_MOJANG) {
+			Optional<TextureData> data = getSkinUrl(playerId);
+			if(data.isPresent()) {
+				textureCache.put(playerId, data.get());
+				this.saveCacheFile(cacheFile);
+				nameToUUID.put(data.get().name, playerId);
+				return HeadCacheResponeType.MOJANG_API;
+			}
 		}
+		return HeadCacheResponeType.NONE;
 	}
 
 	/**
@@ -352,6 +384,20 @@ public class HeadsCache {
 			this.name = name;
 			this.texture = texture;
 		}
+	}
+
+	/** Where the skin was loaded from.
+	 * Used by the prefetch to know when it needs to rate limit.
+	 */
+	public enum HeadCacheResponeType {
+		/** Retrieved from Cache */
+		CACHE, 
+		/** Retrieved from Server */
+		SERVER, 
+		/** Retrieved from Mojang API */
+		MOJANG_API, 
+		/** Failure to get skin */
+		NONE
 	}
 
 }

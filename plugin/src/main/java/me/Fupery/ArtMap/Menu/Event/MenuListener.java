@@ -44,7 +44,6 @@ public class MenuListener implements Listener {
         if (!handler.isTrackingPlayer((Player) event.getWhoClicked())) {
             return;
         }
-
         event.setCancelled(true);
 
         final Player player = (Player) event.getWhoClicked();
@@ -58,7 +57,6 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onItemDrag(InventoryDragEvent event) {
-
         if (!handler.isTrackingPlayer((Player) event.getWhoClicked())) {
             return;
         }

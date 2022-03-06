@@ -74,15 +74,13 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 			}
 
 			// skip 0 as it is the viewer
-			boolean fetchHead = true;
 			for (int i = 1; i < artists.length; i++) {
 				try {
-					buttons.add(new ArtworkListButton(artists[i], fetchHead));
+					buttons.add(new ArtworkListButton(artists[i], true));
 				} catch (HeadFetchException e) {
 					//try again with the fetch set to false as it will fail over and over
-					fetchHead = false;
 					try {
-						buttons.add(new ArtworkListButton(artists[i], fetchHead));
+						buttons.add(new ArtworkListButton(artists[i], false));
 					} catch (HeadFetchException e1) {
 						// this one won't fail 
 					}
@@ -110,23 +108,20 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 
 		final UUID artist;
 		String artistName;
-		//TODO: Fix this when we rearrange the database
+		//TODO: Fix this when we rearrange the database.  Get the artist name from the database and not try and pull it off the meta
 		public ArtworkListButton(UUID artist, boolean loadHeads) throws HeadFetchException {
 			super(Material.PLAYER_HEAD);
 			this.artist = artist;
 
 			SkullMeta meta = (SkullMeta) getItemMeta();
+			this.artistName = artist.toString();
+			meta.setDisplayName(artist.toString());
 			if(loadHeads) {
-				meta = ArtMap.instance().getHeadsCache().getHeadMeta(artist);
+				meta = ArtMap.instance().getHeadsCache().getHeadMeta(artist).orElse(meta);
 				this.artistName = meta.getDisplayName();
-			} else {
-				this.artistName = artist.toString();
-				meta.setDisplayName(artist.toString());
 			}
-			meta = meta.clone();
-
 			meta.setLore(Collections.singletonList(HelpMenu.CLICK));
-			setItemMeta(meta);
+			setItemMeta(meta.clone());
 		}
 
 		@Override

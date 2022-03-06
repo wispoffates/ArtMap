@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -84,7 +85,8 @@ public abstract class ListMenu extends CacheableMenu {
             try {
                 cachedButtons = getListItems().get();
             } catch (InterruptedException | ExecutionException e) {
-                ArtMap.instance().getLogger().severe("Interrupted creating menu buttons!");
+                ArtMap.instance().getLogger().log(Level.SEVERE,"Interrupted creating menu buttons!",e);
+                cachedButtons = new Button[0];
             }
         }
 
