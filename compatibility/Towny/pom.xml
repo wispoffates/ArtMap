@@ -13,6 +13,13 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
+  <repositories>
+    <repository>
+      <id>glaremasters repo</id>
+      <url>https://repo.glaremasters.me/repository/towny/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>com.gitlab.blockstack</groupId>
