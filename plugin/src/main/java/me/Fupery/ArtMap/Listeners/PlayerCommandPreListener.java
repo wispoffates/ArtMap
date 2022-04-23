@@ -15,12 +15,12 @@ class PlayerCommandPreListener implements RegisteredListener {
 	
 	private Set<String> blacklist = new HashSet<>();
 	
-	public void getBlacklist(){
+	public PlayerCommandPreListener(){
 		String blacklistdata = ArtMap.instance().getConfiguration().BLACKLIST;
 		if(blacklistdata != null){
-			String[] commandarray = blacklistdata.split(", ");
+			String[] commandarray = blacklistdata.split(",");
 			for (String command: commandarray) {
-				blacklist.add(command);
+				blacklist.add(command.trim());
 			}
 		}
 	}
@@ -30,9 +30,13 @@ class PlayerCommandPreListener implements RegisteredListener {
 		if(ArtMap.instance().getArtistHandler().getCurrentSession(event.getPlayer()) != null &&
 			ArtMap.instance().getArtistHandler().getCurrentSession(event.getPlayer()).isInArtKit()){
 			String message = event.getMessage().toLowerCase();
-			if(message.startsWith("/") && blacklist.contains(message.substring(1))) {
-				event.setCancelled(true);
-				event.getPlayer().sendMessage(Lang.PREFIX + ChatColor.RED + "This command can't be used at an easle.");
+			if(message.startsWith("/")) {
+				for(String disallowed : this.blacklist) {
+					if(message.startsWith(disallowed, 1)) {
+						event.setCancelled(true);
+						event.getPlayer().sendMessage(Lang.PREFIX + ChatColor.RED + "This command can't be used at an easel.");
+					}
+				}
 			}
 		}
 	}

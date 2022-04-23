@@ -23,9 +23,7 @@ public class EventManager {
         listeners.add(new PlayerSwapHandListener());
         listeners.add(new PlayerDismountListener());
         listeners.add(new PlayerJoinEventListener());
-		PlayerCommandPreListener compre = new PlayerCommandPreListener();
-		compre.getBlacklist();
-        listeners.add(compre);
+		listeners.add(new PlayerCommandPreListener());
         PluginManager manager = plugin.getServer().getPluginManager();
         for (RegisteredListener listener : listeners) manager.registerEvents(listener, plugin);
     }
