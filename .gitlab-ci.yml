@@ -81,7 +81,7 @@ coverage:
 .publish:
   stage: publish
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/target/ArtMap-${CURRENT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ArtMap/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/target/ArtMap-${NEXT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ArtMap/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
   only:
     - master
 
