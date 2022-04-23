@@ -14,6 +14,13 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
+  <repositories>
+    <repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>com.gitlab.blockstack</groupId>
@@ -28,7 +35,7 @@
     <dependency>
 			<groupId>com.github.TechFortress</groupId>
 			<artifactId>GriefPrevention</artifactId>
-			<version>16.11.5</version>
+			<version>16.18</version>
 			<scope>provided</scope>
 		</dependency>
   </dependencies>
