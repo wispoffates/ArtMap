@@ -72,7 +72,9 @@ coverage:
   needs: ["build:jdk17"]
   artifacts:
     reports:
-      cobertura: plugin/target/site/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: plugin/target/site/cobertura.xml
 
 ################################################################################################
 # Publish
