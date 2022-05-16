@@ -10,7 +10,7 @@
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
     <artifactId>ArtMap-parent</artifactId>
-    <version>3.9.5</version>
+    <version>3.9.6</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
