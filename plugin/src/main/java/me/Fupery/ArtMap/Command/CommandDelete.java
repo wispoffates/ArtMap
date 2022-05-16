@@ -25,7 +25,7 @@ class CommandDelete extends AsyncCommand {
         try {
             Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
 
-            if (art.isEmpty()) {
+            if (!art.isPresent()) {
                 msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
                 return;
             }

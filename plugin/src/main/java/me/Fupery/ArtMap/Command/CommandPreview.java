@@ -50,7 +50,7 @@ class CommandPreview extends AsyncCommand {
             return;
         }
 
-        if (art.isEmpty()) {
+        if (!art.isPresent()) {
             msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
             return;
         }

@@ -123,7 +123,7 @@ public class CommandHandler implements CommandExecutor {
 							String title = strings[1];
 							try {
 								Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(title);
-								if (art.isEmpty()) {
+								if (!art.isPresent()) {
 									sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
 									return;
 								}

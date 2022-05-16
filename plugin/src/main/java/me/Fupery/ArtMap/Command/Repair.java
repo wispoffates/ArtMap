@@ -70,7 +70,7 @@ public class Repair extends AsyncCommand {
             } catch (SQLException e) {
                 return e.getMessage();
             }
-            if(art.isEmpty()) {
+            if(!art.isPresent()) {
                 return "No artwork found with this name: " + input;
             }
             id = art.get().getMapId();
