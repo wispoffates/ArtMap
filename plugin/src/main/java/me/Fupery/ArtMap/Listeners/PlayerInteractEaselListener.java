@@ -67,7 +67,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
 	@EventHandler
-	public void onRickClick(PlayerInteractEvent e) {
+	public void onRightClick(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		Action a = e.getAction();
 		if ( a == Action.RIGHT_CLICK_AIR && e.getItem() != null

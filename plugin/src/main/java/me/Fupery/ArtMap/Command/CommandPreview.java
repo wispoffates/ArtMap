@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ class CommandPreview extends AsyncCommand {
 
         Player player = (Player) sender;
 
-        MapArt art;
+        Optional<MapArt> art;
         try {
             art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
         } catch (SQLException e) {
@@ -49,11 +50,11 @@ class CommandPreview extends AsyncCommand {
             return;
         }
 
-        if (art == null) {
+        if (art.isEmpty()) {
             msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
             return;
         }
-        if (!previewArtwork(player, art)) {
+        if (!previewArtwork(player, art.get())) {
             msg.message = Lang.EMPTY_HAND_PREVIEW.get();
             return;
         }

@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -23,8 +24,8 @@ final class ArtTable extends SQLiteTable {
                 ");");
     }
 
-    MapArt getArtwork(String title) throws SQLException {
-        return new QueuedQuery<MapArt>() {
+    Optional<MapArt> getArtwork(String title) throws SQLException {
+        return new QueuedQuery<Optional<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -32,8 +33,8 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt read(ResultSet set) throws SQLException {
-                return (set.next()) ? readArtwork(set) : null;
+			protected Optional<MapArt> read(ResultSet set) throws SQLException {
+                return (set.next()) ? Optional.of(readArtwork(set)) : Optional.empty();
             }
         }.execute("SELECT * FROM " + TABLE + " WHERE title=?;");
     }

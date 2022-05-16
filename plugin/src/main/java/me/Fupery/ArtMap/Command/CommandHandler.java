@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -121,12 +122,12 @@ public class CommandHandler implements CommandExecutor {
 						if (strings.length > 1) {
 							String title = strings[1];
 							try {
-								MapArt art = ArtMap.instance().getArtDatabase().getArtwork(title);
-								if (art == null) {
+								Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(title);
+								if (art.isEmpty()) {
 									sender.sendMessage(Lang.PREFIX + ChatColor.RED + String.format(Lang.MAP_NOT_FOUND.get(), title));
 									return;
 								}
-								item = art.getMapItem();
+								item = art.get().getMapItem();
 							} catch( Exception e) {
 								sender.sendMessage(Lang.PREFIX + ChatColor.RED + "Error retrieving art! Check logs for details.");
 								ArtMap.instance().getLogger().log(Level.SEVERE, "Error retrieving art!", e);

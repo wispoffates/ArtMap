@@ -115,15 +115,9 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.5</version>
+			<version>2.9.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
-            <scope>provided</scope>
-        </dependency>
 		<dependency>
 			<groupId>net.wesjd</groupId>
     		<artifactId>anvilgui</artifactId>
@@ -305,10 +299,4 @@
 		<system>gitlab</system>
 		<url>https://gitlab.com/BlockStack/ArtMap/issues</url>
 	</issueManagement>
-	<pluginRepositories>
-	    <pluginRepository>
-			<id>apache.snapshots</id>
-			<url>https://repository.apache.org/snapshots/</url>
-		</pluginRepository>
-	</pluginRepositories>
 </project>

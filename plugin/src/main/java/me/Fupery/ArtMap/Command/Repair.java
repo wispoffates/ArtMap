@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
@@ -63,16 +64,16 @@ public class Repair extends AsyncCommand {
             id = Integer.parseInt(input);
         } catch(NumberFormatException nfe) {
             //likely an artwork name
-            MapArt art;
+            Optional<MapArt> art;
             try {
                 art = ArtMap.instance().getArtDatabase().getArtwork(input);
             } catch (SQLException e) {
                 return e.getMessage();
             }
-            if(art == null) {
+            if(art.isEmpty()) {
                 return "No artwork found with this name: " + input;
             }
-            id = art.getMapId();
+            id = art.get().getMapId();
         }
         try {
             boolean repaired = this.repairArtwork(id, repair);

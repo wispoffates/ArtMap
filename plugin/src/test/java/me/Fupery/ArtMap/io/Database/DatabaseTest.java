@@ -258,7 +258,7 @@ public class DatabaseTest {
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
         db.renameArtwork(savedArt, "testrename");
-        MapArt renamedArt = db.getArtwork("testrename");
+        MapArt renamedArt = db.getArtwork("testrename").orElse(null);
         Assert.assertNotNull("Database save returned null!", renamedArt);
         Assert.assertEquals("Art title does not match the rename.", "testrename", renamedArt.getTitle());
         Assert.assertEquals("Art author was changed.", player.getName(), renamedArt.getArtistName());

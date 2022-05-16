@@ -37,7 +37,7 @@ public class CanvasRenderer extends MapRenderer implements ICanvasRenderer {
         axisLength = 128 / resolutionFactor;
         maxUpdate = 16384;// TODO: 22/09/2016 magic value
         loadMap();
-        cursor = new Cursor(yawOffset);
+        cursor = new Cursor(yawOffset, ArtMap.instance().getPixelTable());
         active = new AtomicBoolean(true);
     }
 

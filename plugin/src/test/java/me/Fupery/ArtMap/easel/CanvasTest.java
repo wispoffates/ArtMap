@@ -32,21 +32,21 @@ public class CanvasTest {
     @Test
     public void testArtistParse() {
         List<String> meta = Arrays.asList("test", "by artist");
-        String artist = Canvas.parseArtist(meta);
+        String artist = Canvas.parseArtist(meta).get();
         Assert.assertEquals("The arist should be 'artist'","artist", artist);
     }
 
     @Test
     public void testArtistParseLonger() {
         List<String> meta = Arrays.asList("test", "test2", "by artist", "test3");
-        String artist = Canvas.parseArtist(meta);
+        String artist = Canvas.parseArtist(meta).get();
         Assert.assertEquals("The arist should be 'artist'","artist", artist);
     }
 
     @Test
     public void testArtistParseFailure() {
         List<String> meta = Arrays.asList("test", "test2", "artist", "test3");
-        String artist = Canvas.parseArtist(meta);
+        String artist = Canvas.parseArtist(meta).orElse(null);
         Assert.assertEquals("The arist should be 'null'",null, artist);
     }
 

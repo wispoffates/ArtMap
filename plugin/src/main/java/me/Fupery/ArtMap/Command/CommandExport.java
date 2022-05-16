@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -105,7 +106,7 @@ public class CommandExport extends AsyncCommand {
                     msg.message = Lang.COMMAND_EXPORT.get();
                     return;
                 }
-                MapArt art;
+                Optional<MapArt> art;
                 try {
                     art = ArtMap.instance().getArtDatabase().getArtwork(args[2]);
                 } catch (SQLException e1) {
@@ -113,8 +114,8 @@ public class CommandExport extends AsyncCommand {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e1);
                     return;
                 }
-                if (art != null) {
-                    artToExport.add(art);
+                if (art.isPresent()) {
+                    artToExport.add(art.get());
                     exportFilename = args[3];
                 } else {
                     msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[2]);
@@ -160,7 +161,6 @@ public class CommandExport extends AsyncCommand {
             }.getType();
             gson.toJson(exports, collectionType, writer);
             writer.flush();
-            writer.close();
             sender.sendMessage(MessageFormat.format("Completed export of {0} artworks.", exports.size()));
         } catch (IOException e) {
             ArtMap.instance().getLogger().log(Level.SEVERE, "Failure writing export!", e);
@@ -210,12 +210,12 @@ public class CommandExport extends AsyncCommand {
                     CompressedMap cMap = new CompressedMap(map.getMapId(), this.hash,
                             Base64.getDecoder().decode(this.mapData));
                     map.setMap(cMap.decompressMap(), true);
-                    MapArt check = ArtMap.instance().getArtDatabase().getArtwork(this.title);
-                    if (check != null) {
+                    Optional<MapArt> check = ArtMap.instance().getArtDatabase().getArtwork(this.title);
+                    if (check.isPresent()) {
                         // art with this title all ready exists see if its the same artwork (artist,and
                         // hash) otherwise increment name by 1
-                        if (check.getArtist().equals(this.artist)
-                                && check.getMap().compress().getHash().equals(this.hash)) {
+                        if (check.get().getArtist().equals(this.artist)
+                                && check.get().getMap().compress().getHash().equals(this.hash)) {
                             throw new DuplicateArtworkException("Artwok all ready in database");
                         }
                         this.title = this.title + "_1";

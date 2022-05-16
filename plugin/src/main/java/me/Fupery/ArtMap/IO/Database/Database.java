@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -62,7 +63,7 @@ public final class Database {
      * @return The artwork or null if it is not in the database.
      * @throws SQLException
      */
-    public MapArt getArtwork(String title) throws SQLException {
+    public Optional<MapArt> getArtwork(String title) throws SQLException {
         return artworks.getArtwork(title);
     }
 
@@ -117,22 +118,22 @@ public final class Database {
     public MapArt saveArtwork(Canvas art, String title, Player player) throws DuplicateArtworkException,
             PermissionException, SQLException, IOException, NoSuchFieldException, IllegalAccessException {
 		// handle update case or all ready used name
-		MapArt mapArt = this.getArtwork(title);
-		if (mapArt != null) { // same name
+		Optional<MapArt> mapArt = this.getArtwork(title);
+		if (mapArt.isPresent()) { // same name
 			if (art instanceof Canvas.CanvasCopy) {
 				CanvasCopy copy = CanvasCopy.class.cast(art);
-				if (copy.getOriginalId() == mapArt.getMapId()) {
-					if (mapArt.getArtist().equals(player.getUniqueId()) || player.isOp()
+				if (copy.getOriginalId() == mapArt.get().getMapId()) {
+					if (mapArt.get().getArtist().equals(player.getUniqueId()) || player.isOp()
 							|| player.hasPermission("artmap.admin")) {
 						// update
 						MapView newView = ArtMap.getMap(art.getMapId());
 						// Force update of map data
-						mapArt.getMap().setMap(ArtMap.instance().getReflection().getMap(newView), true);
+						mapArt.get().getMap().setMap(ArtMap.instance().getReflection().getMap(newView), true);
 						// Update database
 						CompressedMap map = CompressedMap.compress(copy.getOriginalId(), newView);
 						maps.updateMap(map);
 						this.deleteInProgressArt(new Map(copy.getMapId())); // recycle the copy
-						return mapArt;
+						return mapArt.get();
 					}
                     throw new PermissionException(Lang.NO_PERM.get());
 				} else {
@@ -143,16 +144,16 @@ public final class Database {
 			}
 		}
 		// new artwork
-		mapArt = new MapArt(art.getMapId(), title, player.getUniqueId(),player.getName(),new Date());
+		MapArt artwork = new MapArt(art.getMapId(), title, player.getUniqueId(),player.getName(),new Date());
 		MapView mapView = ArtMap.getMap(art.getMapId());
 		CompressedMap map = CompressedMap.compress(mapView);
-		artworks.addArtwork(mapArt);
+		artworks.addArtwork(artwork);
 		if (maps.containsMap(map.getId())) {
 			maps.updateMap(map);
 		} else {
 			maps.addMap(map);
 		}
-		return mapArt;
+		return artwork;
     }
     
     /**

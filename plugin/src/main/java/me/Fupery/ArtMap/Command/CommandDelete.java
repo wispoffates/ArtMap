@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Command;
 
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
@@ -22,19 +23,19 @@ class CommandDelete extends AsyncCommand {
 			return;
 		}
         try {
-            MapArt art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
+            Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
 
-            if (art == null) {
+            if (art.isEmpty()) {
                 msg.message = String.format(Lang.MAP_NOT_FOUND.get(), args[1]);
                 return;
             }
             if (sender instanceof Player
-                    && !(art.getArtistPlayer().getUniqueId().equals(((Player) sender).getUniqueId())
+                    && !(art.get().getArtistPlayer().getUniqueId().equals(((Player) sender).getUniqueId())
                     || sender.hasPermission("artmap.admin"))) {
                 msg.message = Lang.NO_PERM.get();
                 return;
             }
-            ArtMap.instance().getArtDatabase().deleteArtwork(art);
+            ArtMap.instance().getArtDatabase().deleteArtwork(art.get());
             msg.message = String.format(Lang.DELETED.get(), args[1]);
         } catch(Exception e) {
             sender.sendMessage("Failure deleting art! Check logs for details.");

@@ -29,6 +29,16 @@ public class PixelTableManager {
         }
     }
 
+    public static PixelTableManager buildTables(JavaPlugin plugin, int resolutionFactor) {
+        PixelTable table;
+        try {
+            table = DataTables.loadTable(resolutionFactor);
+            return new PixelTableManager(resolutionFactor, table.getYawBounds(), table.getPitchBounds());
+        } catch (Exception | NoClassDefFoundError | DataTables.InvalidResolutionFactorException e) {
+            return null;
+        }
+    }
+
     public float[] getYawBounds() {
         return Arrays.copyOf(this.yawBounds, this.yawBounds.length);
     }

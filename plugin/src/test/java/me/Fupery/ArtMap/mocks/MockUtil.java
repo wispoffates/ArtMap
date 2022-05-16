@@ -61,6 +61,7 @@ import me.Fupery.ArtMap.api.Config.Configuration;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.Heads.HeadsCache;
+import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Database.Map.Size;
 import me.Fupery.ArtMap.Utils.Reflection;
 import me.Fupery.ArtMap.Utils.Scheduler;
@@ -334,6 +335,10 @@ public class MockUtil {
          //mock HeadsCahce
          HeadsCache cache = mock(HeadsCache.class);
          when(mockArtmap.getHeadsCache()).thenReturn(cache);
+
+         //mock DataTabes
+         PixelTableManager pixelTableManager = PixelTableManager.buildTables(mockArtmap);
+         when(mockArtmap.getPixelTable()).thenReturn(pixelTableManager);
 
          this.mockArtmap = mockArtmap;
          return this;
