@@ -138,12 +138,10 @@ class PlayerInteractEaselListener implements RegisteredListener {
     }
 
     private boolean checkSignBreak(Block block, Cancellable event) {
-
         if (block.getType() == ArtMap.instance().getBukkitVersion().getVersion().getWallSign()) {
             Sign sign = ((Sign) block.getState());
 
             if (sign.getLine(3).equals(EaselPart.ARBITRARY_SIGN_ID)) {
-
                 if (ArtMap.instance().getEasels().containsKey(block.getLocation())
                         || Easel.checkForEasel(block.getLocation())) {
                     event.setCancelled(true);

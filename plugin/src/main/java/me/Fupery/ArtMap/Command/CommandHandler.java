@@ -171,17 +171,6 @@ public class CommandHandler implements CommandExecutor {
                 }
             }
         });
-		commands.put("reload", new AsyncCommand("artmap.admin", "/art reload", true) {
-            @Override
-            public void runCommand(CommandSender sender, String[] args, ReturnMessage msg) {
-                ArtMap.instance().getScheduler().SYNC.run(() -> {
-                    JavaPlugin plugin = ArtMap.instance();
-                    plugin.onDisable();
-                    plugin.onEnable();
-                    sender.sendMessage(Lang.PREFIX + ChatColor.GREEN + "Successfully reloaded ArtMap!");
-                });
-            }
-        });
     }
 
     @Override

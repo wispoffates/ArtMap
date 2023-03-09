@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.Fupery.ArtMap.api.IArtMap;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
 
 public enum Lang implements LangSet<String> {
@@ -117,7 +119,12 @@ public enum Lang implements LangSet<String> {
                 if(messages.length>1) {
                     p.sendTitle(messages[0], messages[1], 20, 40 , 20);
                 } else {
-                    p.sendTitle("ArtMap", messages[0], 20, 40 , 20);
+                    //if the string is blank don't print anything
+                    if(messages[0].isEmpty()) {
+                        return;
+                    }
+                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(messages[0]));
+                    //p.sendTitle("ArtMap", messages[0], 20, 40 , 20);
                 }
             }
         }
