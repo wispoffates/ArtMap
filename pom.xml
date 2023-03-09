@@ -66,7 +66,7 @@
 		</repository>
 		<repository>
 			<id>citizen</id>
-			<url>https://repo.citizensnpcs.co</url>
+			<url>https://maven.citizensnpcs.co/repo</url>
 		</repository>
 		<repository>
 			<id>codemc-repo</id>
