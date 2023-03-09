@@ -256,7 +256,8 @@
 			<groupId>net.aufdemrand</groupId>
 			<artifactId>denizen</artifactId>
 			<version>1.0.2-SNAPSHOT</version>
-			<scope>provided</scope>
+			<systemPath>${project.basedir}/dependencies/denizin-1.0.2-SNAPSHOT.jar</systemPath>
+  			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.robingrether.idisguise</groupId>
