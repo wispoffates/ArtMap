@@ -148,9 +148,8 @@ release:maven-release:
     - master
 
 #Generates the version number and adds it to build.env so its available for later steps
-#Git pull is needed because maven-release pushes and causes this to break
 release:generate-release:
-  image: node:16-buster-slim
+  image: node:18-buster-slim
   stage: generate-release
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
