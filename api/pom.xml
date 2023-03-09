@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.gitlab.blockstack</groupId>
 		<artifactId>ArtMap-parent</artifactId>
-		<version>3.9.8</version>
+		<version>3.9.9</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<dependencies>
