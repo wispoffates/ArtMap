@@ -61,7 +61,8 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler("uSkyBlock",USkyBlockCompat.class, "uSkyBlock");
         loadRegionHandler("BentoBox",BentoBoxCompat.class, "BentoBox/BSkyBlock");
         loadRegionHandler("PlotSquared",PlotSquared4Compat.class, "Plot Squared 4", new Version(4), new Version(5));
-        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5", new Version(5), new Version(9999));
+        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5", new Version(5), new Version(6));
+        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 6", new Version(6), new Version(9999));
         loadRegionHandler("Residence",ResidenceCompat.class, "Residence");
         loadRegionHandler("Towny",TownyCompat.class, "Towny");
         reflectionHandler = loadReflectionHandler();
@@ -169,7 +170,7 @@ public class CompatibilityManager implements RegionHandler {
                     }
                 }
             } else {
-                ArtMap.instance().getLogger().info(pluginName + " not detected.  Hooks skipped.");
+                ArtMap.instance().getLogger().info(description + " not detected.  Hooks skipped.");
             }
         } catch (Throwable exception) {
             ArtMap.instance().getLogger().log(Level.SEVERE,"Exception loading region handler for " + description + 

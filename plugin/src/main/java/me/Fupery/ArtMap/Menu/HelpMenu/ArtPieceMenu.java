@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -187,10 +188,14 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 
 				if (this.artwork.getArtist().equals(player.getUniqueId()) || player.hasPermission("artmap.admin")) {
 					AnvilGUI.Builder gui = new AnvilGUI.Builder();
-					gui.plugin(ArtMap.instance()).text(Lang.TITLE_QUESTION.get()).onComplete((p, reply) -> {
+					gui.plugin(ArtMap.instance()).text(Lang.TITLE_QUESTION.get()).onClick((slot, snapshot) -> {
+						//ignore anything that isnt the output slot
+						if(slot != AnvilGUI.Slot.OUTPUT) {
+							return Collections.emptyList();
+						}
 						ArtMap.instance().getScheduler().SYNC.run(() -> {
 							try {
-								ArtMap.instance().getArtDatabase().renameArtwork(this.artwork, reply);
+								ArtMap.instance().getArtDatabase().renameArtwork(this.artwork, snapshot.getText());
 								player.sendMessage(String.format(Lang.RENAMED.get(), this.artwork.getTitle()));
 								ArtMap.instance().getMenuHandler().openMenu(player, this.artworkMenu.getParent(player));
 							} catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
@@ -205,7 +210,6 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 				} else {
 					player.sendMessage(Lang.NO_PERM.get() + " " + this.artwork.getArtist().equals(player.getUniqueId())
 							+ " " + player.hasPermission("artmap.admin"));
-					return;
 				}
 			}
 		}

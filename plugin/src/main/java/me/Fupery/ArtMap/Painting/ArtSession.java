@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -97,8 +98,7 @@ public class ArtSession implements IArtSession {
     }
 
     void paint(ItemStack brush, Brush.BrushAction action) {
-        if (!dirty)
-            dirty = true;
+        dirty = true;
         if (currentBrush == null || !currentBrush.checkMaterial(brush)) {
             if (currentBrush != null)
                 currentBrush.clean();
@@ -262,6 +262,17 @@ public class ArtSession implements IArtSession {
         canvas.clear();
         this.persistMap(true);
        //map.clear();
+    }
+
+    /**
+     * Check if the last brush stroke is within the specified amount of time.
+     * 
+     * @param time The count of the time measurement.
+     * @param unit The unit of the time measurement. ex: TimeInit.SECONDS
+     * @return True if the last brush stroke is within the specified time.
+     */
+    public boolean lastPaintActionWithin(int time, TimeUnit unit) {
+        return System.currentTimeMillis() < unit.toMillis(time) + lastStroke;
     }
 
     /* Artkit */

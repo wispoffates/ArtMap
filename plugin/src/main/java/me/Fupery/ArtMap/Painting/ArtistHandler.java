@@ -2,6 +2,8 @@ package me.Fupery.ArtMap.Painting;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +33,6 @@ import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Painting.IArtistHandler;
 import net.wesjd.anvilgui.AnvilGUI;
-import net.wesjd.anvilgui.AnvilGUI.Response;
 
 public class ArtistHandler implements IArtistHandler {
 
@@ -86,35 +87,35 @@ public class ArtistHandler implements IArtistHandler {
 		if (sender.isInsideVehicle() && ArtMap.instance().getArtistHandler().containsPlayer(sender)) {
 			ArtMap.instance().getScheduler().SYNC.run(() -> {
 				AnvilGUI.Builder builder = new AnvilGUI.Builder();
-				builder.plugin(ArtMap.instance()).text("Title?").onComplete((player, title) -> {
+				builder.plugin(ArtMap.instance()).text("Title?").onClick((slot, snapshot) -> {
+					//ignore anything that isnt the output slot
+					if(slot != AnvilGUI.Slot.OUTPUT) {
+						return Collections.emptyList();
+					}
+					String title = snapshot.getText();
 					TitleFilter filter = new TitleFilter(Lang.Filter.ILLEGAL_EXPRESSIONS.get());
 					if (title == null || !filter.check(title)) {
-						player.sendMessage(Lang.BAD_TITLE.get());
-						return Response.close();
+						sender.sendMessage(Lang.BAD_TITLE.get());
+						return Arrays.asList(AnvilGUI.ResponseAction.close());
 					}
 					Easel easel = session.getEasel();
 					ArtMap.instance().getScheduler().SYNC.run(() -> {
 						try {
 							Canvas canvas = Canvas.getCanvas(easel.getItem());
-							if (canvas == null) {
-								ArtMap.instance().getLogger().log(Level.SEVERE, "Canvas should not be null!");
-								Lang.GENERIC_ERROR.send(player);
-								return;
-							}
-							MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, player);
-							ArtMap.instance().getArtistHandler().removePlayer(player);
+							MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, sender);
+							ArtMap.instance().getArtistHandler().removePlayer(sender);
 							easel.setItem(new ItemStack(Material.AIR));
-							ItemUtils.giveItem(player, art1.getMapItem());
-							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
+							ItemUtils.giveItem(sender, art1.getMapItem());
+							sender.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_SUCCESS.get(), title));
 							easel.playEffect(EaselEffect.SAVE_ARTWORK);
 						} catch (DuplicateArtworkException | PermissionException e) {
-							player.sendMessage(e.getMessage());
+							sender.sendMessage(e.getMessage());
 						} catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException | ArtMapException sqe) {
-							player.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
+							sender.sendMessage(String.format(Lang.PREFIX + Lang.SAVE_FAILURE.get(), title));
 							ArtMap.instance().getLogger().log(Level.SEVERE, "Error saving artwork!", sqe);
 						} 
 					});
-					return Response.close();
+					return Arrays.asList(AnvilGUI.ResponseAction.close());
 				});
 				builder.open(sender);
 			});

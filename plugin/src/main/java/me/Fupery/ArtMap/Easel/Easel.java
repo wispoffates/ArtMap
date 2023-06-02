@@ -155,15 +155,17 @@ public class Easel {
      */
     public void removeItem() throws SQLException, ArtMapException {
         ItemStack item = getItem().clone();
-        Canvas canvas = Canvas.getCanvas(item);
-
-        setItem(new ItemStack(Material.AIR));
-        if (canvas != null) {
-			location.getWorld().dropItem(location, canvas.getEaselItem());
-        } else {
-            if (item.getType() != Material.AIR) {
-                location.getWorld().dropItemNaturally(location, item);
-            }
+        //if the item currently on the easel is air we don't need to do anything
+        if(item.getType().isAir()) {
+            return;
+        }
+        try {
+            Canvas canvas = Canvas.getCanvas(item);
+            setItem(new ItemStack(Material.AIR));
+            location.getWorld().dropItem(location, canvas.getEaselItem());
+        } catch (ArtMapException ame) {
+            location.getWorld().dropItemNaturally(location, item);
+            throw new ArtMapException("Something other then ART was on the easel?!", ame);
         }
     }
 
@@ -194,8 +196,8 @@ public class Easel {
      * @return The direction this easel is facing.
      */
     public BlockFace getFacing() {
-        ItemFrame frame = this.frame.get();
-        return (frame != null) ? frame.getFacing() : null;
+        ItemFrame iFrame = this.frame.get();
+        return (iFrame != null) ? iFrame.getFacing() : null;
     }
 
     /**
@@ -208,9 +210,9 @@ public class Easel {
     }
 
     private Location getCentreLocation() {
-        Location location = this.location.clone();
+        Location cLoc = this.location.clone();
         BlockFace facing = getFacing();
-        return (facing == null) ? location : new LocationHelper(location).centre().shiftTowards(getFacing(), 0.65);
+        return (facing == null) ? location : new LocationHelper(cLoc).centre().shiftTowards(getFacing(), 0.65);
     }
 
     public Location getLocation() {
@@ -218,14 +220,14 @@ public class Easel {
     }
 
     public boolean seatUser(Player user) {
-        ArmorStand seat = this.seat.spawn(location, getFacing());
-        ArmorStand marker = this.marker.spawn(location, getFacing());
+        ArmorStand aSeat = this.seat.spawn(location, getFacing());
+        ArmorStand aMarker = this.marker.spawn(location, getFacing());
 
-        if (seat == null || marker == null) return false;
-        Location location = user.getEyeLocation();
-        EaselEffect.START_RIDING.playEffect(location);
-		seat.addPassenger(user);
-		if (!seat.getPassengers().contains(user)) {
+        if (aSeat == null || aMarker == null) return false;
+        Location eLoc = user.getEyeLocation();
+        EaselEffect.START_RIDING.playEffect(eLoc);
+		aSeat.addPassenger(user);
+		if (!aSeat.getPassengers().contains(user)) {
 			return false;
 		}
 

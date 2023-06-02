@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -34,9 +36,11 @@ public class Canvas {
 		this.artist = artist;
 	}
 
+	@NotNull
 	public static Canvas getCanvas(ItemStack item) throws SQLException, ArtMapException {
-		if (item == null || item.getType() != Material.FILLED_MAP)
-			return null;
+		if (item == null || item.getType() != Material.FILLED_MAP) {
+			throw new ArtMapException("Artmap tried to getCanvas() on something that is not a filled map? :: " + (item==null ? "NULL item" : item.getType()+""));
+		}
 
 		//Is this an unfinished artwork?
 		if(ArtItem.isUnfinishedArtwork(item)) {
@@ -72,8 +76,7 @@ public class Canvas {
 		if(art != null) {
 			return new CanvasCopy(art.getMap(), art);
 		}
-		return null;
-
+		throw new ArtMapException("Artmap getCanvas() fell through to null?");
 	}
 
 	/**

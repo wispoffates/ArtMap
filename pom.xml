@@ -32,6 +32,7 @@
 		<module>compatibility/MarriageMaster</module>
 		<module>compatibility/PlotSquared4</module>
 		<module>compatibility/PlotSquared5</module>
+		<module>compatibility/PlotSquared6</module>
 		<module>compatibility/RedProtect</module>
 		<module>compatibility/Residence</module>
 		<module>compatibility/SabreFactions</module>
