@@ -24,6 +24,7 @@ import me.Fupery.ArtMap.Compatibility.impl.Palette_1_18;
 import me.Fupery.ArtMap.Compatibility.impl.EssentialsCompat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared4Compat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared5Compat;
+import me.Fupery.ArtMap.Compatibility.impl.PlotSquared6Compat;
 import me.Fupery.ArtMap.Compatibility.impl.RedProtectCompat;
 import me.Fupery.ArtMap.Compatibility.impl.ResidenceCompat;
 import me.Fupery.ArtMap.Compatibility.impl.SabreFactionsCompat;
@@ -62,7 +63,7 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler("BentoBox",BentoBoxCompat.class, "BentoBox/BSkyBlock");
         loadRegionHandler("PlotSquared",PlotSquared4Compat.class, "Plot Squared 4", new Version(4), new Version(5));
         loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5", new Version(5), new Version(6));
-        loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 6", new Version(6), new Version(9999));
+        loadRegionHandler("PlotSquared",PlotSquared6Compat.class, "Plot Squared 6", new Version(6), new Version(9999));
         loadRegionHandler("Residence",ResidenceCompat.class, "Residence");
         loadRegionHandler("Towny",TownyCompat.class, "Towny");
         reflectionHandler = loadReflectionHandler();
