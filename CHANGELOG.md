@@ -1,5 +1,37 @@
 # Changelog
 
+## Release 3.9.9
+
+* Fix - fix anvil gui for 1.19.3 (cc47661)
+
+## Release 3.9.8
+
+* Fix - pipeline maintenance (1f2b6c0)
+
+## Release 3.9.7
+
+* Fix - fix jdk 1.8 support (5c4a2ee)
+
+## Release 3.9.6
+
+* Fix - deprecated reporting key (16e58f1)
+* Fix - Saving of a deleted artwork fails. (faadc3e)
+
+## Release 3.9.5
+
+* Fix - publish grabbing the old jar version (744a63d)
+* Fix - go stable on the shade plugin... slightly older on GP to allow JDK 1.8 support to continue (24b9886)
+* Fix - gp version update and maven repo (14d1bb3)
+* Fix - tidy up blacklist and correct versions number in help command (9536be7)
+
+## Release 3.9.4
+
+* Fix - guess we need a newer towny version (63ce359)
+* Fix - Handle wierdness around color codes in menu titles (8896d9c)
+* Fix - towny repo changed (a1e7f6e)
+* Fix - PlotSquared maven repo looks to be dead
+* Fix - Attempt a fix for getting head textures from server when mojang api isnt an option
+
 ## Release 3.9.3
 
 * Fix - Placing Unfinished artwork back on the easel after it being broken off.
