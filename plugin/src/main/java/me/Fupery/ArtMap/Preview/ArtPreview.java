@@ -38,9 +38,11 @@ public class ArtPreview extends TimedPreview {
         SoundCompat.UI_BUTTON_CLICK.play(player, 1, -2);
         if (player.getItemOnCursor().equals(preview)) {
             player.setItemOnCursor(null);
+            return true;
         } 
         if (player.getInventory().getItemInOffHand().equals(preview)) {
             player.getInventory().setItemInOffHand(null);
+            return true;
         }
         player.getInventory().removeItem(preview);
         return true;
