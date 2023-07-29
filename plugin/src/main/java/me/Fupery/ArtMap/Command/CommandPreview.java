@@ -41,6 +41,13 @@ class CommandPreview extends AsyncCommand {
 
         Player player = (Player) sender;
 
+        // args[0] is preview
+        if (args.length < 2) {
+            // TODO: need usage
+            msg.message = Lang.COMMAND_PREVIEW.get();
+            return;
+        }
+
         Optional<MapArt> art;
         try {
             art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
