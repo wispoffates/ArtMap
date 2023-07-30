@@ -6,7 +6,7 @@ We did a very quick test and it looks like everything works.  But as always keep
 
 ### Supported Versions
 
-* Spigot/Paper 1.18.1, 1.17.1, 1.16.1,  1.15.2, 1.14.4, 1.13.2 - Master Branch
+* Spigot/Paper 1.20, 1.19, 1.18.1, 1.17.1, 1.16.1,  1.15.2, 1.14.4, 1.13.2 - Master Branch
 * Spigot/Paper 1.8.8 - 1.12.2 - 1.12 Branch
 
 ### Downloads
@@ -18,7 +18,7 @@ We did a very quick test and it looks like everything works.  But as always keep
 * Downloads are now availble for 3 different JDKs. Use the version that matches the JDL you are using. 
   * 1.13 - 1.16 - Use the JDK8 version.
   * 1.17 - Use the JDK16 version.
-  * 1.18 - Use the JDK17 version.
+  * 1.18+ - Use the JDK17 version.
 
 ### Features
 
