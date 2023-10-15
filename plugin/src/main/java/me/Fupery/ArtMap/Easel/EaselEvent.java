@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Easel;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -50,9 +51,15 @@ public final class EaselEvent {
 				if (easel.getItem().getType() == Material.FILLED_MAP) {
 					// If the easel has a canvas, player rides the easel
 					try {
-						ArtMap.instance().getArtistHandler().addPlayer(player, easel,
-								new Map(ItemUtils.getMapID(easel.getItem())),
+						Optional<Integer> mapId = ItemUtils.getMapID(easel.getItem());
+						if(mapId.isPresent()) {
+							ArtMap.instance().getArtistHandler().addPlayer(player, easel,
+								new Map(mapId.get()),
 								EaselPart.getYawOffset(easel.getFacing()));
+						} else {
+							ArtMap.instance().getLogger().warning("Broken map on easel for player " + player.getName());
+							Lang.ERROR_ON_EASEL.send(player);
+						}
 					} catch (Exception e) {
 						ArtMap.instance().getLogger().log(Level.SEVERE, "Failure having player mount the Easel!", e);
 					}
@@ -93,7 +100,7 @@ public final class EaselEvent {
 					int id;
 					boolean unsaved;
 					try {
-						id = ItemUtils.getMapID(itemInHand);
+						id = ItemUtils.getMapID(itemInHand).orElseThrow(()-> new ArtMapException("Artwork does not have a mapview!"));
 						art = ArtMap.instance().getArtDatabase().getArtwork(id);
 						unsaved = ArtMap.instance().getArtDatabase().containsUnsavedArtwork(id);
 					} catch(Exception e) {

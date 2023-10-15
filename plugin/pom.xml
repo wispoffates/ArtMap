@@ -121,7 +121,7 @@
 		<dependency>
 			<groupId>net.wesjd</groupId>
     		<artifactId>anvilgui</artifactId>
-    		<version>1.6.5-SNAPSHOT</version>
+    		<version>1.9.0-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--Artmap Spigot/Paper version compatibility-->
@@ -143,6 +143,11 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Spigot_1_18</artifactId>
+			<version>3.9.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>Spigot_1_20_2</artifactId>
 			<version>3.9.11</version>
 		</dependency>
 		<!--Artmap plugin compatibility addons-->
@@ -199,6 +204,11 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared6</artifactId>
+			<version>3.9.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gitlab.blockstack</groupId>
+			<artifactId>PlotSquared7</artifactId>
 			<version>3.9.11</version>
 		</dependency>
 		<dependency>

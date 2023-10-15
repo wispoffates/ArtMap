@@ -4,17 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.map.MapView;
-
-import io.netty.channel.Channel;
-import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.ArtistPacket;
-import me.Fupery.ArtMap.IO.Protocol.In.Packet.PacketType;
-import me.Fupery.ArtMap.api.Utils.VersionHandler.BukkitVersion;
 
 public class Reflection {
 
@@ -23,10 +15,6 @@ public class Reflection {
     static {
         String version = Bukkit.getServer().getClass().getPackage().getName();
         NMS = version.replace("org.bukkit.craftbukkit", "net.minecraft.server");
-    }
-
-    public Channel getPlayerChannel(Player player) throws ReflectiveOperationException {
-        return ArtMap.instance().getCompatManager().getReflectionHandler().getPlayerChannel(player);
     }
 
     public Object getField(Object obj, String fieldName)
@@ -115,65 +103,8 @@ public class Reflection {
         return method.invoke(null, params);
     }
 
-    public ArtistPacket getArtistPacket(Object packet) {
-        PacketType type = PacketType.getPacketType(packet);
-        final BukkitVersion version = ArtMap.instance().getBukkitVersion().getVersion();
-
-        if (type == null) {
-            return null;
-        }
-        switch (type) {
-            case LOOK:
-
-                float yaw, pitch;
-                try {
-                    yaw = version.getYaw(packet);
-                    pitch = version.getPitch(packet);
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
-                    return null;
-                }
-                return new ArtistPacket.PacketLook(yaw, pitch);
-
-            case ARM_ANIMATION:
-                return new ArtistPacket.PacketArmSwing();
-
-            case INTERACT:
-
-                Object packetInteractType;
-
-                try {
-                    packetInteractType = invokeMethod(packet, "a");
-                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                    ArtMap.instance().getLogger().log(Level.SEVERE, "Failure!", e);
-                    return null;
-                }
-
-                Class<?> enumEntityUseActionType = packetInteractType.getClass();
-                Object[] enumValues = enumEntityUseActionType.getEnumConstants();
-                int i;
-
-                for (i = 0; i < enumValues.length; i++) {
-
-                    if (packetInteractType == enumValues[i]) {
-                        break;
-                    }
-                }
-
-                ArtistPacket.PacketInteract.InteractType interactType = (i == 1) ?
-                        ArtistPacket.PacketInteract.InteractType.ATTACK :
-                        ArtistPacket.PacketInteract.InteractType.INTERACT;
-
-                return new ArtistPacket.PacketInteract(interactType);
-
-            default:
-                break;
-        }
-        return null;
-    }
-
     public byte[] getMap(MapView mapView) {
-        byte colors[];
+        byte[] colors;
 
         try {
             Object worldMap = getField(mapView, "worldMap");

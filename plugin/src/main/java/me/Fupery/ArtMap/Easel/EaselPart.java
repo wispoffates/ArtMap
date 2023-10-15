@@ -46,8 +46,8 @@ public enum EaselPart {
 			return stand.isVisible() ? STAND : (stand.isSmall() ? MARKER : SEAT);
 		case ITEM_FRAME:
 			return FRAME;
-			default:
-				break;
+		default:
+			break;
 		}
 		return null;
 	}

@@ -32,8 +32,9 @@ public class VersionHandler {
         else if (version.isLessThan(1, 16)) return BukkitVersion.v1_15;
         else if (version.isLessThan(1, 17)) return BukkitVersion.v1_16;
         else if (version.isLessThan(1, 18)) return BukkitVersion.v1_17;
+        else if (version.isLessThan(1, 20, 2)) return BukkitVersion.v1_18;
 		else
-			return BukkitVersion.v1_18;
+			return BukkitVersion.v1_20_2;
     }
 
     public static BukkitVersion getLatest() {
@@ -51,7 +52,7 @@ public class VersionHandler {
     }
 
     public enum BukkitVersion {
-		UNKNOWN, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18;
+		UNKNOWN, v1_13, v1_14, v1_15, v1_16, v1_17, v1_18,v1_20_2;
 
         public boolean isGreaterThan(BukkitVersion version) {
             return ordinal() > version.ordinal();
@@ -95,6 +96,9 @@ public class VersionHandler {
         }
 
         public double getSeatYOffset() {
+            if(this.isEqualTo(BukkitVersion.v1_20_2)) {
+                return -2.49979;
+            }
             return -2.24979;
         }
 

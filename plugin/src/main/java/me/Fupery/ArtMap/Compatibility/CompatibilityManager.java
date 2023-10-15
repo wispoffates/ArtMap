@@ -16,6 +16,8 @@ import me.Fupery.ArtMap.Compatibility.impl.BentoBoxCompat;
 import me.Fupery.ArtMap.Compatibility.impl.CMICompat;
 import me.Fupery.ArtMap.Compatibility.impl.GriefDefenderCompat;
 import me.Fupery.ArtMap.Compatibility.impl.GriefPreventionCompat;
+import me.Fupery.ArtMap.Compatibility.impl.HeadRetrieval_1_13;
+import me.Fupery.ArtMap.Compatibility.impl.HeadRetrieval_1_20_2;
 import me.Fupery.ArtMap.Compatibility.impl.MarriageMasterCompat;
 import me.Fupery.ArtMap.Compatibility.impl.Palette_1_13;
 import me.Fupery.ArtMap.Compatibility.impl.Palette_1_14;
@@ -25,6 +27,7 @@ import me.Fupery.ArtMap.Compatibility.impl.EssentialsCompat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared4Compat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared5Compat;
 import me.Fupery.ArtMap.Compatibility.impl.PlotSquared6Compat;
+import me.Fupery.ArtMap.Compatibility.impl.PlotSquared7Compat;
 import me.Fupery.ArtMap.Compatibility.impl.RedProtectCompat;
 import me.Fupery.ArtMap.Compatibility.impl.ResidenceCompat;
 import me.Fupery.ArtMap.Compatibility.impl.SabreFactionsCompat;
@@ -34,6 +37,7 @@ import me.Fupery.ArtMap.Compatibility.impl.WorldGuardCompat;
 import me.Fupery.ArtMap.api.IArtMap;
 import me.Fupery.ArtMap.api.Colour.Palette;
 import me.Fupery.ArtMap.api.Compatability.EventListener;
+import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever;
 import me.Fupery.ArtMap.api.Compatability.ReflectionHandler;
 import me.Fupery.ArtMap.api.Compatability.RegionHandler;
 import me.Fupery.ArtMap.api.Easel.ClickType;
@@ -46,6 +50,7 @@ public class CompatibilityManager implements RegionHandler {
     private List<EventListener> eventListeners;
     private ReflectionHandler reflectionHandler;
     private Palette palette;
+    private IHeadsRetriever headsRetriever;
 
     public CompatibilityManager(JavaPlugin plugin) {
         regionHandlers = new ArrayList<>();
@@ -63,7 +68,8 @@ public class CompatibilityManager implements RegionHandler {
         loadRegionHandler("BentoBox",BentoBoxCompat.class, "BentoBox/BSkyBlock");
         loadRegionHandler("PlotSquared",PlotSquared4Compat.class, "Plot Squared 4", new Version(4), new Version(5));
         loadRegionHandler("PlotSquared",PlotSquared5Compat.class, "Plot Squared 5", new Version(5), new Version(6));
-        loadRegionHandler("PlotSquared",PlotSquared6Compat.class, "Plot Squared 6", new Version(6), new Version(9999));
+        loadRegionHandler("PlotSquared",PlotSquared6Compat.class, "Plot Squared 6", new Version(6), new Version(7));
+        loadRegionHandler("PlotSquared",PlotSquared7Compat.class, "Plot Squared 7", new Version(7), new Version(9999));
         loadRegionHandler("Residence",ResidenceCompat.class, "Residence");
         loadRegionHandler("Towny",TownyCompat.class, "Towny");
         reflectionHandler = loadReflectionHandler();
@@ -90,6 +96,13 @@ public class CompatibilityManager implements RegionHandler {
             palette = new Palette_1_16();
         } else {
             palette = new Palette_1_18();
+        }
+
+        //which head loading code should we be using
+        if(version.isLessThan(BukkitVersion.v1_20_2)) {
+            headsRetriever = new HeadRetrieval_1_13();
+        } else {
+            headsRetriever = new HeadRetrieval_1_20_2();
         }
     }
 
@@ -126,6 +139,10 @@ public class CompatibilityManager implements RegionHandler {
 
     public Palette getPalette() {
         return this.palette;
+    }
+
+    public IHeadsRetriever getHeadsRetriever() {
+        return headsRetriever;
     }
 
     private ReflectionHandler loadReflectionHandler() {

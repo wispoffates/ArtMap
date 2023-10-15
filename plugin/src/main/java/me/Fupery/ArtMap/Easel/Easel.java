@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Easel;
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Exception.ArtMapException;
+import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ChunkLocation;
 import me.Fupery.ArtMap.Utils.LocationHelper;
@@ -160,11 +162,17 @@ public class Easel {
             return;
         }
         try {
-            Canvas canvas = Canvas.getCanvas(item);
+            Optional<Canvas> canvas = Canvas.getCanvas(item);
             setItem(new ItemStack(Material.AIR));
-            location.getWorld().dropItem(location, canvas.getEaselItem());
+            //If Canvas has failed to load someting has gone wrong and hand them a fresh canvas back.
+            if(canvas.isPresent()) {
+                location.getWorld().dropItem(location, canvas.get().getEaselItem());
+            } else {
+                location.getWorld().dropItem(location,ArtMaterial.CANVAS.getItem());
+            }
         } catch (ArtMapException ame) {
             location.getWorld().dropItemNaturally(location, item);
+            setItem(new ItemStack(Material.AIR));
             throw new ArtMapException("Something other then ART was on the easel?!", ame);
         }
     }

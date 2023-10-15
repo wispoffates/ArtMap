@@ -61,6 +61,7 @@ RESTORED_SUCCESSFULY: "§6Successfully restored %s with map ID %s!" #The first %
 SAVE_ARTWORK: "§4§lPlease save your artwork first!"
 SAVE_ARTWORK_2: "§4§lor use '/art break' while seating at the easel if you are sure you want to destroy the artwork."
 GENERIC_ERROR: "§cSorry, An error occured contact a server admin."
+ERROR_ON_EASEL: "§cA broken map is on the easel.  Please break the easel to allow painting again."
 PAINTBRUSH_FORCED: "§4§lPlease use the paint brush for saving!"
 PAINTBRUSH_DISABLED: "§4§lSaving with the paint brush is disabled. Please use /art save!"
 

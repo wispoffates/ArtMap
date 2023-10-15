@@ -36,6 +36,9 @@ import com.mojang.authlib.properties.PropertyMap;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Exception.HeadFetchException;
+import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever;
+import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever.TextureData;
+import me.Fupery.ArtMap.api.Utils.Reflections;
 
 /**
  * Heads handler to be used with caching head textures.
@@ -52,7 +55,7 @@ public class HeadsCache {
 	 * This is temporary till DB schema update that adds names to db.
 	 */
 	private static final Map<String, UUID> nameToUUID = new HashMap<>();
-	private static File						cacheFile;
+	private File						   cacheFile;
 	private ArtMap plugin;
 
 	/** Loads the cache from disk */
@@ -80,7 +83,7 @@ public class HeadsCache {
 		});
 	}
 
-	public void updateCache(UUID playerId) throws HeadFetchException {
+	public void updateCache(UUID playerId) {
 		this.updateTexture(playerId);
 	}
 
@@ -168,8 +171,7 @@ public class HeadsCache {
 			Gson gson = ArtMap.instance().getGson(true);
 			Type collectionType = new TypeToken<Map<UUID,TextureData>>() {
 			}.getType();
-			gson.toJson(textureCache, collectionType, writer);
-			writer.close();			
+			gson.toJson(textureCache, collectionType, writer);	
 		} catch (IOException e) {
 			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure writing head cache!", e);
 		}
@@ -181,9 +183,8 @@ public class HeadsCache {
 	 * @param playerId The ID of the player get the skull for.
 	 * 
 	 * @return The Skull.
-	 * @throws HeadFetchException
 	 */
-	protected ItemStack getHead(UUID playerId) throws HeadFetchException {
+	protected ItemStack getHead(UUID playerId) {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
 		Optional<SkullMeta> meta = getHeadMeta(playerId);
 		if (!meta.isPresent()) { //try loading it the normal way
@@ -246,7 +247,7 @@ public class HeadsCache {
 	 * @return The Skull meta.
 	 * @throws HeadFetchException
 	 */
-	public Optional<SkullMeta> getHeadMeta(UUID playerId) throws HeadFetchException {
+	public Optional<SkullMeta> getHeadMeta(UUID playerId) {
 		// is it in the cache?
 		if (!textureCache.containsKey(playerId)) {
 			this.updateTexture(playerId);
@@ -255,7 +256,7 @@ public class HeadsCache {
 		if (data == null) {
 			return Optional.empty();
 		}
-		GameProfile profile = new GameProfile(UUID.randomUUID(), null);
+		GameProfile profile = new GameProfile(UUID.randomUUID(), this.getPlayerName(playerId));
 		PropertyMap propertyMap = profile.getProperties();
 		if (propertyMap == null) {
 			throw new IllegalStateException("Profile doesn't contain a property map");
@@ -273,41 +274,33 @@ public class HeadsCache {
 		return Optional.of((SkullMeta) headMeta);
 	}
 
-	protected HeadCacheResponeType updateTexture(UUID playerId) throws HeadFetchException {
-		//Try and get the head texture from the server
-		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
-		SkullMeta meta = (SkullMeta) head.getItemMeta();
-		OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
-		//Dont try from the server if they havent been on it recently
-		if(player.hasPlayedBefore()) {
-			meta.setOwningPlayer(player);
-			meta.setDisplayName(player.getName());
-			head.setItemMeta(meta);
-			GameProfile profile = Reflections.getField(meta.getClass(), "profile", GameProfile.class).get(meta);
-			PropertyMap propertyMap = profile.getProperties();
-			//ArtMap.instance().getLogger().info("Here 1! " + propertyMap.keySet().stream().map(Object::toString).collect(Collectors.joining(",")));
-			if(propertyMap != null && propertyMap.containsKey("textures")) {
-				Optional<Property> prop = profile.getProperties().get("textures").stream().findFirst();
-				//ArtMap.instance().getLogger().info("Here 2! " + player.getName());
-				if(prop.isPresent()) {
-					//ArtMap.instance().getLogger().info("Here 3! " + player.getName());
-					TextureData data = new TextureData(player.getName(),prop.get().getValue());
-					textureCache.put(playerId, data);
+	protected HeadCacheResponeType updateTexture(UUID playerId) {
+		try {
+			//Try and get the head texture from the server
+			OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
+			//Dont try from the server if they havent been on it recently
+			if(player.hasPlayedBefore()) {
+				IHeadsRetriever headsRetriever = ArtMap.instance().getCompatManager().getHeadsRetriever();
+				Optional<TextureData> textData = headsRetriever.getTextureData(player);
+				if(textData.isPresent()) {
+					textureCache.put(playerId, textData.get());
 					this.saveCacheFile(cacheFile);
 					nameToUUID.put(player.getName(), player.getUniqueId());
 					return HeadCacheResponeType.SERVER;
 				}
 			}
-		}
-		//Use the mojang if the local server look up dies
-		if(plugin.getConfiguration().HEAD_FETCH_MOJANG) {
-			Optional<TextureData> data = getSkinUrl(playerId);
-			if(data.isPresent()) {
-				textureCache.put(playerId, data.get());
-				this.saveCacheFile(cacheFile);
-				nameToUUID.put(data.get().name, playerId);
-				return HeadCacheResponeType.MOJANG_API;
+			//Use the mojang if the local server look up dies
+			if(plugin.getConfiguration().HEAD_FETCH_MOJANG) {
+				Optional<TextureData> data = getSkinUrl(playerId);
+				if(data.isPresent()) {
+					textureCache.put(playerId, data.get());
+					this.saveCacheFile(cacheFile);
+					nameToUUID.put(data.get().name, playerId);
+					return HeadCacheResponeType.MOJANG_API;
+				}
 			}
+		} catch( Exception e ) {
+			ArtMap.instance().getLogger().log(Level.FINE, "Headfetch failure!", e);
 		}
 		return HeadCacheResponeType.NONE;
 	}
@@ -355,8 +348,8 @@ public class HeadsCache {
 	}
 
 	private static Optional<TextureData> getSkinUrl(UUID uuid) throws HeadFetchException {
+		String id = uuid.toString().replace("-", "");
 		try {
-			String id = uuid.toString().replace("-", "");
 			String json = getContent(API_PROFILE_LINK + id);
 			if(json == null) {
 				throw new HeadFetchException("Skin texture could not be loaded! invalid uuid!");
@@ -372,17 +365,7 @@ public class HeadsCache {
 			}
 			return Optional.of(new TextureData(name, jsonBase64));
 		} catch ( Throwable e ) {
-			throw new HeadFetchException("Failure parsing skin texture json. You may ignore ths warning.");
-		}
-	}
-
-	private static class TextureData {
-		public String	name;
-		public String	texture;
-
-		public TextureData(String name, String texture) {
-			this.name = name;
-			this.texture = texture;
+			throw new HeadFetchException(API_PROFILE_LINK+id+ " :: Failure parsing skin texture json. You may ignore ths warning.",e);
 		}
 	}
 

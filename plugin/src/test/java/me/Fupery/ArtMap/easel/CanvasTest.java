@@ -24,7 +24,7 @@ public class CanvasTest {
     @BeforeClass
     public static void setup() throws Exception {
         mocks = new MockUtil();
-        mocks.mockServer("1.14.4-R0.1-MOCK").mockArtMap();
+        mocks.mockServer("1.14.4").mockArtMap();
         mockPlugin = mocks.mockDataFolder(new File("target/plugins/Artmap/")).mockLogger()
         .getPluginMock();
     }

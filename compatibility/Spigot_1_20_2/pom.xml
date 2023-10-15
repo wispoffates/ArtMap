@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>Spigot_1_13</artifactId>
-  <name>Spigot_1_13</name>
-  <description>Spigot 1.13 Compatibility</description>
+  <artifactId>Spigot_1_20_2</artifactId>
+  <name>Spigot_1_20_@</name>
+  <description>Spigot 1.20.2 Compatibility</description>
 
   <parent>
     <groupId>com.gitlab.blockstack</groupId>
@@ -16,10 +15,10 @@
   </parent>
 
   <repositories>
-    <repository>
-      <id>pcgf-repo</id>
-      <url>https://repo.essentialsx.net/releases/</url>
-    </repository>
+		<repository>
+			<id>pcgf-repo</id>
+			<url>https://repo.essentialsx.net/releases/</url>
+		</repository>
   </repositories>
 
   <dependencies>
@@ -28,20 +27,15 @@
       <artifactId>ArtMap-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.13.2-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.ess3</groupId>
-      <artifactId>EssentialsX</artifactId>
-      <version>2.18.2</version>
-    </dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.20.1-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
     <dependency>
       <groupId>com.mojang</groupId>
       <artifactId>authlib</artifactId>
-      <version>1.5.21</version>
+      <version>5.0.47</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -70,6 +70,13 @@ class PlayerInteractEaselListener implements RegisteredListener {
 	public void onRightClick(PlayerInteractEvent e) {
 		Player p = e.getPlayer();
 		Action a = e.getAction();
+
+        //prevent touching the easel sign
+        if(e.getClickedBlock() != null) {
+            this.checkEaselSignEvent(e.getClickedBlock(), e);
+        }
+
+        //check for paintbrush click
 		if ( a == Action.RIGHT_CLICK_AIR && e.getItem() != null
 				&& (ArtMaterial.getCraftItemType(e.getItem()) == ArtMaterial.PAINT_BRUSH)) {
 			ArtMap.instance().getScheduler().SYNC.run(() -> {
@@ -84,7 +91,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (checkSignBreak(event.getBlock(), event)) {
+        if (checkEaselSignEvent(event.getBlock(), event)) {
             if (!checkIsPainting(event.getPlayer(), event)) {
                 Lang.ActionBar.EASEL_HELP.send(event.getPlayer());
             }
@@ -94,7 +101,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
-        checkSignBreak(event.getBlock(), event);
+        checkEaselSignEvent(event.getBlock(), event);
     }
 
     private void callEaselEvent(Entity clicker, Entity clicked, Cancellable event, ClickType click) {
@@ -105,7 +112,7 @@ class PlayerInteractEaselListener implements RegisteredListener {
 
         event.setCancelled(true);
 
-        if (clicker == null || !(clicker instanceof Player)) return;
+        if (!(clicker instanceof Player)) return;
         Player player = (Player) clicker;
 
         boolean interactionAllowed = (click == ClickType.SHIFT_RIGHT_CLICK) ?
@@ -137,7 +144,8 @@ class PlayerInteractEaselListener implements RegisteredListener {
         if (ArtMap.instance().getPreviewManager().endPreview(player)) event.setCancelled(true);
     }
 
-    private boolean checkSignBreak(Block block, Cancellable event) {
+    /** Check if the event is interacting with a easel sign.  Cancel the event if it is  */
+    private boolean checkEaselSignEvent(Block block, Cancellable event) {
         if (block.getType() == ArtMap.instance().getBukkitVersion().getVersion().getWallSign()) {
             Sign sign = ((Sign) block.getState());
 

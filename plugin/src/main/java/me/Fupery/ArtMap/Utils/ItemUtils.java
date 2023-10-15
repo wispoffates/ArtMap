@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,6 +13,10 @@ import org.bukkit.inventory.meta.MapMeta;
 import me.Fupery.ArtMap.Exception.ArtMapException;
 
 public class ItemUtils {
+
+    protected ItemUtils() {
+        //this is a static class so hide the constructor
+    }
 
     public static void giveItem(Player player, ItemStack item) {
         ItemStack leftOver = player.getInventory().addItem(item).get(0);
@@ -48,10 +53,10 @@ public class ItemUtils {
      * Handle 1.13 maps having their ID as part of the meta data.
      * 
      * @param item The Map Item to get the id of.
-     * @return The ID of the map or -1 if something went wrong.
-     * @throws ArtMapException
+     * @return The ID of the map or Empty if the mapview isnt present.
+     * @throws ArtMapException 
      */
-    public static int getMapID(ItemStack item) throws ArtMapException {
+    public static Optional<Integer> getMapID(ItemStack item) throws ArtMapException {
 		if (item.getType() != Material.FILLED_MAP) {
 			throw new ArtMapException("Tried to get the map id of an item that is not a map.");
 		}
@@ -61,9 +66,9 @@ public class ItemUtils {
             throw new ArtMapException("Tried to get the map id but the map doesn't have a map meta?");
         }
         if(meta.hasMapView() && meta.getMapView() != null) {
-            return meta.getMapView().getId();
+            return Optional.of(meta.getMapView().getId());
         } else {
-            throw new ArtMapException("Map does not have a valid mapview!");
+            return Optional.empty();
         }
 	}
 }

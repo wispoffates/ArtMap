@@ -34,7 +34,7 @@ class PlayerCraftListener implements RegisteredListener {
         if (result.getType() == Material.FILLED_MAP) {
             MapArt art;
             try {
-                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result).orElseThrow(()-> new ArtMapException("Artwork does not have a mapview!")));
             } catch (SQLException | ArtMapException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
                 event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");
@@ -81,7 +81,7 @@ class PlayerCraftListener implements RegisteredListener {
         if (result.getType() == Material.FILLED_MAP) {
             MapArt art;
             try {
-                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result));
+                art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(result).orElseThrow(()-> new ArtMapException("Artwork does not have a mapview!")));
             } catch (SQLException | ArtMapException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
                 event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");

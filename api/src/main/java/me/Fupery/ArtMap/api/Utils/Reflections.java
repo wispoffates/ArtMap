@@ -1,16 +1,13 @@
-package me.Fupery.ArtMap.Heads;
+package me.Fupery.ArtMap.api.Utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
-
-import me.Fupery.ArtMap.ArtMap;
 
 /**
  * An utility class that simplifies reflection in Bukkit plugins.
@@ -356,14 +353,11 @@ public final class Reflections {
 	 * 
 	 * @param type The type to create an instance of.
 	 * @return The new instance.
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
 	 */
-    public static <T> T newInstance(Class<T> type) {
-        try {
-            return type.newInstance();
-        } catch (Exception e) {
-            ArtMap.instance().getLogger().log(Level.SEVERE, "Failure creating instance!", e);
-            return null;
-        }
+    public static <T> T newInstance(Class<T> type) throws InstantiationException, IllegalAccessException {
+        return type.newInstance();
     }
 
     /**

@@ -16,6 +16,7 @@ import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtItem.InProgressArtworkItem;
+import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Config.Lang;
 
 /**
@@ -37,46 +38,56 @@ public class Canvas {
 	}
 
 	@NotNull
-	public static Canvas getCanvas(ItemStack item) throws SQLException, ArtMapException {
+	/**
+	 * Retrieve the canvas of an Artwork.
+	 * 
+	 * @param item The Artwork to get the canvas of.
+	 * @return The canvas if it can be determined or empty if it fails usually mapview being absent.
+	 * @throws SQLException Failure getting artwork from the database.
+	 * @throws ArtMapException A generic failure parsing the artmap/
+	 */
+	public static Optional<Canvas> getCanvas(ItemStack item) throws SQLException, ArtMapException {
 		if (item == null || item.getType() != Material.FILLED_MAP) {
 			throw new ArtMapException("Artmap tried to getCanvas() on something that is not a filled map? :: " + (item==null ? "NULL item" : item.getType()+""));
 		}
 
+		//Get map data
+		Optional<Integer> optMapId = ItemUtils.getMapID(item);
+		if(!optMapId.isPresent()) {
+			return Optional.empty();
+		}
+		int mapId = optMapId.get();
+		MapMeta meta = (MapMeta) item.getItemMeta();
+
 		//Is this an unfinished artwork?
 		if(ArtItem.isUnfinishedArtwork(item)) {
 			//extract artist and id
-			MapMeta meta = (MapMeta) item.getItemMeta();
-			int mapId = meta.getMapView().getId();
-			return new Canvas(mapId, parseArtist(meta.getLore()).orElse("unknown"));
+			return Optional.of(new Canvas(mapId, parseArtist(meta.getLore()).orElse("unknown")));
 		}
 		
 		//Is this a copy artwork?
 		if(ArtItem.isCopyArtwork(item)) {
 			//Extract id, artist, and original title
-			MapMeta meta = (MapMeta) item.getItemMeta();
-			int mapId = meta.getMapView().getId();
 			Optional<MapArt> original = ArtMap.instance().getArtDatabase().getArtwork(meta.getDisplayName());
 			if(original.isPresent()) {	//There is a chance the original was deleted at which point we act like its an unfished artwork
-				return new CanvasCopy(new Map(mapId), original.get());
+				return Optional.of(new CanvasCopy(new Map(mapId), original.get()));
 			} else {
 				//deleted from database try parsing the text
-				return new Canvas(new Map(mapId), parseArtist(meta.getLore()).orElse("unknown"));
+				return Optional.of(new Canvas(new Map(mapId), parseArtist(meta.getLore()).orElse("unknown")));
 			}
 		}
 
 		//Check if this is an artmap tracked piece. Legacy check.
-		MapMeta meta = (MapMeta) item.getItemMeta();
-		int mapId = meta.getMapView().getId();
 		//unsaved
 		if(ArtMap.instance().getArtDatabase().containsUnsavedArtwork(mapId)){
-			return new Canvas(mapId, "unknown");
+			return Optional.of(new Canvas(mapId, "unknown"));
 		} 
 		//previously saved but missing tags
 		MapArt art = ArtMap.instance().getArtDatabase().getArtwork(mapId);
 		if(art != null) {
-			return new CanvasCopy(art.getMap(), art);
+			return Optional.of(new CanvasCopy(art.getMap(), art));
 		}
-		throw new ArtMapException("Artmap getCanvas() fell through to null?");
+		return Optional.empty();
 	}
 
 	/**

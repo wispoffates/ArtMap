@@ -29,7 +29,6 @@ import me.Fupery.ArtMap.IO.Legacy.DatabaseConverter;
 import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.IO.Legacy.V2DatabaseConverter;
 import me.Fupery.ArtMap.IO.Protocol.ProtocolHandler;
-import me.Fupery.ArtMap.IO.Protocol.Channel.ChannelCacheManager;
 import me.Fupery.ArtMap.Listeners.EventManager;
 import me.Fupery.ArtMap.Menu.Handler.MenuHandler;
 import me.Fupery.ArtMap.Painting.ArtistHandler;
@@ -51,7 +50,6 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 	private VersionHandler bukkitVersion;
 	private Scheduler scheduler;
 	private Database database;
-	private ChannelCacheManager cacheManager;
 	private RecipeLoader recipeLoader;
 	private CompatibilityManager compatManager;
 	private ProtocolHandler protocolHandler;
@@ -92,10 +90,6 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 
 	public VersionHandler getBukkitVersion() {
 		return this.bukkitVersion;
-	}
-
-	public ChannelCacheManager getCacheManager() {
-		return this.cacheManager;
 	}
 
 	public RecipeLoader getRecipeLoader() {
@@ -174,7 +168,6 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 			compatManager = new CompatibilityManager(this);
 			protocolHandler = new ProtocolHandler();
 			artistHandler = new ArtistHandler();
-			cacheManager = new ChannelCacheManager();
 			dyePalette = compatManager.getPalette();
 			database = new Database(this);
 			dbUpgradeNeeded = this.checkIfDatabaseUpgradeNeeded();

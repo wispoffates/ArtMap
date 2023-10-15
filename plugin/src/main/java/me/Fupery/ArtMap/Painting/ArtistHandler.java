@@ -101,7 +101,7 @@ public class ArtistHandler implements IArtistHandler {
 					Easel easel = session.getEasel();
 					ArtMap.instance().getScheduler().SYNC.run(() -> {
 						try {
-							Canvas canvas = Canvas.getCanvas(easel.getItem());
+							Canvas canvas = Canvas.getCanvas(easel.getItem()).orElseThrow(()-> new ArtMapException("Failed to retrieve canvas!"));
 							MapArt art1 = ArtMap.instance().getArtDatabase().saveArtwork(canvas, title, sender);
 							ArtMap.instance().getArtistHandler().removePlayer(sender);
 							easel.setItem(new ItemStack(Material.AIR));
