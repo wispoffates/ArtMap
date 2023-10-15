@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>Spigot_1_20_2</artifactId>
-			<version>3.9.11</version>
+			<version>3.9.12</version>
 		</dependency>
 		<!--Artmap plugin compatibility addons-->
 		<dependency>
@@ -209,7 +209,7 @@
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
 			<artifactId>PlotSquared7</artifactId>
-			<version>3.9.11</version>
+			<version>3.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gitlab.blockstack</groupId>
