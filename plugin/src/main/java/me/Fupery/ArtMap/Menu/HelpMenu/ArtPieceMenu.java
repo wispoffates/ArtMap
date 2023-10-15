@@ -1,10 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
@@ -204,7 +201,7 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
             					return; 
 							}
 						});
-						return null;
+						return Collections.singletonList(AnvilGUI.ResponseAction.close());
 					});
 					gui.open(player);
 				} else {
