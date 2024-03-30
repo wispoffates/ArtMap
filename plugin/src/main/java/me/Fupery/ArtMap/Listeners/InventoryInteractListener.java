@@ -50,14 +50,21 @@ class InventoryInteractListener implements RegisteredListener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (ArtMap.instance().getPreviewManager().endPreview(event.getPlayer())) event.getItemDrop().remove();
+        //end preview if they were dropping items in preview
+        if (ArtMap.instance().getPreviewManager().endPreview(event.getPlayer())) {
+            event.setCancelled(true);
+        }
+
+        //no throwing artkit items
 		if (ArtMap.instance().getArtistHandler().getCurrentSession(event.getPlayer()) != null) {
 			if (ArtMap.instance().getArtistHandler().getCurrentSession(event.getPlayer()).isInArtKit()) {
-				event.getItemDrop().remove();
+                event.setCancelled(true);
 			}
 		}
+
+        //no throwing artkit items really I mean it
         if (isKitDrop(event.getPlayer(), event.getItemDrop().getItemStack())) {
-            event.getItemDrop().remove();
+            event.setCancelled(true);
         }
     }
 
