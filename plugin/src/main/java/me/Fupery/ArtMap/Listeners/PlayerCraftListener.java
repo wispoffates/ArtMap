@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.api.Config.Lang;
-import me.Fupery.ArtMap.Exception.ArtMapException;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Utils.VersionHandler.BukkitVersion;

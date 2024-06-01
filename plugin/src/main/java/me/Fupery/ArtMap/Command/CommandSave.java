@@ -9,12 +9,12 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.api.Config.Lang;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
+import me.Fupery.ArtMap.api.Exception.DuplicateArtworkException;
+import me.Fupery.ArtMap.api.Exception.PermissionException;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Easel.EaselEffect;
-import me.Fupery.ArtMap.Exception.ArtMapException;
-import me.Fupery.ArtMap.Exception.DuplicateArtworkException;
-import me.Fupery.ArtMap.Exception.PermissionException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.TitleFilter;
 import me.Fupery.ArtMap.Utils.ItemUtils;

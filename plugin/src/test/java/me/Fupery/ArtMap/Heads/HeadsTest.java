@@ -3,6 +3,7 @@ package me.Fupery.ArtMap.Heads;
 import java.io.File;
 import java.util.UUID;
 
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.junit.Assert;
@@ -12,7 +13,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Exception.HeadFetchException;
+import me.Fupery.ArtMap.api.Exception.HeadFetchException;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
 public class HeadsTest {
@@ -31,7 +32,7 @@ public class HeadsTest {
         mockArtMap = mocks.getArtmapMock();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void retrieveHead() throws HeadFetchException {
         HeadsCache cache = new HeadsCache(mockArtMap, false);
         ItemStack head = cache.getHead(UUID.fromString("5dcadcf6-7070-42ab-aaf3-b60a120a6bcf"));

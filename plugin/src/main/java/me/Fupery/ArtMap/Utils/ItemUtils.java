@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 
-import me.Fupery.ArtMap.Exception.ArtMapException;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
 
 public class ItemUtils {
 

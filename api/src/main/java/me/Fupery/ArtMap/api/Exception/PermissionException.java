@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Exception;
+package me.Fupery.ArtMap.api.Exception;
 
 /**
  * Thrown when an artmap operation cannot be completed because it

@@ -22,7 +22,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.google.gson.Gson;
@@ -30,15 +29,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Exception.HeadFetchException;
 import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever;
+import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever.HeadCacheResponeType;
+import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever.HeadCacheType;
 import me.Fupery.ArtMap.api.Compatability.IHeadsRetriever.TextureData;
-import me.Fupery.ArtMap.api.Utils.Reflections;
+import me.Fupery.ArtMap.api.Exception.HeadFetchException;
 
 /**
  * Heads handler to be used with caching head textures.
@@ -183,10 +180,16 @@ public class HeadsCache {
 	 * @param playerId The ID of the player get the skull for.
 	 * 
 	 * @return The Skull.
+	 * @throws HeadFetchException 
 	 */
-	protected ItemStack getHead(UUID playerId) {
+	public ItemStack getHead(UUID playerId) throws HeadFetchException {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
-		Optional<SkullMeta> meta = getHeadMeta(playerId);
+		IHeadsRetriever headsRetriever = ArtMap.instance().getCompatManager().getHeadsRetriever();
+		if(!this.isHeadCached(playerId)) {
+			this.updateTexture(playerId);
+		}
+		TextureData textureData = textureCache.get(playerId);
+		Optional<SkullMeta> meta = headsRetriever.getHeadMeta(playerId,textureData);
 		if (!meta.isPresent()) { //try loading it the normal way
 			SkullMeta headmeta = (SkullMeta) head.getItemMeta();
 			OfflinePlayer player = ArtMap.instance().getServer().getOfflinePlayer(playerId);
@@ -238,40 +241,6 @@ public class HeadsCache {
 	 */
 	public Optional<UUID> getPlayerUUID(String playername) {
 		return Optional.ofNullable(nameToUUID.get(playername));
-	}
-
-	/**
-	 * Create a player skullMeta for the provided player id.
-	 * 
-	 * @param playerId The ID of the player to get the skull meta for.
-	 * @return The Skull meta.
-	 * @throws HeadFetchException
-	 */
-	public Optional<SkullMeta> getHeadMeta(UUID playerId) {
-		// is it in the cache?
-		if (!textureCache.containsKey(playerId)) {
-			this.updateTexture(playerId);
-		}
-		TextureData data = textureCache.get(playerId);
-		if (data == null) {
-			return Optional.empty();
-		}
-		GameProfile profile = new GameProfile(UUID.randomUUID(), this.getPlayerName(playerId));
-		PropertyMap propertyMap = profile.getProperties();
-		if (propertyMap == null) {
-			throw new IllegalStateException("Profile doesn't contain a property map");
-		}
-		// handle players without skin textures
-		if (!data.texture.isEmpty()) {
-			propertyMap.put("textures", new Property("textures", data.texture));
-		}
-		ItemStack head = new ItemStack(Material.PLAYER_HEAD, 1);
-		ItemMeta headMeta = head.getItemMeta();
-		Class<?> headMetaClass = headMeta.getClass();
-		Reflections.getField(headMetaClass, "profile", GameProfile.class).set(headMeta, profile);
-		headMeta.setDisplayName(data.name);
-
-		return Optional.of((SkullMeta) headMeta);
 	}
 
 	protected HeadCacheResponeType updateTexture(UUID playerId) {
@@ -363,24 +332,9 @@ public class HeadsCache {
 			} else {
 				return Optional.empty();
 			}
-			return Optional.of(new TextureData(name, jsonBase64));
+			return Optional.of(new TextureData(name, jsonBase64, HeadCacheType.PROFILE));
 		} catch ( Throwable e ) {
 			throw new HeadFetchException(API_PROFILE_LINK+id+ " :: Failure parsing skin texture json. You may ignore ths warning.",e);
 		}
 	}
-
-	/** Where the skin was loaded from.
-	 * Used by the prefetch to know when it needs to rate limit.
-	 */
-	public enum HeadCacheResponeType {
-		/** Retrieved from Cache */
-		CACHE, 
-		/** Retrieved from Server */
-		SERVER, 
-		/** Retrieved from Mojang API */
-		MOJANG_API, 
-		/** Failure to get skin */
-		NONE
-	}
-
 }

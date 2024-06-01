@@ -11,13 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtItem.InProgressArtworkItem;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Config.Lang;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
 
 /**
  * Represents a painting canvas..

@@ -10,13 +10,13 @@ import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.api.Config.Lang;
-import me.Fupery.ArtMap.Exception.ArtMapException;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ItemUtils;
 import me.Fupery.ArtMap.api.Easel.ClickType;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
 import net.md_5.bungee.api.ChatColor;
 
 public final class EaselEvent {

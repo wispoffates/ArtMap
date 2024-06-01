@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.api.Config.Lang;
-import me.Fupery.ArtMap.Exception.HeadFetchException;
+import me.Fupery.ArtMap.api.Exception.HeadFetchException;
 import me.Fupery.ArtMap.Menu.API.ChildMenu;
 import me.Fupery.ArtMap.Menu.API.ListMenu;
 import me.Fupery.ArtMap.Menu.API.SoundCompat;
@@ -117,7 +117,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 			this.artistName = artist.toString();
 			meta.setDisplayName(artist.toString());
 			if(loadHeads) {
-				meta = ArtMap.instance().getHeadsCache().getHeadMeta(artist).orElse(meta);
+				meta = (SkullMeta) ArtMap.instance().getHeadsCache().getHead(artist).getItemMeta();
 				this.artistName = meta.getDisplayName();
 			}
 			meta.setLore(Collections.singletonList(HelpMenu.CLICK));

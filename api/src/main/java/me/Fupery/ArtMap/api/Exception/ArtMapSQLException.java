@@ -1,4 +1,4 @@
-package me.Fupery.ArtMap.Exception;
+package me.Fupery.ArtMap.api.Exception;
 
 /**
  * Thrown when a SQL Exception occurs.

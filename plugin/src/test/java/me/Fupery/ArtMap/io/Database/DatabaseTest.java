@@ -19,12 +19,12 @@ import org.junit.rules.ExpectedException;
 
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
-import me.Fupery.ArtMap.Exception.DuplicateArtworkException;
-import me.Fupery.ArtMap.Exception.PermissionException;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Database;
 import me.Fupery.ArtMap.IO.Database.Map;
+import me.Fupery.ArtMap.api.Exception.DuplicateArtworkException;
+import me.Fupery.ArtMap.api.Exception.PermissionException;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
 public class DatabaseTest {
