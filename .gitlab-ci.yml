@@ -26,14 +26,6 @@ cache:
 # Build
 ################################################################################################
 
-# All versions <=1.16
-.jdk8:
-  image: maven:3.9-eclipse-temurin-8
-
-# 1.17
-.jdk16:
-  image: maven:3.9-eclipse-temurin-16
-
 # 1.18
 .jdk17:
   image: maven:3.9-eclipse-temurin-17
@@ -57,12 +49,6 @@ cache:
       junit:
         - plugin/target/surefire-reports/TEST-*.xml
         - plugin/target/failsafe-reports/TEST-*.xml
-        
-build:jdk8:
-  extends: [.jdk8, .build]
-
-build:jdk16:
-  extends: [.jdk16, .build]
 
 build:jdk17:
   extends: [.jdk17, .build]
@@ -94,18 +80,6 @@ coverage:
   only:
     - master
 
-publishjdk8:
-  extends: .publish
-  needs: ["release:generate-release","build:jdk8"]
-  variables:
-    JDK: "JDK8"
-
-publish:jdk16:
-  extends: .publish
-  needs: ["release:generate-release","build:jdk16"]
-  variables:
-    JDK: "JDK16"
-
 publish:jdk17:
   extends: .publish
   needs: ["release:generate-release","build:jdk17"]
@@ -124,7 +98,7 @@ publish:jdk21:
 
 integration:
   stage: integration
-  needs: ["build:jdk17"]
+  needs: ["build:jdk21"]
   script:
     - echo $NEXT_VERSION
     - echo $CURRENT_VERSION
@@ -180,6 +154,6 @@ release:generate-release:
 release:tag:
   stage: release
   extends: release:generate-release
-  needs: ["publish:jdk21"]
+  needs: ["publish:jdk17","publish:jdk21"]
   script:
     - semantic-release
