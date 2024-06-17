@@ -34,9 +34,13 @@ cache:
 .jdk16:
   image: maven:3.8-openjdk-16
 
-# 1.18+
+# 1.18
 .jdk17:
   image: maven:3.8-openjdk-17
+
+# 1.20.5+
+.jdk21:
+  image: maven:3.9-openjdk-21
 
 #use maven verify we don't need to pollute the cache with the build artifacts
 .build:
@@ -63,13 +67,16 @@ build:jdk16:
 build:jdk17:
   extends: [.jdk17, .build]
 
+build:jdk21:
+  extends: [.jdk21, .build]
+
 coverage:
   stage: coverage
   image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
     # convert report from jacoco to cobertura, using relative project path
     - python /opt/cover2cover.py plugin/target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/plugin/src/main/java/ > plugin/target/site/cobertura.xml
-  needs: ["build:jdk17"]
+  needs: ["build:jdk21"]
   artifacts:
     reports:
       coverage_report:
@@ -105,6 +112,12 @@ publish:jdk17:
   variables:
     JDK: "JDK17"
 
+publish:jdk21:
+  extends: .publish
+  needs: ["release:generate-release","build:jdk21"]
+  variables:
+    JDK: "JDK21"
+
 ################################################################################################
 # Integration - Just some debugging for now - Intention is to use docker and test startup on various MC versions
 ################################################################################################
@@ -123,7 +136,7 @@ integration:
 #Updates POM versions to keep them in line with the release
 #Only pushes if there are changes
 release:maven-release:
-  extends: .jdk17
+  extends: .jdk21
   stage: release
   needs: ["release:generate-release","publish:jdk17","release:tag"]
   variables:
@@ -167,6 +180,6 @@ release:generate-release:
 release:tag:
   stage: release
   extends: release:generate-release
-  needs: ["publish:jdk17"]
+  needs: ["publish:jdk21"]
   script:
     - semantic-release
