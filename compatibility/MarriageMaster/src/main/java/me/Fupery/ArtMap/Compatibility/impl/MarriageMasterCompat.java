@@ -24,7 +24,7 @@ public class MarriageMasterCompat implements EventListener {
     public void onGiftEvent(GiftEvent event) {
         try {
             OfflinePlayer partner1 = event.getMarriageData().getPartner1().getPlayer();
-            OfflinePlayer partner2 = event.getMarriageData().getPartner1().getPlayer();
+            OfflinePlayer partner2 = event.getMarriageData().getPartner2().getPlayer();
             if(partner1.isOnline()) {
                 if(artmap.getArtistHandler().containsPlayer(partner1.getPlayer()) 
                     && artmap.getArtistHandler().getCurrentSession(partner1.getPlayer()).isInArtKit()) {
