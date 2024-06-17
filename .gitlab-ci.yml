@@ -28,19 +28,19 @@ cache:
 
 # All versions <=1.16
 .jdk8:
-  image: maven:3.8-openjdk-8
+  image: maven:3.8-eclipse-temurin--8
 
 # 1.17
 .jdk16:
-  image: maven:3.8-openjdk-16
+  image: maven:3.8-eclipse-temurin--16
 
 # 1.18
 .jdk17:
-  image: maven:3.8-openjdk-17
+  image: maven:3.8-eclipse-temurin--17
 
 # 1.20.5+
 .jdk21:
-  image: maven:3.9-openjdk-21
+  image: maven:3.9-eclipse-temurin-21
 
 #use maven verify we don't need to pollute the cache with the build artifacts
 .build:
