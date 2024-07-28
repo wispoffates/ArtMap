@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gitlab.blockstack</groupId>
 	<artifactId>ArtMap-parent</artifactId>
-	<version>3.9.17</version>
+	<version>3.9.18</version>
 	<description>Make pixel art!</description>
 	<packaging>pom</packaging>
 
@@ -100,7 +100,7 @@
 			<dependency>
 				<groupId>com.gitlab.blockstack</groupId>
 				<artifactId>ArtMap-api</artifactId>
-				<version>3.9.17</version>
+				<version>3.9.18</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
