@@ -17,9 +17,8 @@ AnvilGUI is updated.
 
 * Downloads are available on the releases page in gitlab.
 * Downloads are now availble for 3 different JDKs. Use the version that matches the JDL you are using. 
-  * 1.13 - 1.16 - Use the JDK8 version.
-  * 1.17 - Use the JDK16 version.
-  * 1.18+ - Use the JDK17 version.
+  * 1.13-1.19 - Use the JDK17 version.
+  * 1.20+ - Use the JDK21 version.
 
 ### Features
 
