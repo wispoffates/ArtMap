@@ -113,6 +113,7 @@ public class CompatibilityManager implements RegionHandler {
 
     @Override
     public boolean checkBuildAllowed(Player player, Location location) {
+        if( player.isOp()) return true;  //op bypass all permission checks
         for (RegionHandler regionHandler : regionHandlers) {
             if (!regionHandler.checkBuildAllowed(player, location)) return false;
         }
@@ -121,6 +122,7 @@ public class CompatibilityManager implements RegionHandler {
 
     @Override
     public boolean checkInteractAllowed(Player player, Entity entity, ClickType click) {
+        if( player.isOp()) return true; //op bypass all permission checks
         if (checkBuildAllowed(player, entity.getLocation())) return true; //builders can override
         for (RegionHandler regionHandler : regionHandlers) {
             if (!regionHandler.checkInteractAllowed(player, entity, click)) return false;
