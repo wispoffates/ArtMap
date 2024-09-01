@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,18 +43,18 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Future<Button[]> getListItems() {
-		FutureTask<Button[]> task = new FutureTask<> (()->{
-			UUID[] artists;
+	protected Future<List<Button>> getListItems() {
+		FutureTask<List<Button>> task = new FutureTask<> (()->{
+			List<UUID> artists;
 			try {
 				artists = ArtMap.instance().getArtDatabase().listArtists(this.viewer.getUniqueId());
 			} catch (SQLException e) {
 				ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
-				return new Button[0];
+				return new ArrayList<>();
 			}
 			List<Button> buttons = new LinkedList<>();
 
-			int notCached = artists.length - ArtMap.instance().getHeadsCache().getCacheSize();
+			int notCached = artists.size() - ArtMap.instance().getHeadsCache().getCacheSize();
 			if (notCached > 1 && !haveWarnedUser) {
 				this.viewer.sendMessage(MessageFormat.format(
 						"ArtMap: {0} artist(s) currently not cached you might see some incorrect heads until they are all loaded.", notCached));
@@ -74,13 +75,13 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 			}
 
 			// skip 0 as it is the viewer
-			for (int i = 1; i < artists.length; i++) {
+			for (UUID artist : artists) {
 				try {
-					buttons.add(new ArtworkListButton(artists[i], true));
+					buttons.add(new ArtworkListButton(artist, true));
 				} catch (HeadFetchException e) {
 					//try again with the fetch set to false as it will fail over and over
 					try {
-						buttons.add(new ArtworkListButton(artists[i], false));
+						buttons.add(new ArtworkListButton(artist, false));
 					} catch (HeadFetchException e1) {
 						// this one won't fail 
 					}
@@ -90,7 +91,7 @@ public class ArtistMenu extends ListMenu implements ChildMenu {
 			buttons.sort((Button o1, Button o2) -> o1.getItemMeta().getDisplayName().toLowerCase()
 					.compareTo(o2.getItemMeta().getDisplayName().toLowerCase()));
 			buttons.add(0, playerButton); // add viewer first
-			return buttons.toArray(new Button[0]);
+			return buttons;
 		});
 		ArtMap.instance().getScheduler().ASYNC.run(task);
 		return task;

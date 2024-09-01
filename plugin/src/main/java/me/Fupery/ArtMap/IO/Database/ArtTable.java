@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,12 +37,12 @@ final class ArtTable extends SQLiteTable {
 			protected Optional<MapArt> read(ResultSet set) throws SQLException {
                 return (set.next()) ? Optional.of(readArtwork(set)) : Optional.empty();
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE title=?;");
+        }.execute("SELECT * FROM " + table + " WHERE title=?;");
     }
 
 
-    MapArt getArtwork(int mapData) throws SQLException {
-        return new QueuedQuery<MapArt>() {
+    Optional<MapArt> getArtwork(int mapData) throws SQLException {
+        return new QueuedQuery<Optional<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -49,14 +50,14 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt read(ResultSet set) throws SQLException {
-                return (set.next()) ? readArtwork(set) : null;
+			protected Optional<MapArt> read(ResultSet set) throws SQLException {
+                return (set.next()) ? Optional.of(readArtwork(set)) : Optional.empty();
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
+        }.execute("SELECT * FROM " + table + " WHERE id=?;");
     }
 
-    MapArt[] searchArtwork(String title) throws SQLException {
-        return new QueuedQuery<MapArt[]>() {
+    List<MapArt> searchArtwork(String title) throws SQLException {
+        return new QueuedQuery<List<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -64,18 +65,18 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt[] read(ResultSet results) throws SQLException {
+			protected List<MapArt> read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
                     artworks.add(readArtwork(results));
                 }
-                return artworks.toArray(new MapArt[artworks.size()]);
+                return artworks;
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE title LIKE ? ORDER BY artist;");
+        }.execute("SELECT * FROM " + table + " WHERE title LIKE ? ORDER BY artist;");
     }
 
-    MapArt[] searchArtwork(String title, UUID playerId) throws SQLException {
-        return new QueuedQuery<MapArt[]>() {
+    List<MapArt> searchArtwork(String title, UUID playerId) throws SQLException {
+        return new QueuedQuery<List<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -84,14 +85,14 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt[] read(ResultSet results) throws SQLException {
+			protected List<MapArt> read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
                     artworks.add(readArtwork(results));
                 }
-                return artworks.toArray(new MapArt[artworks.size()]);
+                return artworks;
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE title LIKE ? AND artist = ? ORDER BY title;");
+        }.execute("SELECT * FROM " + table + " WHERE title LIKE ? AND artist = ? ORDER BY title;");
     }
 
     MapArt readArtwork(ResultSet set) throws SQLException {
@@ -122,7 +123,7 @@ final class ArtTable extends SQLiteTable {
 			protected Boolean read(ResultSet set) throws SQLException {
 				return set.isBeforeFirst();
             }
-        }.execute("SELECT title FROM " + TABLE + " WHERE title=?;")
+        }.execute("SELECT title FROM " + table + " WHERE title=?;")
                 && (ignoreMapID || containsMapID(art.getMapId()));
     }
 
@@ -139,7 +140,7 @@ final class ArtTable extends SQLiteTable {
 			protected Boolean read(ResultSet set) throws SQLException {
 				return set.isBeforeFirst();
             }
-        }.execute("SELECT id FROM " + TABLE + " WHERE id=?;");
+        }.execute("SELECT id FROM " + table + " WHERE id=?;");
     }
 
 
@@ -150,7 +151,7 @@ final class ArtTable extends SQLiteTable {
 			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setString(1, title);
             }
-        }.execute("DELETE FROM " + TABLE + " WHERE title=?;");
+        }.execute("DELETE FROM " + table + " WHERE title=?;");
     }
 
 	void renameArtwork(MapArt art, String nTitle) throws SQLException {
@@ -161,7 +162,7 @@ final class ArtTable extends SQLiteTable {
 				statement.setString(1, nTitle);
 				statement.setInt(2, art.getMapId());
 			}
-		}.execute("UPDATE " + TABLE + " SET title=? WHERE id=?;");
+		}.execute("UPDATE " + table + " SET title=? WHERE id=?;");
 	}
 
     void deleteArtwork(int mapId) throws SQLException {
@@ -171,12 +172,12 @@ final class ArtTable extends SQLiteTable {
 			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
-        }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
+        }.execute("DELETE FROM " + table + " WHERE id=?;");
     }
 
 
-    MapArt[] listMapArt(UUID artist) throws SQLException {
-        return new QueuedQuery<MapArt[]>() {
+    List<MapArt> listMapArt(UUID artist) throws SQLException {
+        return new QueuedQuery<List<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -184,18 +185,18 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt[] read(ResultSet results) throws SQLException {
+			protected List<MapArt> read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
                     artworks.add(readArtwork(results));
                 }
-                return artworks.toArray(new MapArt[artworks.size()]);
+                return artworks;
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE artist = ? ORDER BY title;");
+        }.execute("SELECT * FROM " + table + " WHERE artist = ? ORDER BY title;");
     }
 
-    MapArt[] listMapArt() throws SQLException {
-        return new QueuedQuery<MapArt[]>() {
+    List<MapArt> listMapArt() throws SQLException {
+        return new QueuedQuery<List<MapArt>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) {
@@ -203,18 +204,18 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected MapArt[] read(ResultSet results) throws SQLException {
+			protected List<MapArt> read(ResultSet results) throws SQLException {
                 ArrayList<MapArt> artworks = new ArrayList<>();
                 while (results.next()) {
                     artworks.add(readArtwork(results));
                 }
-                return artworks.toArray(new MapArt[artworks.size()]);
+                return artworks;
             }
-        }.execute("SELECT * FROM " + TABLE + " ORDER BY id;");
+        }.execute("SELECT * FROM " + table + " ORDER BY id;");
     }
 
-    UUID[] listArtists(UUID player) throws SQLException {
-        return new QueuedQuery<UUID[]>() {
+    List<UUID> listArtists(UUID player) throws SQLException {
+        return new QueuedQuery<List<UUID>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -222,7 +223,7 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected UUID[] read(ResultSet results) throws SQLException {
+			protected List<UUID> read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
 				if (player != null) {
 					artists.add(0, player);
@@ -230,13 +231,13 @@ final class ArtTable extends SQLiteTable {
                 while (results.next()) {
                     artists.add(UUID.fromString(results.getString("artist")));
                 }
-                return artists.toArray(new UUID[artists.size()]);
+                return artists;
             }
-        }.execute("SELECT DISTINCT artist FROM " + TABLE + " WHERE artist != ? ORDER BY artist;");
+        }.execute("SELECT DISTINCT artist FROM " + table + " WHERE artist != ? ORDER BY artist;");
     }
 
-	UUID[] listArtists() throws SQLException {
-		return new QueuedQuery<UUID[]>() {
+	List<UUID> listArtists() throws SQLException {
+		return new QueuedQuery<List<UUID>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) {
@@ -244,14 +245,14 @@ final class ArtTable extends SQLiteTable {
             }
 
             @Override
-			protected UUID[] read(ResultSet results) throws SQLException {
+			protected List<UUID> read(ResultSet results) throws SQLException {
                 ArrayList<UUID> artists = new ArrayList<>();
                 while (results.next()) {
                     artists.add(UUID.fromString(results.getString("artist")));
                 }
-                return artists.toArray(new UUID[artists.size()]);
+                return artists;
             }
-        }.execute("SELECT DISTINCT artist FROM " + TABLE + " ORDER BY artist;");
+        }.execute("SELECT DISTINCT artist FROM " + table + " ORDER BY artist;");
 	}
 
     void updateMapID(MapArt art) throws SQLException {
@@ -262,7 +263,7 @@ final class ArtTable extends SQLiteTable {
                 statement.setInt(1, art.getMapId());
                 statement.setString(2, art.getTitle());
             }
-        }.execute("UPDATE " + TABLE + " SET id=? WHERE title=?;");
+        }.execute("UPDATE " + table + " SET id=? WHERE title=?;");
     }
 
 	void addArtwork(MapArt art) throws SQLException {
@@ -274,6 +275,6 @@ final class ArtTable extends SQLiteTable {
                 statement.setString(3, art.getArtist().toString());
                 statement.setString(4, art.getDate());
             }
-        }.execute("INSERT INTO " + TABLE + " (title, id, artist, date) VALUES(?,?,?,?);");
+        }.execute("INSERT INTO " + table + " (title, id, artist, date) VALUES(?,?,?,?);");
     }
 }

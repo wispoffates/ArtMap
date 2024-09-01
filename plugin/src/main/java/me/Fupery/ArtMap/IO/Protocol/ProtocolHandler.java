@@ -4,23 +4,26 @@ import com.comphenix.protocol.ProtocolLibrary;
 
 import org.bukkit.Bukkit;
 
-import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.IO.Protocol.In.PacketReceiver;
 import me.Fupery.ArtMap.IO.Protocol.In.ProtocolLibReceiver;
-;
+import me.Fupery.ArtMap.api.Exception.ArtMapException;
+
 
 public class ProtocolHandler {
 
-    public final PacketReceiver PACKET_RECIEVER;
+    private final PacketReceiver packetReceiver;
 
-    public ProtocolHandler() {
-        boolean useProtocolLib = ArtMap.instance().getCompatManager().isPluginLoaded("ProtocolLib");
+    public ProtocolHandler() throws ArtMapException {
         try {
             ProtocolLibrary.getProtocolManager();
-            PACKET_RECIEVER = new ProtocolLibReceiver();
+            packetReceiver = new ProtocolLibReceiver();
             Bukkit.getLogger().info("[ArtMap] Using ProtocolLib PacketReciever.");
         } catch (Exception | NoClassDefFoundError e) {
-            throw new RuntimeException("ProtocolLib could not be hooked! Please install a compatible version of ProtocolLib.");
+            throw new ArtMapException("ProtocolLib could not be hooked! Please install a compatible version of ProtocolLib.");
         }
+    }
+
+    public PacketReceiver getPacketReceiver() {
+        return this.packetReceiver;
     }
 }

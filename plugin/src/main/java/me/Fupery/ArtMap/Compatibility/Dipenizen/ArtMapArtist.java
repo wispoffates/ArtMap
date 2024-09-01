@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.Compatibility.Dipenizen;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -84,7 +86,7 @@ public class ArtMapArtist implements dObject {
 		}
 
 		if (attribute.startsWith("artworks")) {
-			MapArt[] artworks;
+			List<MapArt> artworks = new ArrayList<>();
 			try {
 				artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
 			} catch (SQLException e) {

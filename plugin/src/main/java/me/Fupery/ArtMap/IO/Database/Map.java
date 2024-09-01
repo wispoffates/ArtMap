@@ -122,13 +122,6 @@ public class Map {
         return mapId;
     }
 
-    /*
-    private MapView getMapView() {
-        //todo We probably don't need sophisticated mapView caching right now
-        return (mapView != null) ? mapView :
-                (mapView = ArtMap.instance().getScheduler().callSync(() -> Bukkit.getMap(mapId)));
-    }*/
-
     public enum Size {
         MAX(128 * 128), STANDARD(32 * 32);
         public final int value;

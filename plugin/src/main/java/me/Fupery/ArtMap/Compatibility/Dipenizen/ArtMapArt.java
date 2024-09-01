@@ -74,33 +74,32 @@ public class ArtMapArt implements dObject {
 
 	@Override
 	public String getAttribute(Attribute attribute) {
-		MapArt art;
 		try {
-			art = ArtMap.instance().getArtDatabase().getArtwork(this.artId);
+			MapArt art = ArtMap.instance().getArtDatabase().getArtwork(this.artId).orElse(null);
+			if(art == null) {
+				return "No Artwork Found!";
+			}
+			if (attribute.startsWith("name")) {
+				return new Element(art.getTitle()).getAttribute(attribute);
+			}
+			if (attribute.startsWith("id")) {
+				return new Element(art.getMapId()).getAttribute(attribute);
+			}
+			if (attribute.startsWith("date")) {
+				return new Element(art.getDate()).getAttribute(attribute);
+			}
+			if (attribute.startsWith("id")) {
+				return new Element(art.getMapId()).getAttribute(attribute);
+			}
+			if (attribute.startsWith("item")) {
+				dItem artwork = new dItem(art.getMapItem());
+				return artwork.getAttribute(attribute.fulfill(1));
+			}
+			return new Element(identify()).getAttribute(attribute);
 		} catch (SQLException e) {
 			ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
 			return "Error!";
 		}
-		if(art == null) {
-			return "No Artwork Found!";
-		}
-		if (attribute.startsWith("name")) {
-			return new Element(art.getTitle()).getAttribute(attribute);
-		}
-		if (attribute.startsWith("id")) {
-			return new Element(art.getMapId()).getAttribute(attribute);
-		}
-		if (attribute.startsWith("date")) {
-			return new Element(art.getDate()).getAttribute(attribute);
-		}
-		if (attribute.startsWith("id")) {
-			return new Element(art.getMapId()).getAttribute(attribute);
-		}
-		if (attribute.startsWith("item")) {
-			dItem artwork = new dItem(art.getMapItem());
-			return artwork.getAttribute(attribute.fulfill(1));
-		}
-		return new Element(identify()).getAttribute(attribute);
 	}
 
 	@Override

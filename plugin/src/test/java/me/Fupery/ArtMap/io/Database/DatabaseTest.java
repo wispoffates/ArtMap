@@ -5,23 +5,22 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.Easel.Canvas.CanvasCopy;
 import me.Fupery.ArtMap.IO.CompressedMap;
 import me.Fupery.ArtMap.IO.MapArt;
 import me.Fupery.ArtMap.IO.Database.Database;
+import me.Fupery.ArtMap.IO.Database.IDatabase;
 import me.Fupery.ArtMap.IO.Database.Map;
 import me.Fupery.ArtMap.api.Exception.DuplicateArtworkException;
 import me.Fupery.ArtMap.api.Exception.PermissionException;
@@ -31,9 +30,6 @@ public class DatabaseTest {
 
     private static MockUtil mocks;
     private static Plugin mockPlugin;
-
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -45,13 +41,13 @@ public class DatabaseTest {
 
     @Test
     public void testDatabaseInit() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         Assert.assertNotNull("Database init failure DB is null!", db);
     }
 
     @Test
     public void testSaveArtwork() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Player player = mocks.getRandomMockPlayers(1)[0];
@@ -63,7 +59,7 @@ public class DatabaseTest {
 
     @Test
     public void testSaveArtworkImport() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Player player = mocks.getRandomMockPlayers(1)[0];
@@ -72,16 +68,16 @@ public class DatabaseTest {
         MapArt art = new MapArt(1, "testArt", player.getUniqueId(), player.getName(), new Date());
 
         db.saveArtwork(art, mockCompressedMap);
-        MapArt check = db.getArtwork(1);
+        MapArt check = db.getArtwork(1).orElse(null);
         Assert.assertNotNull("Failed to retrieve Art!", check);
         Assert.assertEquals("Art title does not match.", "testArt", check.getTitle());
         Assert.assertEquals("Artist ID does not match", player.getUniqueId(), check.getArtist());
         Assert.assertEquals("Artist name does not match", player.getName(), check.getArtistName());
     }
 
-    @Test(expected = DuplicateArtworkException.class)
+    @Test
     public void testSaveArtworkImportDuplicate() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Player player = mocks.getRandomMockPlayers(1)[0];
@@ -90,27 +86,27 @@ public class DatabaseTest {
         MapArt art = new MapArt(1, "testArt", player.getUniqueId(), player.getName(), new Date());
 
         db.saveArtwork(art, mockCompressedMap);
-        db.saveArtwork(art, mockCompressedMap); // should throw the exception
-        Assert.assertTrue("Artwork save did not throw an exception when it should have!", false);
+         // should throw the exception
+        Assert.assertThrows(DuplicateArtworkException.class, () -> {db.saveArtwork(art, mockCompressedMap);});
     }
 
     @Test
     public void testSaveInprogressArtwork() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Map map = new Map(1);
         db.saveInProgressArt(map, new byte[Map.Size.MAX.value]);
-        CompressedMap cmap = db.getArtworkCompressedMap(1);
+        CompressedMap cmap = db.getArtworkCompressedMap(1).orElse(null);
         Assert.assertNotNull("Database save returned null!", cmap);
         db.deleteInProgressArt(map);// clean the db
-        cmap = db.getArtworkCompressedMap(1);
+        cmap = db.getArtworkCompressedMap(1).orElse(null);
         Assert.assertNull("Delete of in progess artwork failed!", cmap);
     }
 
     @Test
     public void testCompleteInprogressArtwork() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Player player = mocks.getRandomMockPlayers(1)[0];
@@ -118,7 +114,7 @@ public class DatabaseTest {
 
         Map map = new Map(canvas.getMapId());
         db.saveInProgressArt(map, new byte[Map.Size.MAX.value]);
-        CompressedMap cmap = db.getArtworkCompressedMap(canvas.getMapId());
+        CompressedMap cmap = db.getArtworkCompressedMap(canvas.getMapId()).orElse(null);
         Assert.assertNotNull("Database save returned null!", cmap);
         MapArt savedArt = db.saveArtwork(canvas, "inProgressSaved", player);
         Assert.assertNotNull("Database save returned null!", savedArt);
@@ -128,22 +124,22 @@ public class DatabaseTest {
 
     @Test
     public void testUpdateInprogressArtwork() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
 
         Map map = new Map(1);
         db.saveInProgressArt(map, new byte[Map.Size.MAX.value]);
         db.saveInProgressArt(map, new byte[Map.Size.MAX.value]);
-        CompressedMap cmap = db.getArtworkCompressedMap(1);
+        CompressedMap cmap = db.getArtworkCompressedMap(1).orElse(null);
         Assert.assertNotNull("Database save returned null!", cmap);
         db.deleteInProgressArt(map);// clean the db
-        cmap = db.getArtworkCompressedMap(1);
+        cmap = db.getArtworkCompressedMap(1).orElse(null);
         Assert.assertNull("Delete of in progess artwork failed!", cmap);
     }
 
-    @Test(expected = DuplicateArtworkException.class)
+    @Test
     public void testSaveArtworkWithDuplicateTitle() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -153,14 +149,14 @@ public class DatabaseTest {
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
         // This save should throw an exception
-
-        MapArt savedArt2 = db.saveArtwork(mockCanvas, "test", player);
-        Assert.assertNull("Artwork should not have been saved!", savedArt2);
+        Assert.assertThrows("Second save should have thrown a DuplicateArtworkException", DuplicateArtworkException.class,() -> {
+            db.saveArtwork(mockCanvas, "test", player);
+        });
     }
 
-    @Test(expected = DuplicateArtworkException.class)
+    @Test
     public void testSaveArtworkWithDuplicateTitleWithCanvasCopyButDifferentID() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvases = mocks.getRandomMockCanvases(2);
@@ -171,14 +167,14 @@ public class DatabaseTest {
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player.getName(), savedArt.getArtistName());
         // This save should throw an exception
-
-        MapArt savedArt2 = db.saveArtwork(mockCanvasCopy, "test", player);
-        Assert.assertNull("Artwork should not have been saved!", savedArt2);
+        Assert.assertThrows("Second save should have thrown a DuplicateArtworkException", DuplicateArtworkException.class,() -> {
+            db.saveArtwork(mockCanvasCopy, "test", player);
+        });
     }
 
-    @Test(expected = PermissionException.class)
+    @Test
     public void testSaveArtworkWrongPlayer() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -189,13 +185,14 @@ public class DatabaseTest {
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", players[0].getName(), savedArt.getArtistName());
         // This save should throw an exception
-        MapArt savedArt2 = db.saveArtwork(mockCanvasCopy, "test", players[1]);
-        Assert.assertNull("Artwork should not have been saved!", savedArt2);
+        Assert.assertThrows("Second save should have thrown a Permission Exception", PermissionException.class,() -> {
+            db.saveArtwork(mockCanvasCopy, "test", players[1]);
+        });
     }
 
     @Test
     public void testUpdateArtworkSamePlayer() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -212,7 +209,7 @@ public class DatabaseTest {
 
     @Test
     public void testUpdateArtworkOpPlayer() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -230,7 +227,7 @@ public class DatabaseTest {
 
     @Test
     public void testUpdateArtworkAdminPlayer() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -248,7 +245,7 @@ public class DatabaseTest {
 
     @Test
     public void testRenameArtwork() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas mockCanvas = mocks.getRandomMockCanvases(1)[0];
@@ -266,7 +263,7 @@ public class DatabaseTest {
 
     @Test
     public void testListArtists() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -277,15 +274,15 @@ public class DatabaseTest {
         db.saveArtwork(mockCanvas[2], "testPlayer2_1", player[1]);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player[0].getName(), savedArt.getArtistName());
-        UUID[] artists = db.listArtists();
-        Assert.assertEquals("Should only return 2 artists.",2, artists.length);
-        Assert.assertTrue("Player[0] missing from results.", Arrays.asList(artists).contains(player[0].getUniqueId()));
-        Assert.assertTrue("Player[1] missing from results.", Arrays.asList(artists).contains(player[1].getUniqueId()));
+        List<UUID> artists = db.listArtists();
+        Assert.assertEquals("Should only return 2 artists.",2, artists.size());
+        Assert.assertTrue("Player[0] missing from results.", artists.contains(player[0].getUniqueId()));
+        Assert.assertTrue("Player[1] missing from results.", artists.contains(player[1].getUniqueId()));
     }
 
     @Test
     public void testListArtistsSkip() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -296,18 +293,18 @@ public class DatabaseTest {
         db.saveArtwork(mockCanvas[2], "testPlayer2_1", player[1]);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player[0].getName(), savedArt.getArtistName());
-        UUID[] artists = db.listArtists(player[0].getUniqueId());
-        Assert.assertEquals("Should only return 2 artists.",2, artists.length);
-        Assert.assertTrue("Player[0] should be first in the results.", artists[0].equals(player[0].getUniqueId()));
-        Assert.assertTrue("Player[1] should be second in the results.", artists[1].equals(player[1].getUniqueId()));
+        List<UUID> artists = db.listArtists(player[0].getUniqueId());
+        Assert.assertEquals("Should only return 2 artists.",2, artists.size());
+        Assert.assertEquals("Player[0] should be first in the results.", artists.get(0),player[0].getUniqueId());
+        Assert.assertEquals("Player[1] should be second in the results.", artists.get(1),player[1].getUniqueId());
         artists = db.listArtists(player[1].getUniqueId());
-        Assert.assertTrue("Player[0] should be second in the results.", artists[0].equals(player[1].getUniqueId()));
-        Assert.assertTrue("Player[1] should be firstq in the results.", artists[1].equals(player[0].getUniqueId()));
+        Assert.assertEquals("Player[0] should be second in the results.", artists.get(0),player[1].getUniqueId());
+        Assert.assertEquals("Player[1] should be firstq in the results.", artists.get(1),player[0].getUniqueId());
     }
 
     @Test
     public void testListArt() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -318,14 +315,14 @@ public class DatabaseTest {
         db.saveArtwork(mockCanvas[2], "testPlayer2_1", player[1]);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player[0].getName(), savedArt.getArtistName());
-        MapArt[] artworks = db.listMapArt();
-        Assert.assertEquals("Should return 3 artworks.",3, artworks.length);
-        Assert.assertTrue("Expected Artwork missing!.", Arrays.asList(artworks).contains(savedArt));
+        List<MapArt> artworks = db.listMapArt();
+        Assert.assertEquals("Should return 3 artworks.",3, artworks.size());
+        Assert.assertTrue("Expected Artwork missing!.", artworks.contains(savedArt));
     }
 
     @Test
     public void testListArtForArtist() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -336,14 +333,14 @@ public class DatabaseTest {
         db.saveArtwork(mockCanvas[2], "testPlayer2_1", player[1]);
         Assert.assertNotNull("Database save returned null!", savedArt);
         Assert.assertEquals("Artist name not saved correctly", player[0].getName(), savedArt.getArtistName());
-        MapArt[] artworks = db.listMapArt(player[0].getUniqueId());
-        Assert.assertEquals("Should return 2 artworks.",2, artworks.length);
-        Assert.assertTrue("Expected Artwork missing!.", Arrays.asList(artworks).contains(savedArt));
+        List<MapArt> artworks = db.listMapArt(player[0].getUniqueId());
+        Assert.assertEquals("Should return 2 artworks.",2, artworks.size());
+        Assert.assertTrue("Expected Artwork missing!.", artworks.contains(savedArt));
     }
 
     @Test
     public void testContainsArtByID() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -364,7 +361,7 @@ public class DatabaseTest {
 
     @Test
     public void testContainsArtByMapArt() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -381,7 +378,7 @@ public class DatabaseTest {
 
     @Test
     public void testContainsArtByMapArtDifferentID() throws Exception {
-        Database db = new Database(mockPlugin);
+        IDatabase db = new Database(mockPlugin);
         this.clearDatabase(db);
         // mocks
         Canvas[] mockCanvas = mocks.getRandomMockCanvases(3);
@@ -397,10 +394,11 @@ public class DatabaseTest {
         Assert.assertTrue("Artwork 0 not found.", found);
     }
 
-    private void clearDatabase(Database db) throws SQLException, NoSuchFieldException, IllegalAccessException {
-        MapArt[] artwork = db.listMapArt();
+    private void clearDatabase(IDatabase db) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        List<MapArt> artwork = db.listMapArt();
         for(MapArt art : artwork) {
             db.deleteArtwork(art);
         }
+        db.deleteInProgressArt(new Map(1));
     }
 }

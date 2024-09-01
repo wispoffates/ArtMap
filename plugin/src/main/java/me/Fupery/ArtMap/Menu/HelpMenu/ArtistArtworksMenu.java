@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Menu.HelpMenu;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
@@ -69,29 +70,27 @@ public class ArtistArtworksMenu extends ListMenu implements ChildMenu {
     }
 
     @Override
-    protected Future<Button[]> getListItems() {
-        FutureTask<Button[]> task = new FutureTask<> (()->{
-            MapArt[] artworks;
+    protected Future<List<Button>> getListItems() {
+        FutureTask<List<Button>> task = new FutureTask<> (()-> {
+            List<MapArt> artworks = new ArrayList<>();
             try {
                 artworks = ArtMap.instance().getArtDatabase().listMapArt(this.artist);
             } catch (SQLException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
-                return new Button[0];
+                return new ArrayList<>();
             }
-            Button[] buttons;
+            List<Button> buttons = new ArrayList<>();
 
-            if (artworks != null && artworks.length > 0) {
-                buttons = new Button[artworks.length];
+            if (!artworks.isEmpty()) {
+                buttons = new ArrayList<>();
 
-                for (int i = 0; i < artworks.length; i++) {
-                    if(artworks[i].getArtistName() == null) {
-                        artworks[i] = artworks[i].setAristName(this.artistName);
+                for (MapArt art : artworks) {
+                    if(art.getArtistName() == null) {
+                       art = art.setAristName(this.artistName);
                     }
-                    buttons[i] = new PreviewButton(this, artworks[i], adminViewing);
+                    buttons.add(new PreviewButton(this, art, adminViewing));
                 }
 
-            } else {
-                buttons = new Button[0];
             }
             return buttons;
         });

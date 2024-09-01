@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -31,27 +32,17 @@ import me.Fupery.ArtMap.IO.MapArt;
 /**
  * Database entry point for interacting with saved artwork.
  */
-public final class Database {
+public final class Database implements IDatabase {
     private final ArtTable artworks;
     private final MapTable maps;
     private BukkitTask autosaveTask;
-    private final Runnable AUTO_SAVE = new Runnable() {
-        @Override
-        public void run() {
-            for (UUID uuid : ArtMap.instance().getArtistHandler().getArtists()) {
-                try {
-                    ArtMap.instance().getArtistHandler().getCurrentSession(uuid).persistMap(false);
-                } catch (SQLException | IOException | NoSuchFieldException | IllegalAccessException e) {
-                    ArtMap.instance().getLogger().log(Level.SEVERE,"Error saving artwork!",e);
-                }
-            }
-        }
-    };
 
     public Database(Plugin plugin) throws SQLException {
         SQLiteDatabase database;
         database = new SQLiteDatabase(new File(plugin.getDataFolder(), "Art.db"));
-        database.initialize(artworks = new ArtTable(database), maps = new MapTable(database));
+        artworks = new ArtTable(database);
+        maps = new MapTable(database);
+        database.initialize(artworks, maps);
         int delay = ArtMap.instance().getConfiguration().ARTWORK_AUTO_SAVE;
         this.autosaveTask = ArtMap.instance().getScheduler().ASYNC.runTimer(AUTO_SAVE , delay, delay);
     }
@@ -63,6 +54,7 @@ public final class Database {
      * @return The artwork or null if it is not in the database.
      * @throws SQLException
      */
+    @Override
     public Optional<MapArt> getArtwork(String title) throws SQLException {
         return artworks.getArtwork(title);
     }
@@ -74,7 +66,8 @@ public final class Database {
      * @return The artwork or null if it is not in the database.
      * @throws SQLException
      */
-    public MapArt getArtwork(int id) throws SQLException {
+    @Override
+    public Optional<MapArt> getArtwork(int id) throws SQLException {
         return artworks.getArtwork(id);
     }
 
@@ -85,6 +78,7 @@ public final class Database {
      * @return True if an unsaved artwork exists.
      * @throws SQLException
      */
+    @Override
     public boolean containsUnsavedArtwork(int id) throws SQLException {
         return maps.containsMap(id);
     }
@@ -96,7 +90,8 @@ public final class Database {
      * @return The compressed map or null if it is not found.
      * @throws SQLException
      */
-    public CompressedMap getArtworkCompressedMap(int id) throws SQLException {
+    @Override
+    public Optional<CompressedMap> getArtworkCompressedMap(int id) throws SQLException {
         return maps.getMap(id);
     }
 
@@ -115,6 +110,7 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public MapArt saveArtwork(Canvas art, String title, Player player) throws DuplicateArtworkException,
             PermissionException, SQLException, IOException, NoSuchFieldException, IllegalAccessException {
 		// handle update case or all ready used name
@@ -166,6 +162,7 @@ public final class Database {
      * @throws DuplicateArtworkException
      * @throws SQLException
      */
+    @Override
     public void saveArtwork(MapArt art, CompressedMap cMap) throws DuplicateArtworkException, SQLException {
         if (maps.containsMap(cMap.getId())) {
 			throw new DuplicateArtworkException(MessageFormat.format("Map with ID {0} all ready exists.",cMap.getId()));
@@ -184,6 +181,7 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public void deleteArtwork(MapArt art) throws SQLException, NoSuchFieldException, IllegalAccessException {
         artworks.deleteArtwork(art.getTitle());
         maps.deleteMap(art.getMapId());
@@ -200,6 +198,7 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public void renameArtwork(MapArt art, String title)
             throws SQLException, NoSuchFieldException, IllegalAccessException {
 		artworks.renameArtwork(art, title);
@@ -215,6 +214,7 @@ public final class Database {
      * @return True if the artwork is in the datbase. False otherwise.
      * @throws SQLException
      */
+    @Override
     public boolean containsArtwork(MapArt artwork, boolean ignoreMapId) throws SQLException {
         return artworks.containsArtwork(artwork, ignoreMapId);
     }
@@ -227,6 +227,7 @@ public final class Database {
      *         if it does not.
      * @throws SQLException
      */
+    @Override
     public boolean containsArtwork(int mapId) throws SQLException {
         return artworks.containsMapID(mapId);
     }
@@ -238,7 +239,8 @@ public final class Database {
      * @return A list of the artwork for the artist.
      * @throws SQLException
      */
-    public MapArt[] listMapArt(UUID artist) throws SQLException {
+    @Override
+    public List<MapArt> listMapArt(UUID artist) throws SQLException {
         return artworks.listMapArt(artist);
     }
 
@@ -248,7 +250,8 @@ public final class Database {
      * @return A array of all artwrok in the database.
      * @throws SQLException
      */
-    public MapArt[] listMapArt() throws SQLException {
+    @Override
+    public List<MapArt> listMapArt() throws SQLException {
         return artworks.listMapArt();
     }
 
@@ -259,7 +262,8 @@ public final class Database {
      * @return List of artists.
      * @throws SQLException
      */
-    public UUID[] listArtists(UUID player) throws SQLException {
+    @Override
+    public List<UUID> listArtists(UUID player) throws SQLException {
         return artworks.listArtists(player);
     }
 
@@ -269,16 +273,18 @@ public final class Database {
      * @return List of artists.
      * @throws SQLException
      */
-    public UUID[] listArtists() throws SQLException {
+    @Override
+    public List<UUID> listArtists() throws SQLException {
 		return artworks.listArtists();
     }
     
-    public String[] searchArtists(String search) {
-        //TODO: Make this pull from table in Schema V4+
+    @Override
+    public List<String> searchArtists(String search) {
         return ArtMap.instance().getHeadsCache().searchCache(search);
     }
 
-    public MapArt[] searchArtworks(String search, UUID playerId) throws SQLException {
+    @Override
+    public List<MapArt> searchArtworks(String search, UUID playerId) throws SQLException {
         if(playerId != null) {
             return this.artworks.searchArtwork(search, playerId);
         } else {
@@ -289,6 +295,7 @@ public final class Database {
     /**
      * Prepare to close the database.
      */
+    @Override
     public void close() {
         this.autosaveTask.cancel();
     }
@@ -301,6 +308,7 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public synchronized Map createMap() throws NoSuchFieldException, IllegalAccessException {
         //This is where you would lookup unused map ids
         MapView mapView = null;
@@ -328,6 +336,7 @@ public final class Database {
      * @throws SQLException
      * @throws IOException
      */
+    @Override
     public void saveInProgressArt(Map map, byte[] data) throws SQLException, IOException {
         CompressedMap compressedMap = CompressedMap.compress(map.getMapId(), data);
         if (maps.containsMap(map.getMapId())) {
@@ -345,9 +354,10 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public void deleteInProgressArt(Map map) throws SQLException, NoSuchFieldException, IllegalAccessException {
         //double check we are not deleting a saved artwork with this method
-        if(artworks.getArtwork(map.getMapId()) == null) {
+        if(!artworks.getArtwork(map.getMapId()).isPresent()) {
             //map.setMap(Map.BLANK_MAP);
             maps.deleteMap(map.getMapId());
             //idQueue.offer(map.getMapId());
@@ -367,6 +377,7 @@ public final class Database {
      * @throws IllegalAccessException
      * @throws NoSuchFieldException
      */
+    @Override
     public boolean restoreMap(Map map, boolean softRepair, boolean hardRepair) {
         try {
             return restoreMapData(map, softRepair);
@@ -408,7 +419,13 @@ public final class Database {
                 ArtMap.instance().getLogger().warning("Map ID:" + map.getMapId() + " is corrupted! ");
                 if(repair) {
                     ArtMap.instance().getLogger().warning("Repair flag set attempting to repair.");
-                    map.setMap(maps.getMap(map.getMapId()).decompressMap(), true);
+                    Optional<CompressedMap> cMap = maps.getMap(map.getMapId());
+                    if(cMap.isPresent()) {
+                        map.setMap(cMap.get().decompressMap(), true);
+                    } else {
+                        ArtMap.instance().getLogger().warning("Failed to repair map data compressed map was not available.");
+                        return false;
+                    }
                 }
                 return true;
             }

@@ -127,6 +127,12 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.github.seeseemelk</groupId>
+			<artifactId>MockBukkit-v1.21</artifactId>
+			<version>3.95.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.14.4-R0.1-SNAPSHOT</version>

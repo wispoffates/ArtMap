@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Compatibility.Dipenizen;
 
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -18,7 +18,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 public class ArtMapArtists implements dObject {
 
 	protected String prefix = "artmapartists";
-	protected UUID[] artists;
+	protected List<UUID> artists;
 
 	/////////////////////
 	// OBJECT FETCHER
@@ -49,8 +49,8 @@ public class ArtMapArtists implements dObject {
 	/////////////////////
 	// STATIC CONSTRUCTORS
 	/////////////////
-	public ArtMapArtists(UUID[] artists) {
-		this.artists = Arrays.copyOf(artists, artists.length);
+	public ArtMapArtists(List<UUID> artists) {
+		this.artists = artists;
 	}
 
 	/////////////////////
@@ -59,14 +59,14 @@ public class ArtMapArtists implements dObject {
 	@Override
 	public boolean equals(Object a) {
 		if (a instanceof ArtMapArtists) {
-			return Arrays.equals(ArtMapArtists.class.cast(a).artists,this.artists);
+			return artists.equals(ArtMapArtists.class.cast(a).artists);
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(this.artists);
+		return this.artists.hashCode();
 	}
 
 	@Override

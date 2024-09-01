@@ -46,10 +46,10 @@ public class DeleteConfirmationMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Future<Button[]> getListItems() {
+	protected Future<List<Button>> getListItems() {
 		List<Button> buttons = new ArrayList<>();
 		buttons.add(new AcceptButton(this.parent, this.artwork, adminViewing));
-		return CompletableFuture.completedFuture(buttons.toArray(new Button[0]));
+		return CompletableFuture.completedFuture(buttons);
 	}
 
 	private static class AcceptButton extends Button {

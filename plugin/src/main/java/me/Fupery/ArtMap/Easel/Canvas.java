@@ -83,9 +83,9 @@ public class Canvas {
 			return Optional.of(new Canvas(mapId, "unknown"));
 		} 
 		//previously saved but missing tags
-		MapArt art = ArtMap.instance().getArtDatabase().getArtwork(mapId);
-		if(art != null) {
-			return Optional.of(new CanvasCopy(art.getMap(), art));
+		Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(mapId);
+		if(art.isPresent()) {
+			return Optional.of(new CanvasCopy(art.get().getMap(), art.get()));
 		}
 		return Optional.empty();
 	}

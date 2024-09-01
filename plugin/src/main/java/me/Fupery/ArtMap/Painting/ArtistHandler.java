@@ -128,7 +128,7 @@ public class ArtistHandler implements IArtistHandler {
 			throws ReflectiveOperationException, SQLException, IOException {
 		ArtSession session = new ArtSession(player, easel, map, yawOffset);
 		if (session.start(player)) {
-			ArtMap.instance().getProtocolManager().PACKET_RECIEVER.injectPlayer(player);
+			ArtMap.instance().getProtocolManager().getPacketReceiver().injectPlayer(player);
 			artists.put(player.getUniqueId(), session);
 			session.setActive(true);
 		}
@@ -163,7 +163,7 @@ public class ArtistHandler implements IArtistHandler {
 			return;
 		artists.remove(player.getUniqueId());
 		session.end(player);
-		ArtMap.instance().getProtocolManager().PACKET_RECIEVER.uninjectPlayer(player);
+		ArtMap.instance().getProtocolManager().getPacketReceiver().uninjectPlayer(player);
 	}
 
 	public ArtSession getCurrentSession(Player player) {
@@ -190,6 +190,6 @@ public class ArtistHandler implements IArtistHandler {
 
 	public void stop() {
 		clearPlayers();
-		ArtMap.instance().getProtocolManager().PACKET_RECIEVER.close();
+		ArtMap.instance().getProtocolManager().getPacketReceiver().close();
 	}
 }

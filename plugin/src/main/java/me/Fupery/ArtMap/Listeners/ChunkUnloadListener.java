@@ -1,6 +1,7 @@
 package me.Fupery.ArtMap.Listeners;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -14,14 +15,14 @@ class ChunkUnloadListener implements RegisteredListener {
 
     @EventHandler
     public void onChunkUnload(final ChunkUnloadEvent event) {
-        ConcurrentHashMap<Location,Easel> easels = ArtMap.instance().getEasels();
+        ConcurrentMap<Location,Easel> easels = ArtMap.instance().getEasels();
         if (!easels.isEmpty()) {
             ChunkLocation chunk = new ChunkLocation(event.getChunk());
             ArtMap.instance().getScheduler().ASYNC.run(() -> {
-                for (Location location : easels.keySet()) {
-                    Easel easel = easels.get(location);
+                for (Entry<Location, Easel> entry : easels.entrySet()) {
+                    Easel easel = entry.getValue();
 					if (easel != null && easel.getChunk() != null && easel.getChunk().equals(chunk)) {
-                        easels.remove(location);
+                        easels.remove(entry.getKey());
                     }
                 }
             });

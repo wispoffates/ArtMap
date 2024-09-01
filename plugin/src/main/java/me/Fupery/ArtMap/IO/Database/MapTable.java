@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import me.Fupery.ArtMap.ArtMap;
@@ -29,7 +30,7 @@ final class MapTable extends SQLiteTable {
                 statement.setInt(2, map.getHash());
                 statement.setBytes(3, map.getCompressedMap());
             }
-        }.execute("INSERT INTO " + TABLE + " (id, hash, map) VALUES(?,?,?);");
+        }.execute("INSERT INTO " + table + " (id, hash, map) VALUES(?,?,?);");
     }
 
     void updateMapId(int oldMapId, int newMapId) throws SQLException {
@@ -39,7 +40,7 @@ final class MapTable extends SQLiteTable {
                 statement.setInt(1, newMapId);
                 statement.setInt(2, oldMapId);
             }
-        }.execute("UPDATE " + TABLE + " SET id=? WHERE id=?;");
+        }.execute("UPDATE " + table + " SET id=? WHERE id=?;");
     }
 
     Void deleteMap(int mapId) throws SQLException {
@@ -49,7 +50,7 @@ final class MapTable extends SQLiteTable {
 			protected void prepare(PreparedStatement statement) throws SQLException {
                 statement.setInt(1, mapId);
             }
-        }.execute("DELETE FROM " + TABLE + " WHERE id=?;");
+        }.execute("DELETE FROM " + table + " WHERE id=?;");
     }
 
     boolean containsMap(int mapId) throws SQLException {
@@ -63,7 +64,7 @@ final class MapTable extends SQLiteTable {
             protected Boolean read(ResultSet set) throws SQLException {
 				return set.isBeforeFirst();
             }
-        }.execute("SELECT hash FROM " + TABLE + " WHERE id=?;");
+        }.execute("SELECT hash FROM " + table + " WHERE id=?;");
     }
 
     void updateMap(CompressedMap map) throws SQLException {
@@ -74,11 +75,11 @@ final class MapTable extends SQLiteTable {
                 statement.setBytes(2, map.getCompressedMap());
                 statement.setInt(3, map.getId());
             }
-        }.execute("UPDATE " + TABLE + " SET hash=?, map=? WHERE id=?;");
+        }.execute("UPDATE " + table + " SET hash=?, map=? WHERE id=?;");
     }
 
-    CompressedMap getMap(int mapId) throws SQLException {
-        return new QueuedQuery<CompressedMap>() {
+    Optional<CompressedMap> getMap(int mapId) throws SQLException {
+        return new QueuedQuery<Optional<CompressedMap>>() {
 
             @Override
 			protected void prepare(PreparedStatement statement) throws SQLException {
@@ -86,14 +87,14 @@ final class MapTable extends SQLiteTable {
             }
 
             @Override
-			protected CompressedMap read(ResultSet set) throws SQLException {
-                if (!set.next()) return null;
+			protected Optional<CompressedMap> read(ResultSet set) throws SQLException {
+                if (!set.next()) return Optional.empty();
                 int id = set.getInt("id");
                 int hash = set.getInt("hash");
                 byte[] map = set.getBytes("map");
-                return new CompressedMap(id, hash, map);
+                return Optional.of((new CompressedMap(id, hash, map)));
             }
-        }.execute("SELECT * FROM " + TABLE + " WHERE id=?;");
+        }.execute("SELECT * FROM " + table + " WHERE id=?;");
     }
 
     Integer getHash(int mapId) throws SQLException {
@@ -108,7 +109,7 @@ final class MapTable extends SQLiteTable {
 			protected Integer read(ResultSet set) throws SQLException {
                 return (set.next()) ? set.getInt("hash") : null;
             }
-        }.execute("SELECT hash FROM " + TABLE + " WHERE id=?;");
+        }.execute("SELECT hash FROM " + table + " WHERE id=?;");
     }
 
 
@@ -128,7 +129,7 @@ final class MapTable extends SQLiteTable {
                 }
                 return mapHashes;
             }
-        }.execute("SELECT id, hash FROM " + TABLE + ";");
+        }.execute("SELECT id, hash FROM " + table + ";");
     }
 
     /**
@@ -154,7 +155,7 @@ final class MapTable extends SQLiteTable {
                     statement.addBatch();
                 }
             }
-        }.executeBatch("INSERT INTO " + TABLE + " (id, hash, map) VALUES(?,?,?);");
+        }.executeBatch("INSERT INTO " + table + " (id, hash, map) VALUES(?,?,?);");
         return failed;
     }
 }

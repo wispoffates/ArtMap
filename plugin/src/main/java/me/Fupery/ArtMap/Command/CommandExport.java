@@ -55,7 +55,7 @@ public class CommandExport extends AsyncCommand {
             case "-all":
                 try {
                     for (UUID artist : ArtMap.instance().getArtDatabase().listArtists()) {
-                        artToExport.addAll(Arrays.asList(ArtMap.instance().getArtDatabase().listMapArt(artist)));
+                        artToExport.addAll(ArtMap.instance().getArtDatabase().listMapArt(artist));
                     }
                 } catch (SQLException e2) {
                     msg.message = "Database error! Check logs.";
@@ -71,7 +71,7 @@ public class CommandExport extends AsyncCommand {
                     msg.message = Lang.COMMAND_EXPORT.get();
                     return;
                 }
-                MapArt[] arts;
+                List<MapArt> arts;
                 try {
                     UUID id = UUID.fromString(args[2]);
                     arts = ArtMap.instance().getArtDatabase().listMapArt(id);
@@ -93,7 +93,7 @@ public class CommandExport extends AsyncCommand {
                     }
                 }
                 if (arts != null) {
-                    artToExport.addAll(Arrays.asList(arts));
+                    artToExport.addAll(arts);
                     exportFilename = args[3];
                 } else {
                     msg.message = String.format(Lang.NO_ARTWORKS.get(), args[2]);
@@ -136,7 +136,7 @@ public class CommandExport extends AsyncCommand {
         for (MapArt artwork : artToExport) {
             CompressedMap map = null;
             try {
-                map = ArtMap.instance().getArtDatabase().getArtworkCompressedMap(artwork.getMapId());
+                map = ArtMap.instance().getArtDatabase().getArtworkCompressedMap(artwork.getMapId()).orElse(null);
             } catch (SQLException e) {
                 msg.message = "Database error! Check logs.";
                 ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);

@@ -96,7 +96,7 @@ public final class EaselEvent {
 			} else if (ArtItem.isArtwork(itemInHand)) {
 				// Edit an artwork on the easel
 				ArtMap.instance().getScheduler().ASYNC.run(() -> {
-					MapArt art;
+					Optional<MapArt> art;
 					int id;
 					boolean unsaved;
 					try {
@@ -109,14 +109,14 @@ public final class EaselEvent {
 						return;
 					}
 					ArtMap.instance().getScheduler().SYNC.run(() -> {
-						if (art != null) {
-							if (!player.getUniqueId().equals(art.getArtistPlayer().getUniqueId()) && !player.hasPermission("artmap.admin")) {
+						if (art.isPresent()) {
+							if (!player.getUniqueId().equals(art.get().getArtistPlayer().getUniqueId()) && !player.hasPermission("artmap.admin")) {
 								Lang.ActionBar.NO_EDIT_PERM.send(player);
 								easel.playEffect(EaselEffect.USE_DENIED);
 								return;
 							}
 							try {
-								Canvas canvas = new Canvas.CanvasCopy(art.getMap().cloneMap(), art);
+								Canvas canvas = new Canvas.CanvasCopy(art.get().getMap().cloneMap(), art.get());
 								mountCanvas(itemInHand, canvas);
 							} catch (Exception e) {
 								player.sendMessage("Error placing art on the Easel!");

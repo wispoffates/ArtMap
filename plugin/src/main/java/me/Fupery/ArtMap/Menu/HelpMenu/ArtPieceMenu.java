@@ -60,15 +60,15 @@ public class ArtPieceMenu extends ListMenu implements ChildMenu {
 	}
 
 	@Override
-	protected Future<Button[]> getListItems() {
-		FutureTask<Button[]> task = new FutureTask<> (()->{
+	protected Future<List<Button>> getListItems() {
+		FutureTask<List<Button>> task = new FutureTask<> (()->{
 			List<Button> buttons = new ArrayList<>();
 			buttons.add(new PreviewButton(this, this.artwork, viewer));
 			if (this.viewer.hasPermission("artmap.admin") || this.artwork.getArtist().equals(this.viewer.getUniqueId())) {
 				buttons.add(new DeleteButton(this.parent, this.artwork));
 				buttons.add(new RenameButton(this.parent, this.artwork));
 			}
-			return buttons.toArray(new Button[0]);
+			return buttons;
 		});
 		ArtMap.instance().getScheduler().SYNC.run(task);
 		return task;

@@ -8,14 +8,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,8 +47,6 @@ import me.Fupery.ArtMap.api.Exception.HeadFetchException;
  * @author wispoffates
  */
 public class HeadsCache {
-
-	private static JsonParser				parser				= new JsonParser();
 	private static String					API_PROFILE_LINK	= "https://sessionserver.mojang.com/session/minecraft/profile/";
 
 	private static final Map<UUID, TextureData>	textureCache	= Collections.synchronizedMap( new HashMap<>());
@@ -70,14 +72,13 @@ public class HeadsCache {
 
 		//init the cache
 		if (prefetch) {
-			plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-				this.initHeadCache();
-			}, plugin.getConfiguration().HEAD_PREFETCH_DELAY);
+			plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, this::initHeadCache
+			, plugin.getConfiguration().HEAD_PREFETCH_DELAY);
 		}
 		//int the nameToUUID
-		textureCache.entrySet().stream().forEach(entry -> {
-			nameToUUID.put(entry.getValue().name, entry.getKey());
-		});
+		textureCache.entrySet().stream().forEach(entry -> 
+			nameToUUID.put(entry.getValue().name, entry.getKey())
+		);
 	}
 
 	public void updateCache(UUID playerId) {
@@ -91,17 +92,17 @@ public class HeadsCache {
 		int failed = 0;
 		int artistsCount = 0;
 		try {
-			UUID[] artists = plugin.getArtDatabase().listArtists(UUID.randomUUID());
-			artistsCount = artists.length;
-			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started. {1} retrieved from disk cache.", artists.length, textureCache.size()));
+			List<UUID> artists = plugin.getArtDatabase().listArtists(UUID.randomUUID());
+			artistsCount = artists.size();
+			plugin.getLogger().info(MessageFormat.format("Async load of {0} artists started. {1} retrieved from disk cache.", artists.size(), textureCache.size()));
 			// skip the first one since we dummied it
-			for (int i = 1; i < artists.length; i++) {
+			for (UUID artist : artists) {
 				//check cache
-				if(this.isHeadCached(artists[i])) {
+				if(this.isHeadCached(artist)) {
 					cached++;
 				} else {
 					//Update the cache
-					HeadCacheResponeType response = this.updateTexture(artists[i]);
+					HeadCacheResponeType response = this.updateTexture(artist);
 					switch (response) {
 						case MOJANG_API:
 							mojang++;
@@ -230,8 +231,8 @@ public class HeadsCache {
 	 * @param term The search term.
 	 * @return An array of matching names and an empty array if none or found.
 	 */
-	public String[] searchCache(String term) {
-		return nameToUUID.keySet().stream().filter( name -> name.contains(term)).toArray(String[]::new);
+	public List<String> searchCache(String term) {
+		return nameToUUID.keySet().stream().filter( name -> name.contains(term)).collect(Collectors.toList());
 	}
 
 	/**
@@ -289,17 +290,17 @@ public class HeadsCache {
 	private static String getContent(String link) throws HeadFetchException {
 		BufferedReader br = null;
 		try {
-			URL url = new URL(link);
+			URL url = new URI(link).toURL();
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String inputLine;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			while ((inputLine = br.readLine()) != null) {
 				sb.append(inputLine);
 			}
 			br.close();
 			return sb.toString();
-		} catch (MalformedURLException e) {
+		} catch (MalformedURLException | URISyntaxException e) {
 			ArtMap.instance().getLogger().log(Level.SEVERE, "Failure getting head!", e);
 			throw new HeadFetchException("Failure getting head!",e);
 		} catch (IOException e) {
@@ -323,7 +324,7 @@ public class HeadsCache {
 			if(json == null) {
 				throw new HeadFetchException("Skin texture could not be loaded! invalid uuid!");
 			}
-			JsonObject o = parser.parse(json).getAsJsonObject();
+			JsonObject o = JsonParser.parseString(json).getAsJsonObject();
 			String name = o.get("name").getAsString();
 			JsonArray jArray= o.get("properties").getAsJsonArray();
 			String jsonBase64 = null;

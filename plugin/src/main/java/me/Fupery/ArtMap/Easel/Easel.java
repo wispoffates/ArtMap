@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.Recipe.ArtItem;
 import me.Fupery.ArtMap.Recipe.ArtMaterial;
 import me.Fupery.ArtMap.Utils.ChunkLocation;
 import me.Fupery.ArtMap.Utils.LocationHelper;

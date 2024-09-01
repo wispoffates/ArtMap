@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Menu.API;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -22,19 +23,20 @@ import me.Fupery.ArtMap.Menu.Handler.CacheableMenu;
 
 public abstract class ListMenu extends CacheableMenu {
 
-    private static final char LEFT_ARROW = '\u2B05', RIGHT_ARROW = '\u27A1';
+    private static final char LEFT_ARROW = '\u2B05';
+    private static final char RIGHT_ARROW = '\u27A1';
 
     protected int page;
-    protected Button[] cachedButtons;
+    protected List<Button> cachedButtons;
     protected Optional<MenuFactory> parent = Optional.empty();
 
-    public ListMenu(String heading, int page) {
+    protected ListMenu(String heading, int page) {
         super(heading, InventoryType.CHEST);
         this.page = page;
         this.cachedButtons = null;
     }
 
-    public ListMenu(String heading, MenuFactory parent, int page) {
+    protected ListMenu(String heading, MenuFactory parent, int page) {
         super(heading, InventoryType.CHEST);
         this.page = page;
         this.cachedButtons = null;
@@ -86,21 +88,20 @@ public abstract class ListMenu extends CacheableMenu {
                 cachedButtons = getListItems().get();
             } catch (InterruptedException | ExecutionException e) {
                 ArtMap.instance().getLogger().log(Level.SEVERE,"Interrupted creating menu buttons!",e);
-                cachedButtons = new Button[0];
             }
         }
 
-        Button[] listItems = cachedButtons;
+        List<Button> listItems = cachedButtons;
         
         int start = page * maxButtons;
-        int pageLength = listItems.length - start;
+        int pageLength = listItems.size() - start;
 
         if (pageLength > 0) {
             int end = (pageLength >= maxButtons) ? maxButtons : pageLength;
 
             System.arraycopy(listItems, start, buttons, 1, end);
 
-            if (listItems.length > (maxButtons + start)) {
+            if (listItems.size()> (maxButtons + start)) {
                 buttons[maxButtons + 1] = new PageButton(true);
 
                 if (page < 64) {
@@ -120,7 +121,7 @@ public abstract class ListMenu extends CacheableMenu {
         refresh(player);
     }
 
-    protected abstract Future<Button[]> getListItems();
+    protected abstract Future<List<Button>> getListItems();
 
     private class PageButton extends Button {
 
@@ -136,5 +137,34 @@ public abstract class ListMenu extends CacheableMenu {
             SoundCompat.UI_BUTTON_CLICK.play(player);
             changePage(player, forward);
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = super.hashCode();
+            result = prime * result + getEnclosingInstance().hashCode();
+            result = prime * result + (forward ? 1231 : 1237);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!super.equals(obj))
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PageButton other = (PageButton) obj;
+            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+                return false;
+            return (forward != other.forward);
+        }
+
+        private ListMenu getEnclosingInstance() {
+            return ListMenu.this;
+        }
+
+        
     }
 }

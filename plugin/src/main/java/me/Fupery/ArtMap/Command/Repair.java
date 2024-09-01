@@ -2,6 +2,7 @@ package me.Fupery.ArtMap.Command;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -92,8 +93,8 @@ public class Repair extends AsyncCommand {
     private void repairAll(boolean repair) {
         ArtMap.instance().getScheduler().ASYNC.run(()-> {
             try {
-                MapArt[] arts = ArtMap.instance().getArtDatabase().listMapArt();
-                final int total = arts.length;
+                List<MapArt> arts = ArtMap.instance().getArtDatabase().listMapArt();
+                final int total = arts.size();
                 int good = 0;
                 int repaired = 0;
                 int failed = 0;
@@ -143,16 +144,16 @@ public class Repair extends AsyncCommand {
      * @throws FileNotFoundException
      */
     private boolean repairArtwork(int id, boolean repair) throws FileNotFoundException {
-        MapArt art = null;
+        Optional<MapArt> art = Optional.empty();
         try {
             art = ArtMap.instance().getArtDatabase().getArtwork(id);
         } catch (SQLException e) {
             return false;
         }
-        if(art == null) {
+        if(!art.isPresent()) {
             throw new FileNotFoundException("Artwork with the provided ID does not exist. :: " + id);
         }
-        return ArtMap.instance().getArtDatabase().restoreMap(art.getMap(), repair, repair);
+        return ArtMap.instance().getArtDatabase().restoreMap(art.get().getMap(), repair, repair);
     }
 
 }

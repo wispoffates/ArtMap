@@ -13,12 +13,12 @@ public class SQLiteTable {
     protected static final String sqlError = "Database error,";
 
     protected final SQLiteDatabase manager;
-    protected final String TABLE;
+    protected final String table;
     protected final String creationSQL;
 
-    protected SQLiteTable(SQLiteDatabase database, String TABLE, String creationSQL) {
+    protected SQLiteTable(SQLiteDatabase database, String table, String creationSQL) {
         this.manager = database;
-        this.TABLE = TABLE;
+        this.table = table;
         this.creationSQL = creationSQL;
     }
 
@@ -44,8 +44,6 @@ public class SQLiteTable {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 result = statement.executeBatch();
-            } catch (SQLException e) {
-				throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
@@ -69,8 +67,6 @@ public class SQLiteTable {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 statement.executeUpdate();
-            } catch (SQLException e) {
-                throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();
@@ -109,8 +105,6 @@ public class SQLiteTable {
                 statement = connection.prepareStatement(query);
                 prepare(statement);
                 result = read(statement.executeQuery());
-            } catch (SQLException e) {
-                throw e;
             } finally {
                 close(connection, statement);
                 manager.getLock().unlock();

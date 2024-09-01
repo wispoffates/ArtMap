@@ -64,7 +64,7 @@ public class Search extends AsyncCommand {
         }
 
         
-        MapArt[] art = new MapArt[0];
+        List<MapArt> art = new ArrayList<>();
         try {
             art = ArtMap.instance().getArtDatabase().searchArtworks(searchTerm,playerId);
         } catch (SQLException e) {
@@ -75,14 +75,14 @@ public class Search extends AsyncCommand {
         List<TextComponent> text = new ArrayList<>();
 
         if(!mine && playerName == null) {
-            String[] artists = ArtMap.instance().getArtDatabase().searchArtists(searchTerm);
-            text.add(new TextComponent("------------- " + Lang.SEARCH_ARTISTS.get() + ": " + artists.length + " ---------------"));
+            List<String> artists = ArtMap.instance().getArtDatabase().searchArtists(searchTerm);
+            text.add(new TextComponent("------------- " + Lang.SEARCH_ARTISTS.get() + ": " + artists.size() + " ---------------"));
             //clickable links for each artist
             for(String artist : artists) {
                 text.add(this.clickableArtist(artist));
             }
         }
-        text.add(new TextComponent("------------- " + Lang.SEARCH_ARTWORKS.get() +": " + art.length + " ---------------"));
+        text.add(new TextComponent("------------- " + Lang.SEARCH_ARTWORKS.get() +": " + art.size() + " ---------------"));
         //clickable links for each artwork
         for(MapArt artwork : art) {
             text.add(this.clickableArtwork(pSender,artwork));

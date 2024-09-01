@@ -9,11 +9,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public abstract class Button extends ItemStack {
-    public Button(Material material) {
+    protected Button(Material material) {
         super(material);
     }
 
-    public Button(Material material, String displayName, String... lore) {
+    protected Button(Material material, String displayName, String... lore) {
 		super(material);
         ItemMeta meta = getItemMeta();
         if (displayName != null) meta.setDisplayName(displayName);
@@ -21,7 +21,7 @@ public abstract class Button extends ItemStack {
         setItemMeta(meta);
     }
 
-	public Button(Material material, String... text) {
+	protected Button(Material material, String... text) {
 		super(material);
         ItemMeta meta = getItemMeta();
         if (text != null && text.length > 0) {
@@ -35,14 +35,14 @@ public abstract class Button extends ItemStack {
         setItemMeta(meta);
     }
 
-	public Button(Material material, String text) {
+	protected Button(Material material, String text) {
 		super(material);
 		ItemMeta meta = getItemMeta();
 		meta.setDisplayName(text);
 		setItemMeta(meta);
     }
     
-    public Button(ItemStack item) {
+    protected Button(ItemStack item) {
         super(item.getType());
         setItemMeta(item.getItemMeta());
     }

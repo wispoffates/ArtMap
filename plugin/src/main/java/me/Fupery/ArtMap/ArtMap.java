@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import com.google.gson.Gson;
@@ -25,6 +26,7 @@ import me.Fupery.ArtMap.Easel.Easel;
 import me.Fupery.ArtMap.Heads.HeadsCache;
 import me.Fupery.ArtMap.IO.PixelTableManager;
 import me.Fupery.ArtMap.IO.Database.Database;
+import me.Fupery.ArtMap.IO.Database.IDatabase;
 import me.Fupery.ArtMap.IO.Legacy.DatabaseConverter;
 import me.Fupery.ArtMap.IO.Legacy.FlatDatabaseConverter;
 import me.Fupery.ArtMap.IO.Legacy.V2DatabaseConverter;
@@ -49,7 +51,7 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 	private ArtistHandler artistHandler;
 	private VersionHandler bukkitVersion;
 	private Scheduler scheduler;
-	private Database database;
+	private IDatabase database;
 	private RecipeLoader recipeLoader;
 	private CompatibilityManager compatManager;
 	private ProtocolHandler protocolHandler;
@@ -59,7 +61,7 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 	private PreviewManager previewManager;
 	private Reflection reflection;
 	private HeadsCache headsCache;
-	private final ConcurrentHashMap<Location, Easel> easels;
+	private final ConcurrentMap<Location, Easel> easels;
 	private Palette dyePalette;
 	private boolean recipesLoaded = false;
 	private boolean dbUpgradeNeeded;
@@ -76,7 +78,7 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 		pluginInstance = artmap;
 	}
 
-	public Database getArtDatabase() {
+	public IDatabase getArtDatabase() {
 		return this.database;
 	}
 
@@ -124,7 +126,7 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 		return this.reflection;
 	}
 
-	public ConcurrentHashMap<Location,Easel> getEasels() {
+	public ConcurrentMap<Location,Easel> getEasels() {
 		return this.easels;
 	}
 

@@ -58,12 +58,10 @@ class PlayerInteractListener implements RegisteredListener {
             event.setCancelled(true);
 
         // Don't place paint brushes in the world
-        if (ArtMaterial.getCraftItemType(event.getItem()) == ArtMaterial.PAINT_BRUSH) {
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                event.setCancelled(true);
-                event.getPlayer().sendMessage(Lang.PAINTBRUSH_GROUND.get());
-                return;
-            }
+        if (ArtMaterial.getCraftItemType(event.getItem()) == ArtMaterial.PAINT_BRUSH && (event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(Lang.PAINTBRUSH_GROUND.get());
+            return;
         }
 
         if (!ArtMaterial.EASEL.isValidMaterial(event.getItem()) || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -145,7 +143,9 @@ class PlayerInteractListener implements RegisteredListener {
 
                 MapArt art = null;
                 try {
-                    art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(item).orElseThrow(()-> new ArtMapException("Artwork does not have a mapview!")));
+                    art = ArtMap.instance().getArtDatabase().getArtwork(ItemUtils.getMapID(item)
+                        .orElseThrow(()-> new ArtMapException("Artwork does not have a mapview!")))
+                        .orElseThrow(()-> new ArtMapException("Art not found!"));
                 } catch (SQLException e) {
                     ArtMap.instance().getLogger().log(Level.SEVERE, "Database error!", e);
 					event.getWhoClicked().sendMessage("Error Retrieving Artwork check logs.");

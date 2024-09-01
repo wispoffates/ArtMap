@@ -24,7 +24,7 @@ public class DyeMenu extends ListMenu {
     }
 
     @Override
-	protected Future<Button[]> getListItems() {
+	protected Future<List<Button>> getListItems() {
 		List<Button> buttons = new ArrayList<>();
         ArtDye[] dyes = ArtMap.instance().getDyePalette().getDyes(DyeType.DYE);
 		buttons.add(new StaticButton(ArtMap.instance().getBukkitVersion().getVersion().getSign(), Lang.Array.INFO_DYES.get()));
@@ -33,7 +33,7 @@ public class DyeMenu extends ListMenu {
 		for (ArtDye dye : dyes) {
 			buttons.add(new DyeButton(dye));
         }
-		return CompletableFuture.completedFuture(buttons.toArray(new Button[0]));
+		return CompletableFuture.completedFuture(buttons);
 	}
 
 	private static class DyeButton extends Button {
@@ -54,6 +54,33 @@ public class DyeMenu extends ListMenu {
 				ArtMap.instance().getScheduler().SYNC.run(() -> ItemUtils.giveItem(player, dye.toItem()));
 			}
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result + ((dye == null) ? 0 : dye.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			DyeButton other = (DyeButton) obj;
+			if (dye == null) {
+				if (other.dye != null)
+					return false;
+			} else if (!dye.equals(other.dye))
+				return false;
+			return true;
+		}
+
+		
 		
 	}
 }
