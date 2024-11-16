@@ -37,7 +37,6 @@ import net.wesjd.anvilgui.AnvilGUI;
 public class ArtistHandler implements IArtistHandler {
 
 	private final ConcurrentHashMap<UUID, ArtSession> artists;
-	// todo replaced synchronised methods with read/write lock
 
 	public ArtistHandler() {
 		artists = new ConcurrentHashMap<>();
@@ -124,7 +123,7 @@ public class ArtistHandler implements IArtistHandler {
 		return false;
 	}
 
-	public synchronized void addPlayer(final Player player, Easel easel, Map map, int yawOffset)
+	public void addPlayer(final Player player, Easel easel, Map map, int yawOffset)
 			throws ReflectiveOperationException, SQLException, IOException {
 		ArtSession session = new ArtSession(player, easel, map, yawOffset);
 		if (session.start(player)) {
@@ -155,7 +154,7 @@ public class ArtistHandler implements IArtistHandler {
 		return artists.containsKey(player);
 	}
 
-	public synchronized void removePlayer(final Player player) throws SQLException, IOException {
+	public void removePlayer(final Player player) throws SQLException, IOException {
 		if (!containsPlayer(player))
 			return;// just for safety :)
 		ArtSession session = artists.get(player.getUniqueId());
@@ -174,7 +173,7 @@ public class ArtistHandler implements IArtistHandler {
 		return artists.get(player);
 	}
 
-	private synchronized void clearPlayers() {
+	private void clearPlayers() {
 		for (UUID uuid : artists.keySet()) {
 			try {
 				removePlayer(Bukkit.getPlayer(uuid));
