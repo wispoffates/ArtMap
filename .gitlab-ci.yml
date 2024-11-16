@@ -30,7 +30,7 @@ cache:
 .jdk17:
   image: maven:3.9-eclipse-temurin-17
   variables:
-    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true -DskipTests"
+    MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true -DskipTests -Dmaven.test.skip=true"
 
 # 1.20.5+
 .jdk21:
