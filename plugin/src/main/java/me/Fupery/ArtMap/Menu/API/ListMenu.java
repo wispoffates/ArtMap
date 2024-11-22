@@ -99,7 +99,7 @@ public abstract class ListMenu extends CacheableMenu {
         if (pageLength > 0) {
             int end = (pageLength >= maxButtons) ? maxButtons : pageLength;
 
-            System.arraycopy(listItems, start, buttons, 1, end);
+            System.arraycopy(listItems.toArray(), start, buttons, 1, end);
 
             if (listItems.size()> (maxButtons + start)) {
                 buttons[maxButtons + 1] = new PageButton(true);
