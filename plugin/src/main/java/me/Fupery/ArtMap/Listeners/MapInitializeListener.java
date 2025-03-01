@@ -27,8 +27,10 @@ public class MapInitializeListener extends BukkitRunnable implements RegisteredL
     @EventHandler
     public void onMapInitialize(MapInitializeEvent event) {
         createRunner();
-        int mapId = event.getMap().getId();
-        mapQueue.add(mapId);
+        Integer mapId = event.getMap().getId();
+        if(!mapQueue.contains(mapId)) { //check that we are not inserting duplicates
+            mapQueue.add(mapId);
+        }
     }
 
     @Override
@@ -40,6 +42,9 @@ public class MapInitializeListener extends BukkitRunnable implements RegisteredL
     public void run() {
         while (!mapQueue.isEmpty()) {
             Integer mapId = mapQueue.poll();
+            if(mapId == null) {
+                return; //this shouldn't happen but lets be safe
+            }
             try {
                 if (!ArtMap.instance().getArtDatabase().containsArtwork(mapId))
                     return;

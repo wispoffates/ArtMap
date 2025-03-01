@@ -147,7 +147,7 @@
 		<dependency>
 			<groupId>net.wesjd</groupId>
     		<artifactId>anvilgui</artifactId>
-    		<version>1.10.3-SNAPSHOT</version>
+    		<version>1.10.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!--Artmap Spigot/Paper version compatibility-->
