@@ -22,6 +22,10 @@ class CommandDelete extends AsyncCommand {
 			sender.sendMessage("Please use the Paint Brush to access the artwork for delete.");
 			return;
 		}
+        if (args.length<2) {
+           msg.message = String.format(Lang.MISSING_TITLE.get(), args[1]);
+            return;
+        }
         try {
             Optional<MapArt> art = ArtMap.instance().getArtDatabase().getArtwork(args[1]);
 
