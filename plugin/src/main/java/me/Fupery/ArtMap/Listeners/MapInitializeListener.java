@@ -40,18 +40,22 @@ public class MapInitializeListener extends BukkitRunnable implements RegisteredL
 
     @Override
     public void run() {
+        int stop = 0;
         while (!mapQueue.isEmpty()) {
             Integer mapId = mapQueue.poll();
             if(mapId == null) {
                 return; //this shouldn't happen but lets be safe
             }
             try {
+                stop = 0;
                 if (!ArtMap.instance().getArtDatabase().containsArtwork(mapId))
                     return;
+                stop = 1;
                 Map map = new Map(mapId);
+                stop = 2;
                 ArtMap.instance().getArtDatabase().restoreMap(map, true, false);
             } catch (Exception e) {
-                ArtMap.instance().getLogger().log(Level.SEVERE, "Error with map restore!", e);
+                ArtMap.instance().getLogger().log(Level.SEVERE, "Error with map restore! Stop="+stop, e);
             }
         }
     }
