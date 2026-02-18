@@ -79,8 +79,8 @@ coverage:
   stage: publish
   script:
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file plugin/target/ArtMap-${NEXT_VERSION}.jar "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ArtMap/${NEXT_VERSION}/ArtMap-${JDK}-${NEXT_VERSION}.jar"'
-  only:
-    - master
+  rules:
+    - if: '${CI_COMMIT_TAG}'
 
 publish:jdk17:
   extends: .publish
@@ -133,29 +133,5 @@ release:maven-release:
         git commit -m "${COMMIT_MESSAGE}"
         git push
       fi
-  only:
-    - master
-
-#Generates the version number and adds it to build.env so its available for later steps
-release:generate-release:
-  image: node:22
-  stage: generate-release
-  before_script:
-    - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
-    - npm install -g semantic-release @semantic-release/gitlab
-    - npm install @semantic-release/git @semantic-release/changelog @semantic-release/exec -D
-  script:
-    - semantic-release --dry-run
-    - cat build.env
-  artifacts:
-    reports:
-      dotenv: build.env
-  only:
-    - master
-
-release:tag:
-  stage: release
-  extends: release:generate-release
-  needs: ["publish:jdk17","publish:jdk21"]
-  script:
-    - semantic-release
+  rules:
+    - if: '${CI_COMMIT_TAG}'
