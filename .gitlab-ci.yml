@@ -84,13 +84,13 @@ coverage:
 
 publish:jdk17:
   extends: .publish
-  needs: ["release:generate-release","build:jdk17"]
+  needs: ["build:jdk17"]
   variables:
     JDK: "JDK17"
 
 publish:jdk21:
   extends: .publish
-  needs: ["release:generate-release","build:jdk21"]
+  needs: ["build:jdk21"]
   variables:
     JDK: "JDK21"
 
@@ -114,7 +114,7 @@ integration:
 release:maven-release:
   extends: .jdk21
   stage: release
-  needs: ["release:generate-release","publish:jdk17","release:tag"]
+  needs: ["publish:jdk21"]
   variables:
     COMMIT_MESSAGE: "chore(release): [skip ci] Release ${NEXT_VERSION}"
   before_script:
