@@ -57,16 +57,16 @@
 		</repository>
 		<repository>
 			<id>dmulloy2-repo</id>
-			<url>https://repo.dmulloy2.net/nexus/repository/public/</url>
+			<url>https://repo.dmulloy2.net/repository/public/</url>
 		</repository>
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<!-- iDisguise -->
+		<!-- iDisguise - HTTPS cert broken, use HTTP -->
 		<repository>
 			<id>robingrether-repo</id>
-			<url>https://www.robingrether.de/mc/repo</url>
+			<url>http://www.robingrether.de/mc/repo</url>
 		</repository>
 		<repository>
 			<id>citizen</id>

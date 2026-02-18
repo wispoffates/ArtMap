@@ -14,12 +14,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <repositories>
-    <repository>
-			<id>uSkyBlock-mvn-repo</id>
-			<url>https://raw.github.com/rlf/uSkyBlock/mvn-repo/</url>
-		</repository>
-  </repositories>
+  <!-- uSkyBlock-API available via JitPack (parent pom) as com.github.rlf.uSkyBlock:uSkyBlock-API -->
 
   <dependencies>
     <dependency>
@@ -33,7 +28,7 @@
 			<scope>provided</scope>
 		</dependency>
     <dependency>
-			<groupId>com.github.rlf</groupId>
+			<groupId>com.github.rlf.uSkyBlock</groupId>
 			<artifactId>uSkyBlock-API</artifactId>
 			<version>2.6.4</version>
 			<scope>provided</scope>
