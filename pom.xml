@@ -63,11 +63,6 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<!-- iDisguise - HTTPS cert broken, use HTTP -->
-		<repository>
-			<id>robingrether-repo</id>
-			<url>http://www.robingrether.de/mc/repo</url>
-		</repository>
 		<repository>
 			<id>citizen</id>
 			<url>https://maven.citizensnpcs.co/repo</url>

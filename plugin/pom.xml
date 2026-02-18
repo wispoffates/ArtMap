@@ -304,7 +304,8 @@
 			<groupId>de.robingrether.idisguise</groupId>
 			<artifactId>idisguise-core</artifactId>
 			<version>5.8.2</version>
-			<scope>provided</scope>
+			<systemPath>${project.basedir}/dependencies/idisguise-core-5.8.2.jar</systemPath>
+			<scope>system</scope>
 		</dependency>
 		<!-- Tests -->
 		<!-- Where does this come from in NMS? -->
