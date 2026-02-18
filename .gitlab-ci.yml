@@ -138,7 +138,7 @@ release:maven-release:
 
 #Generates the version number and adds it to build.env so its available for later steps
 release:generate-release:
-  image: node:20-buster-slim
+  image: node:22-buster-slim
   stage: generate-release
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git-core ca-certificates
