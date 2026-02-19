@@ -60,7 +60,7 @@ build:jdk21:
 
 coverage:
   stage: coverage
-  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.11
   script:
     # convert report from jacoco to cobertura, using relative project path
     - python /opt/cover2cover.py plugin/target/site/jacoco/jacoco.xml $CI_PROJECT_DIR/plugin/src/main/java/ > plugin/target/site/cobertura.xml
