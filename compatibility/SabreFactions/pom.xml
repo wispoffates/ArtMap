@@ -28,7 +28,7 @@
     <dependency>
       <groupId>com.github.SaberLLC</groupId>
       <artifactId>Saber-Factions</artifactId>
-      <version>2.3.3-STABLE</version>
+      <version>4.1.4-STABLE</version>
     </dependency>
   </dependencies>
 </project>
