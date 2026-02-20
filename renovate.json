@@ -6,7 +6,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["net.wesjd:anvilgui"],
-      "matchVersionTypes": ["snapshot"],
+      "ignoreUnstable": true,
       "enabled": true
     }
   ]
