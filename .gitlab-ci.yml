@@ -95,22 +95,84 @@ publish:jdk21:
     JDK: "JDK21"
 
 ################################################################################################
-# Integration - Just some debugging for now - Intention is to use docker and test startup on various MC versions
+# Integration - Start a real Paper server in Docker and verify ArtMap loads cleanly.
 ################################################################################################
 
 integration:
   stage: integration
+  image: docker:latest
+  # docker:dind provides the Docker daemon.  TLS is disabled so the Docker CLI
+  # in the outer container can reach it without certificate setup.
+  services:
+    - name: docker:dind
+      command: ["--tls=false"]
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_HOST: "tcp://docker:2375"
+    # Minecraft / ProtocolLib versions used for the integration test.
+    # Override these in the GitLab project variables to test a different version.
+    MC_VERSION: "1.21.1"
+    PROTOCOLLIB_VERSION: "5.3.0"
+    TIMEOUT: "600"
   needs: ["build:jdk21"]
   script:
-    - echo $NEXT_VERSION
-    - echo $CURRENT_VERSION
+    - chmod +x integration/run-integration-test.sh
+    - ./integration/run-integration-test.sh
+  artifacts:
+    # Always upload the server log so failed runs can be diagnosed.
+    when: always
+    paths:
+      - integration/server.log
+    expire_in: 1 week
 
 ################################################################################################
-# Versioning Release
+# Release
 ################################################################################################
 
-#Updates POM versions to keep them in line with the release
-#Only pushes if there are changes
+# Creates the GitLab Release and attaches the two published JARs as package
+# assets.  Runs only on tags, after both publish jobs have succeeded.
+release:gitlab-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs: ["publish:jdk17", "publish:jdk21"]
+  variables:
+    # Full history is required so we can walk back to the previous tag.
+    GIT_DEPTH: 0
+  before_script:
+    - apk add --no-cache git
+  script:
+    # Find the tag that immediately preceded this one (version-sorted).
+    - PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${CI_COMMIT_TAG}$" | head -1)
+    # Build the commit range: either since the last tag, or the whole history.
+    - |
+      if [ -n "$PREV_TAG" ]; then
+        echo "## Changes since ${PREV_TAG}" > release_notes.md
+        RANGE="${PREV_TAG}..${CI_COMMIT_TAG}"
+      else
+        echo "## Changes" > release_notes.md
+        RANGE="${CI_COMMIT_TAG}"
+      fi
+    # List commits, skipping merge commits and the automated release bumps.
+    - git log --pretty=format:"- %s" --no-merges --invert-grep --grep="chore(release)" $RANGE >> release_notes.md
+    - printf '\n' >> release_notes.md
+    - cat release_notes.md
+  release:
+    tag_name: '$CI_COMMIT_TAG'
+    name: 'ArtMap $CI_COMMIT_TAG'
+    description: './release_notes.md'
+    assets:
+      links:
+        - name: 'ArtMap-JDK17-${NEXT_VERSION}.jar  (Minecraft 1.18–1.20.4, Java 17)'
+          url: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ArtMap/${NEXT_VERSION}/ArtMap-JDK17-${NEXT_VERSION}.jar'
+          link_type: package
+        - name: 'ArtMap-JDK21-${NEXT_VERSION}.jar  (Minecraft 1.20.5+, Java 21)'
+          url: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ArtMap/${NEXT_VERSION}/ArtMap-JDK21-${NEXT_VERSION}.jar'
+          link_type: package
+  rules:
+    - if: '$CI_COMMIT_TAG'
+
+# Updates POM versions to keep them in line with the release tag.
+# Only pushes if there are changes.
 release:maven-release:
   extends: .jdk21
   stage: release
