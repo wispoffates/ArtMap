@@ -111,10 +111,13 @@ integration:
     DOCKER_HOST: "tcp://docker:2375"
     # Minecraft / ProtocolLib versions used for the integration test.
     # Override these in the GitLab project variables to test a different version.
-    MC_VERSION: "1.21.1"
-    PROTOCOLLIB_VERSION: "5.3.0"
+    MC_VERSION: "1.21.11"
+    PROTOCOLLIB_VERSION: "dev-build"
     TIMEOUT: "600"
   needs: ["build:jdk21"]
+  before_script:
+    # The dind service needs a moment to start.  Poll until the daemon answers.
+    - until docker info >/dev/null 2>&1; do echo "Waiting for Docker daemon..."; sleep 2; done
   script:
     - chmod +x integration/run-integration-test.sh
     - ./integration/run-integration-test.sh

@@ -7,7 +7,7 @@
 target/*
 *.iml
 .m2/
-
+integration/server.log
 *.DS_STORE
 
 **/dependency-reduced-pom.xml
