@@ -1,6 +1,8 @@
 package me.Fupery.ArtMap.api.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -50,12 +52,21 @@ public class Version implements Comparable<Version> {
      * @return Version Version specific wrapper.
      */
     public static Version getBukkitVersion(String bukkit) {
-        String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
-        int[] verNumbers = new int[ver.length];
-        for (int i = 0; i < ver.length; i++) {
-            verNumbers[i] = Integer.parseInt(ver[i]);
-        }
-        return new Version(verNumbers);
+        try {
+            
+            String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
+            //handle new paper builds with new version string 26.1.2.build.60-stable
+            if(bukkit.contains("build")) {
+                ver = bukkit.substring(0, bukkit.indexOf(".build")).split("\\.");
+            }
+            List<Integer> verNumbers = new ArrayList<>();
+            for (int i = 0; i < ver.length; i++) {
+                verNumbers.add(Integer.parseInt(ver[i]));
+            }
+            return new Version(verNumbers.stream().mapToInt(Integer::intValue).toArray());
+        } catch(Exception e) {
+            throw new RuntimeException("Failed to parse bukkit version! :: " + bukkit,e);
+        } 
     }
 
     @Override

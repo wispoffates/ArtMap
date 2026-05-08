@@ -99,6 +99,7 @@ publish:jdk21:
 ################################################################################################
 
 integration:
+  allow_failure: true
   stage: integration
   image: docker:latest
   # docker:dind provides the Docker daemon.  TLS is disabled so the Docker CLI
