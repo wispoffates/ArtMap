@@ -14,17 +14,7 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <repositories>
-    <repository>
-			<id>bintray-tastybento-maven-repo</id>
-			<name>bintray</name>
-			<url>http://dl.bintray.com/tastybento/maven-repo</url>
-		</repository>
-    <repository>
-      <id>codemc-repo</id>
-      <url>https://repo.codemc.org/repository/maven-public</url>
-    </repository>
-  </repositories>
+  <!-- ASkyBlock jar from GitHub release 3.0.9.4a (nearest to 3.0.9.4, Bintray shut down in 2021) -->
 
   <dependencies>
     <dependency>
@@ -41,7 +31,8 @@
       <groupId>com.wasteofplastic</groupId>
       <artifactId>askyblock</artifactId>
       <version>3.0.9.4</version>
-      <scope>provided</scope>
+      <systemPath>${project.basedir}/dependencies/askyblock-3.0.9.4.jar</systemPath>
+      <scope>system</scope>
     </dependency>
   </dependencies>
 </project>

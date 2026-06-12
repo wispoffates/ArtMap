@@ -1,7 +1,6 @@
 package me.Fupery.ArtMap.api.Utils;
 
 import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
