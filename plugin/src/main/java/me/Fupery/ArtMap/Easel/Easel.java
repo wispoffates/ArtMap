@@ -272,7 +272,8 @@ public class Easel {
     }
 
     public void setItem(ItemStack itemStack) {
-        frame.get().setItem(itemStack);
+        ItemFrame f = frame.get();
+        if (f != null) f.setItem(itemStack);
     }
 
     /**

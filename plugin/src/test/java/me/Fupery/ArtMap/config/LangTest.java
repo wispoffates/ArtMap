@@ -7,11 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import me.Fupery.ArtMap.ArtMap;
 import me.Fupery.ArtMap.Compatibility.CompatibilityManager;
@@ -23,13 +21,10 @@ public class LangTest {
 
     private MockUtil mocks;
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         mocks = new MockUtil();
-        mocks.mockArtMap();
+        mocks.mockServer("1.14.4").mockArtMap();
     }
 
     @Test
@@ -41,7 +36,7 @@ public class LangTest {
         Configuration config = new Configuration(mockPlugin);
         Lang.load(mockPlugin, config);
         String[] needCanvas = Lang.ActionBar.NEED_CANVAS.get();
-        Assert.assertFalse("NEED_CANVAS should not have returned empty!", needCanvas.length==0);
-        Assert.assertEquals("§4§lPlace a canvas on the easel to paint. §3§l/art §4§lfor more info.", needCanvas[0]);
+        Assertions.assertFalse(needCanvas.length==0, "NEED_CANVAS should not have returned empty!");
+        Assertions.assertEquals("§4§lPlace a canvas on the easel to paint. §3§l/art §4§lfor more info.", needCanvas[0]);
     }
 }

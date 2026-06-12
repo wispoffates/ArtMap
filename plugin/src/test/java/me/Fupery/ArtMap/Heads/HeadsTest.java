@@ -3,39 +3,35 @@ package me.Fupery.ArtMap.Heads;
 import java.io.File;
 import java.util.UUID;
 
-import org.apache.commons.lang.ObjectUtils.Null;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import me.Fupery.ArtMap.ArtMap;
-import me.Fupery.ArtMap.api.Exception.HeadFetchException;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
 public class HeadsTest {
     private static MockUtil mocks;
-    private static ArtMap mockPlugin;
     private static ArtMap mockArtMap;
 
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
-
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws Exception {
         mocks = new MockUtil();
         mocks.mockServer("1.14.4").mockArtMap();
-        mockPlugin = mocks.mockDataFolder(new File("target/plugins/Artmap/")).mockLogger().getPluginMock();
+        mocks.mockDataFolder(new File("target/plugins/Artmap/")).mockLogger();
         mockArtMap = mocks.getArtmapMock();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void retrieveHead() throws HeadFetchException {
+    /**
+     * Pins current behavior: head lookups NPE in the offline mock environment
+     * rather than returning a fallback head. If this test starts failing because
+     * a head is returned, the cache got more robust — update the test to assert
+     * on the returned head instead.
+     */
+    @Test
+    public void retrieveHead() {
         HeadsCache cache = new HeadsCache(mockArtMap, false);
-        ItemStack head = cache.getHead(UUID.fromString("5dcadcf6-7070-42ab-aaf3-b60a120a6bcf"));
-        Assert.assertNotNull(head);
+        Assertions.assertThrows(NullPointerException.class,
+                () -> cache.getHead(UUID.fromString("5dcadcf6-7070-42ab-aaf3-b60a120a6bcf")));
     }
 }

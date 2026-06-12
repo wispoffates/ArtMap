@@ -18,10 +18,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.google.common.io.Files;
 import com.google.gson.GsonBuilder;
@@ -75,7 +73,6 @@ public class MockUtil {
     private ArtMap pluginMock; // Mocked plugin
     private ArtMap mockArtmap;
     private Server mockServer;
-    //private BukkitScheduler mockScheduler;
     private PluginManager mockPluginManager;
 
     private static final Map<UUID,Player> mockPlayers = new HashMap<>();
@@ -171,7 +168,10 @@ public class MockUtil {
         Server mockServer = mock(Server.class);
 
         BukkitScheduler mockBukkitScheduler = mock(BukkitScheduler.class);
-        when(mockServer.getVersion()).thenReturn(version);
+        // Mimic real server formatting: getVersion() is "git-Paper (MC: 1.21.4)",
+        // getBukkitVersion() is "1.21.4-R0.1-SNAPSHOT". ProtocolLib parses the former.
+        String mcVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
+        when(mockServer.getVersion()).thenReturn("git-MockUtil (MC: " + mcVersion + ")");
         when(mockServer.getBukkitVersion()).thenReturn(version);
         when(mockServer.getLogger()).thenReturn(testLogger);
         when(mockServer.getScheduler()).thenReturn(mockBukkitScheduler);
@@ -212,7 +212,6 @@ public class MockUtil {
             return mockMapView;
         });
 
-        //this.mockScheduler = mockBukkitScheduler;
         this.mockServer = mockServer;
         try {
             Bukkit.setServer(mockServer);
@@ -240,7 +239,6 @@ public class MockUtil {
          // Mock ArtMap ArtMap.instance().
          ArtMap mockArtmap = mock(ArtMap.class);
          ArtMap.setInstance(mockArtmap);
-         //when(ArtMap.instance()).thenReturn(mockArtmap);
          //mock compatManger
          CompatibilityManager mockCompatibilityManager = mock(CompatibilityManager.class);
          when(mockArtmap.getCompatManager()).thenReturn(mockCompatibilityManager);
@@ -310,15 +308,11 @@ public class MockUtil {
          });
          mockScheduler.ASYNC = mockTaskScheduler;
          mockScheduler.SYNC = mockTaskScheduler;
-         //FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("SYNC"), mockTaskScheduler);
-         //FieldSetter.setField(mockScheduler, mockScheduler.getClass().getField("ASYNC"), mockTaskScheduler);
          when(mockArtmap.getScheduler()).thenReturn(mockScheduler);
 
          //Mock getting resource
          when(mockArtmap.getTextResourceFile(anyString())).thenAnswer( invocation -> {
              if("lang.yml".equals(invocation.getArguments()[0])) {
-                 System.out.println("DEBUG: getting test lang.yml");
-                 //System.out.println(MockUtil.class.getResource(".").getPath());
                 return new InputStreamReader(MockUtil.class.getResourceAsStream("../../../../lang.yml"));
              }
             return new InputStreamReader(MockUtil.class.getResourceAsStream((String) invocation.getArguments()[0]));
@@ -344,42 +338,33 @@ public class MockUtil {
          return this;
     }
 
-    private Player getRandomMockPlayer() {
-        List<Entry<UUID,Player>> playerList = mockPlayers.entrySet().stream().collect(Collectors.toList());
-        Collections.shuffle(playerList);
-        return playerList.get(0).getValue();     
+    /**
+     * The player mocks are shared across tests, so op/permission stubs added by one
+     * test leak into the next. Call this in @Before to restore the defaults.
+     */
+    public void resetMockPlayerPermissions() {
+        for (Player player : mockPlayers.values()) {
+            when(player.isOp()).thenReturn(false);
+            when(player.hasPermission(anyString())).thenReturn(false);
+        }
     }
 
     public Player[] getRandomMockPlayers(int count) {
-        List<Player> players = new ArrayList<>();
-        int filled = 0;
-        while(filled<count) {
-            Player player = getRandomMockPlayer();
-            if(!players.contains(player)) {
-                players.add(player);
-                filled++;
-            }
+        if (count > mockPlayers.size()) {
+            throw new IllegalArgumentException("Only " + mockPlayers.size() + " mock players available, requested " + count);
         }
-        return players.toArray(new Player[count]);
-    }
-
-    private Canvas getRandomMockCanvas() {
-        List<Entry<Integer,Canvas>> canvasList = mockCanvases.entrySet().stream().collect(Collectors.toList());
-        Collections.shuffle(canvasList);
-        return canvasList.get(0).getValue();     
+        List<Player> players = new ArrayList<>(mockPlayers.values());
+        Collections.shuffle(players);
+        return players.subList(0, count).toArray(new Player[count]);
     }
 
     public Canvas[] getRandomMockCanvases(int count) {
-        List<Canvas> canvases = new ArrayList<>();
-        int filled = 0;
-        while(filled<count) {
-            Canvas canvas = getRandomMockCanvas();
-            if(!canvases.contains(canvas)) {
-                canvases.add(canvas);
-                filled++;
-            }
+        if (count > mockCanvases.size()) {
+            throw new IllegalArgumentException("Only " + mockCanvases.size() + " mock canvases available, requested " + count);
         }
-        return canvases.toArray(new Canvas[count]);
+        List<Canvas> canvases = new ArrayList<>(mockCanvases.values());
+        Collections.shuffle(canvases);
+        return canvases.subList(0, count).toArray(new Canvas[count]);
     }
 
     public CanvasCopy mockCanvasCopy(Canvas canvas) {

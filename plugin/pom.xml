@@ -30,6 +30,17 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.4</version>
+				<configuration>
+					<!-- Fresh JVM per test class: Bukkit.setServer() is a one-shot singleton,
+					     so MockBukkit-based tests and MockUtil-based tests cannot share a JVM. -->
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.6.0</version>
 				<executions>
@@ -136,6 +147,23 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.14.4-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Pin a bungeecord-chat new enough for the paper-api 1.21 classes MockBukkit
+		     puts on the test classpath; spigot-api 1.14.4 drags in 1.13-SNAPSHOT which
+		     is missing the hover.content classes and breaks Mockito instrumentation. -->
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-chat</artifactId>
+			<version>1.20-R0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Same story as bungeecord-chat: paper-api 1.21's YamlConfiguration needs a
+		     newer snakeyaml than the 1.23 spigot-api 1.14.4 brings in. -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -300,12 +328,6 @@
 			<systemPath>${project.basedir}/dependencies/denizin-1.0.2-SNAPSHOT.jar</systemPath>
   			<scope>system</scope>
 		</dependency>
-		<dependency>
-			<groupId>de.robingrether.idisguise</groupId>
-			<artifactId>idisguise-core</artifactId>
-			<version>5.8.2</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- Tests -->
 		<!-- Where does this come from in NMS? -->
 		<dependency>
@@ -314,10 +336,11 @@
 			<version>3.47.0.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Version matches the junit-jupiter MockBukkit 3.133.2 ships at runtime scope. -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.11.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

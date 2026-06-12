@@ -1,7 +1,7 @@
 package me.Fupery.ArtMap.Command;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 public class CombinedArgsTest {
 
@@ -9,7 +9,7 @@ public class CombinedArgsTest {
 	public void TestCombinedArgsNoSpaces() {
 		String[] before = { "give", "artwork:test", "2" };
 		String[] after = CommandHandler.fixQuotedArgs(before);
-		Assert.assertArrayEquals(before, after);
+		Assertions.assertArrayEquals(before, after);
 	}
 
 	@Test
@@ -17,7 +17,7 @@ public class CombinedArgsTest {
 		String[] before = { "give", "\"artwork:test", "test\"", "2" };
 		String[] after = CommandHandler.fixQuotedArgs(before);
 		String[] result = { "give", "artwork:test test", "2" };
-		Assert.assertArrayEquals(result, after);
+		Assertions.assertArrayEquals(result, after);
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class CombinedArgsTest {
 		String[] before = { "give", "\"artwork:test\"", "2" };
 		String[] after = CommandHandler.fixQuotedArgs(before);
 		String[] result = { "give", "artwork:test", "2" };
-		Assert.assertArrayEquals(result, after);
+		Assertions.assertArrayEquals(result, after);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class CombinedArgsTest {
 		String[] before = { "give", "\"artwork:test", "test\"", "\"more", "space\"", "2" };
 		String[] after = CommandHandler.fixQuotedArgs(before);
 		String[] result = { "give", "artwork:test test", "more space", "2" };
-		Assert.assertArrayEquals(result, after);
+		Assertions.assertArrayEquals(result, after);
 	}
 
 	@Test
@@ -41,7 +41,7 @@ public class CombinedArgsTest {
 		String[] before = { "give", "artwork:\"test", "test\"", "\"more", "space\"", "2" };
 		String[] after = CommandHandler.fixQuotedArgs(before);
 		String[] result = { "give", "artwork:test test", "more space", "2" };
-		Assert.assertArrayEquals(result, after);
+		Assertions.assertArrayEquals(result, after);
 	}
 
 }

@@ -17,7 +17,7 @@ public class Palette_1_18 implements Palette {
 	public final ArtDye
 
 			VOID  				= new BasicDye(Lang.DYE_VOID.get(), "VOID", 0, ChatColor.DARK_GREEN, Material.ENDER_EYE),
-	        GRASS 				= new BasicDye(Lang.DYE_GRASS.get(), "GRASS", 1, ChatColor.DARK_GREEN, Material.GRASS),
+	        GRASS 				= new BasicDye(Lang.DYE_GRASS.get(), "GRASS", 1, ChatColor.DARK_GREEN, resolveGrass()),
 			CREAM 				= new BasicDye(Lang.DYE_CREAM.get(), "CREAM", 2, ChatColor.GOLD, Material.PUMPKIN_SEEDS),
 	        LIGHT_GRAY 			= new BasicDye(Lang.DYE_LIGHT_GRAY.get(), "LIGHT_GRAY", 3, ChatColor.GRAY, Material.COBWEB),															
 	        RED 				= new BasicDye(Lang.DYE_RED.get(), "RED", 4, ChatColor.RED, Material.RED_DYE),
@@ -128,6 +128,16 @@ public class Palette_1_18 implements Palette {
 			}
 		}
 		return getDefaultColour();
+	}
+
+	/**
+	 * GRASS was renamed to SHORT_GRASS in 1.20.3. A compile-time field reference
+	 * only keeps working on modern servers through Paper's legacy-plugin remapper,
+	 * so resolve whichever name this server actually has.
+	 */
+	private static Material resolveGrass() {
+		Material grass = Material.matchMaterial("SHORT_GRASS");
+		return grass != null ? grass : Material.matchMaterial("GRASS");
 	}
 
 	public ArtDye[] concatenate(ArtDye[] a, ArtDye[] b) {

@@ -50,7 +50,12 @@ public class Version implements Comparable<Version> {
      * @return Version Version specific wrapper.
      */
     public static Version getBukkitVersion(String bukkit) {
-        String[] ver = bukkit.substring(0, bukkit.indexOf('-')).split("\\.");
+        // Not all version strings carry an -R0.1-SNAPSHOT style suffix.
+        int dash = bukkit.indexOf('-');
+        if (dash >= 0) {
+            bukkit = bukkit.substring(0, dash);
+        }
+        String[] ver = bukkit.split("\\.");
         int[] verNumbers = new int[ver.length];
         for (int i = 0; i < ver.length; i++) {
             verNumbers[i] = Integer.parseInt(ver[i]);

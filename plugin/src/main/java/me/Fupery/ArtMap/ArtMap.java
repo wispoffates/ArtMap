@@ -234,7 +234,9 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 		if (!destination.exists())
 			try {
 				if (destination.createNewFile()) {
-					Files.copy(getResource(resourcePath), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					try (java.io.InputStream resource = getResource(resourcePath)) {
+						Files.copy(resource, destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					}
 				} else {
 					getLogger().warning(writeError + " Error: Destination cannot be created.");
 				}

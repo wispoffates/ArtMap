@@ -395,8 +395,8 @@ public final class Database implements IDatabase {
                 ArtMap.instance().getLogger().log(Level.SEVERE,"Failed deleting corruped map file." ,e);
                 return true;   
             }
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/blank.dat"), dataFile.toPath());
+            try (java.io.InputStream blankDat = this.getClass().getResourceAsStream("/blank.dat")) {
+                Files.copy(blankDat, dataFile.toPath());
                 ArtMap.instance().getLogger().warning("Minecraft map data file reset.  A server restart might be necessary to continue the repair.");
                 return restoreMapData(map, softRepair);
             } catch (IOException e) {

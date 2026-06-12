@@ -12,25 +12,23 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
 public class ArtMapTest {
 
     private MockUtil mocks;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         this.mocks = new MockUtil();
-        this.mocks.mockServer("1.14.4");
-
-        MockBukkit.mock();
-        MockBukkit.load(ArtMap.class);
+        // Must be a modern version: the test classpath carries the 1.21 paper-api,
+        // so onEnable has to pick the modern palette/head retriever to load cleanly.
+        this.mocks.mockServer("1.21.4-R0.1-SNAPSHOT");
     }
 
     @Test
@@ -53,9 +51,9 @@ public class ArtMapTest {
         artmap = Mockito.spy(artmap);
         Mockito.doReturn(mock(PluginCommand.class)).when(artmap).getCommand(any(String.class));
 
-        Assert.assertNotNull("Artmap instnace null!",artmap);
+        Assertions.assertNotNull(artmap, "Artmap instnace null!");
         artmap.onEnable();
-        Assert.assertNotNull("Artmap failed to enable.",ArtMap.instance());
+        Assertions.assertNotNull(ArtMap.instance(), "Artmap failed to enable.");
     }
 
     //Test artwork recycle does not delete map that is a completed artwork
