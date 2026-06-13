@@ -45,12 +45,8 @@ public class DatabaseTest {
     @BeforeEach
     public void resetSharedMocks() {
         mocks.resetMockPlayerPermissions();
-        // Art.db is a real file under target/ that survives between test methods
-        // AND between Maven runs. Other tests (and earlier runs) leave rows behind
-        // -- notably an artwork at map id 1 -- which made testSaveArtworkImportDuplicate
-        // intermittently fail: its first saveArtwork would throw the duplicate
-        // exception that only the second call is expected to throw. Start every
-        // test from a genuinely empty database instead of relying on clearDatabase.
+        // start from an empty db: Art.db persists between methods and runs, and
+        // leftover rows (esp. map id 1) made testSaveArtworkImportDuplicate flaky
         if (DB_FILE.exists() && !DB_FILE.delete()) {
             throw new IllegalStateException("Could not delete stale test database: " + DB_FILE);
         }

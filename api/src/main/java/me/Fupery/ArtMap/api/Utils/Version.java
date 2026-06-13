@@ -13,8 +13,9 @@ public class Version implements Comparable<Version> {
 
     public Version(Plugin plugin) {
         String[] strings = plugin.getDescription().getVersion().split("\\.");
-        
+
         int[] numbers = new int[strings.length];
+        int parsed = 0;
         for (int i = 0; i < strings.length; i++) {
             //chop anything like -SNAPSHOT off the version number.
             String str = strings[i];
@@ -29,9 +30,15 @@ public class Version implements Comparable<Version> {
             if(str.contains("+")) {
                 str = str.substring(0, str.indexOf('+'));
             }
-            numbers[i] = Integer.parseInt(str);
+            try {
+                numbers[parsed] = Integer.parseInt(str);
+                parsed++;
+            } catch (NumberFormatException e) {
+                //non-numeric segment like a bare commit hash "f7652b23", stop here
+                break;
+            }
         }
-        this.numbers = numbers;
+        this.numbers = (parsed == numbers.length) ? numbers : Arrays.copyOf(numbers, parsed);
     }
 
     public Version(int... numbers) {
@@ -49,7 +56,7 @@ public class Version implements Comparable<Version> {
      * @return Version Version specific wrapper.
      */
     public static Version getBukkitVersion(String bukkit) {
-        // Not all version strings carry an -R0.1-SNAPSHOT style suffix.
+        //strip -R0.1-SNAPSHOT style suffix if present
         int dash = bukkit.indexOf('-');
         if (dash >= 0) {
             bukkit = bukkit.substring(0, dash);

@@ -26,10 +26,7 @@ public class CompressedMapTest {
         mocks.mockDataFolder(new File("target/plugins/Artmap/")).mockLogger();
     }
 
-    /**
-     * Builds full-resolution (128x128) map data where every 4x4 cell holds one
-     * colour, matching what the f32x32 codec can represent losslessly.
-     */
+    // 128x128 data with one colour per 4x4 cell (f32x32 lossless input)
     private byte[] blockyMapData() {
         byte[] data = new byte[Map.Size.MAX.value];
         for (int x = 0; x < 128; x++) {

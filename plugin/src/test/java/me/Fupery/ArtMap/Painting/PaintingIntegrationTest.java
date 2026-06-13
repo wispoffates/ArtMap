@@ -40,12 +40,8 @@ import me.Fupery.ArtMap.api.Config.Configuration;
 import me.Fupery.ArtMap.api.Config.Lang;
 import me.Fupery.ArtMap.mocks.MockUtil;
 
-/**
- * Integration test that simulates a painting client. Packets are injected at
- * the exact seam where the network layer hands off to the plugin
- * (ArtistHandler.handlePacket), so everything downstream runs for real:
- * cursor trig, brushes, renderer, persistence, compression and SQLite.
- */
+// simulates a painting client by injecting packets at ArtistHandler.handlePacket;
+// everything downstream runs for real (brushes, renderer, compression, SQLite)
 @TestMethodOrder(OrderAnnotation.class)
 public class PaintingIntegrationTest {
 
@@ -59,7 +55,7 @@ public class PaintingIntegrationTest {
     private static PixelTableManager pixelTable;
     private static Player painter;
 
-    /** What each painted pixel should decompress to, keyed by (x,y). */
+    // expected decompressed colour per painted pixel, keyed by (x,y)
     private static final HashMap<Long, Byte> expectedPixels = new HashMap<>();
 
     @BeforeAll
@@ -70,8 +66,7 @@ public class PaintingIntegrationTest {
         ArtMap plugin = mocks.getArtmapMock();
 
         Lang.load(plugin, new Configuration(plugin));
-        // onEnable normally does this; the packet handler consults ArtMaterial
-        // to tell paint brushes apart from dyes. Recipes themselves aren't needed.
+        // onEnable normally does this; needed so the handler can tell brushes from dyes
         when(plugin.getRecipeLoader()).thenReturn(mock(me.Fupery.ArtMap.Recipe.RecipeLoader.class));
         me.Fupery.ArtMap.Recipe.ArtMaterial.setupRecipes();
         // Use the real modern palette so every production colour is exercised.
@@ -92,27 +87,26 @@ public class PaintingIntegrationTest {
         pixelTable = plugin.getPixelTable();
         painter = mocks.getRandomMockPlayers(1)[0];
 
-        // The Art.db under target/ survives between runs; deleting the artwork
-        // also wipes its map data, so do it before any painting happens.
+        // clear leftover before painting; deleteArtwork also wipes the map data
         Optional<MapArt> leftover = db.getArtwork("PaintingIT");
         if (leftover.isPresent()) {
             db.deleteArtwork(leftover.get());
         }
     }
 
-    /** The yaw a client looks at to put the cursor in pixel column x. */
+    // yaw that aims the cursor at pixel column x
     private static float yawFor(int x) {
         float[] bounds = pixelTable.getYawBounds();
         return (bounds[x] + bounds[x + 1]) / 2f;
     }
 
-    /** The pitch a client looks at to put the cursor in pixel row y of column x. */
+    // pitch that aims the cursor at pixel row y of column x
     private static float pitchFor(int x, int y) {
         float[] bounds = (float[]) pixelTable.getPitchBounds()[x];
         return (bounds[y] + bounds[y + 1]) / 2f;
     }
 
-    /** Look at pixel (x,y) then click, like a painting client does. */
+    // look at pixel (x,y) then click, like a painting client
     private static void lookAndClick(int x, int y, long cooldownMillis) throws InterruptedException {
         handler.handlePacket(painter, new ArtistPacket.PacketLook(yawFor(x), pitchFor(x, y)));
         Thread.sleep(cooldownMillis); // respect the brush stroke cooldown
@@ -199,11 +193,7 @@ public class PaintingIntegrationTest {
         }
     }
 
-    /**
-     * Regression test: end() used to run teleport/kit-removal and persistMap in
-     * one try block, so any dismount error (here: a teleport NPE from a null
-     * location) silently discarded the player's unsaved strokes.
-     */
+    // regression: a dismount error in end() used to skip persistMap and lose strokes
     @Test
     @Order(4)
     public void dismountErrorMustNotLoseThePainting() throws Exception {
@@ -211,8 +201,7 @@ public class PaintingIntegrationTest {
         when(brokenPlayer.getUniqueId()).thenReturn(java.util.UUID.randomUUID());
         when(brokenPlayer.getName()).thenReturn("BrokenTeleportPlayer");
         org.bukkit.inventory.PlayerInventory inv = mock(org.bukkit.inventory.PlayerInventory.class);
-        // Created before stubbing: the ItemStack constructor calls into the
-        // mocked server, which would corrupt an in-progress when() otherwise.
+        // build before stubbing: new ItemStack() calls the server mock mid-when()
         ItemStack air = new ItemStack(Material.AIR);
         ItemStack[] mainHand = { air };
         when(inv.getItemInMainHand()).thenAnswer(i -> mainHand[0]);

@@ -23,10 +23,7 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import me.Fupery.ArtMap.Easel.Canvas;
 import me.Fupery.ArtMap.api.Exception.ArtMapException;
 
-/**
- * Exercises Canvas.getCanvas() against real ItemStacks built through
- * MockBukkit's ItemFactory rather than hand-stubbed metas.
- */
+// Canvas.getCanvas() against real ItemStacks from MockBukkit's ItemFactory
 public class CanvasItemTest {
 
     private static final String UNFINISHED_TAG = ChatColor.AQUA.toString() + ChatColor.ITALIC + "Unfinished Artwork";

@@ -210,8 +210,7 @@ public class ArtSession implements IArtSession {
     }
 
     public void end(Player player) throws SQLException, IOException {
-        // Dismount housekeeping must not be able to prevent the painting from
-        // being persisted, so it is isolated from the save below.
+        // isolate dismount housekeeping from the save so it can't block persisting
         try {
             //player.leaveVehicle();
 			player.teleport(player.getLocation().add(0, 0.25, 0 ));

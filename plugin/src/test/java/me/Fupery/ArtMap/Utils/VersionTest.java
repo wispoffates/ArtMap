@@ -2,9 +2,13 @@ package me.Fupery.ArtMap.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -75,9 +79,7 @@ public class VersionTest {
         assertFalse(version.hashCode() == version3.hashCode(), "Version should be equal." + version.toString());
     }
 
-    // Minecraft switched to year-based version numbers (e.g. 26.1) — make sure
-    // the parser and comparisons survive the new scheme.
-
+    // year-based version numbers (e.g. 26.1)
     @Test
     public void test_v26_parse() {
         Version version = Version.getBukkitVersion("26.1-R0.1-SNAPSHOT");
@@ -94,7 +96,7 @@ public class VersionTest {
 
     @Test
     public void test_v26_parseWithoutSuffix() {
-        // Version strings are not guaranteed to carry the -R0.1-SNAPSHOT suffix.
+        // no -R0.1-SNAPSHOT suffix
         Version version = Version.getBukkitVersion("26.1");
         assertTrue(version.isEqualTo(26,1), "Suffix-less 26.1 should parse but was " + version.toString());
     }
@@ -108,10 +110,39 @@ public class VersionTest {
         assertTrue(yearBased.compareTo(legacy) > 0, "26.1 should compare after 1.21.4");
     }
 
+    // mock plugin reporting the given version
+    private static Plugin pluginWithVersion(String versionString) {
+        PluginDescriptionFile desc = new PluginDescriptionFile("ArtMap", versionString, "me.Fupery.ArtMap.ArtMap");
+        Plugin plugin = mock(Plugin.class);
+        when(plugin.getDescription()).thenReturn(desc);
+        return plugin;
+    }
+
     @Test
     public void test_pluginVersion() {
-        Version version = new Version(mocks.getArtmapMock());
-        assertTrue(version.isGreaterOrEqualTo(3,5,3), "Plugin version should be equal.");
+        // fixed version, not the build-filtered plugin.yml (SHA on CI builds)
+        Version version = new Version(pluginWithVersion("3.9.24"));
+        assertTrue(version.isGreaterOrEqualTo(3,5,3), "Plugin version should be >= 3.5.3");
+    }
+
+    @Test
+    public void test_pluginVersion_snapshotSuffix() {
+        Version version = new Version(pluginWithVersion("3.9.24-SNAPSHOT"));
+        assertTrue(version.isEqualTo(3,9,24), "The -SNAPSHOT suffix should be stripped");
+    }
+
+    @Test
+    public void test_pluginVersion_commitShaDoesNotThrow() {
+        // CI commit builds version as a bare git SHA; must not throw
+        Version version = new Version(pluginWithVersion("f7652b23"));
+        version.isGreaterOrEqualTo(3,5,3); // must not throw
+    }
+
+    @Test
+    public void test_pluginVersion_trailingShaSegment() {
+        // numeric prefix kept, trailing hash segment dropped
+        Version version = new Version(pluginWithVersion("3.9.24.f7652b23"));
+        assertTrue(version.isEqualTo(3,9,24), "Numeric prefix should be kept, hash segment dropped");
     }
 
 

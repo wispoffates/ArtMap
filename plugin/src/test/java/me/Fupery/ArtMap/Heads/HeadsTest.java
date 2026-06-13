@@ -22,12 +22,7 @@ public class HeadsTest {
         mockArtMap = mocks.getArtmapMock();
     }
 
-    /**
-     * Pins current behavior: head lookups NPE in the offline mock environment
-     * rather than returning a fallback head. If this test starts failing because
-     * a head is returned, the cache got more robust — update the test to assert
-     * on the returned head instead.
-     */
+    // pins current behavior: head lookup NPEs in the offline mock environment
     @Test
     public void retrieveHead() {
         HeadsCache cache = new HeadsCache(mockArtMap, false);

@@ -91,8 +91,7 @@ public class MockUtil {
                 Player mockPlayer = mock(Player.class);
                 when(mockPlayer.getName()).thenReturn(name);
                 when(mockPlayer.getUniqueId()).thenReturn(id);
-                // ArtSession.end teleports the player on dismount; a null
-                // location would make that NPE (and get swallowed silently).
+                // non-null location: ArtSession.end teleports on dismount
                 when(mockPlayer.getLocation()).thenAnswer(inv -> new org.bukkit.Location(null, 0, 64, 0));
                 mockPlayerInventory(mockPlayer);
                 mockPlayers.put(id, mockPlayer);
@@ -131,8 +130,7 @@ public class MockUtil {
      */
     private void mockPlayerInventory(Player player) {
         PlayerInventory inv = mock(PlayerInventory.class);
-        // Lazily default to AIR: creating an ItemStack requires the Bukkit server
-        // singleton, which is not set yet when the player mocks are built.
+        // lazy AIR: new ItemStack() needs the server, not set yet at mock build time
         ItemStack[] hands = new ItemStack[2];
         when(inv.getItemInMainHand()).thenAnswer(i -> hands[0] != null ? hands[0] : (hands[0] = new ItemStack(Material.AIR)));
         when(inv.getItemInOffHand()).thenAnswer(i -> hands[1] != null ? hands[1] : (hands[1] = new ItemStack(Material.AIR)));
@@ -210,8 +208,7 @@ public class MockUtil {
         Server mockServer = mock(Server.class);
 
         BukkitScheduler mockBukkitScheduler = mock(BukkitScheduler.class);
-        // Mimic real server formatting: getVersion() is "git-Paper (MC: 1.21.4)",
-        // getBukkitVersion() is "1.21.4-R0.1-SNAPSHOT". ProtocolLib parses the former.
+        // real server formatting; ProtocolLib parses getVersion()
         String mcVersion = version.contains("-") ? version.substring(0, version.indexOf('-')) : version;
         when(mockServer.getVersion()).thenReturn("git-MockUtil (MC: " + mcVersion + ")");
         when(mockServer.getBukkitVersion()).thenReturn(version);
@@ -359,8 +356,7 @@ public class MockUtil {
             return new InputStreamReader(MockUtil.class.getResourceAsStream((String) invocation.getArguments()[0]));
          });
 
-         //mock Reflection with a stateful per-map store, standing in for the NMS
-         //world map data so painted pixels survive setMap -> getMap round trips.
+         //stateful per-map store so painted pixels survive setMap -> getMap
          Reflection mockReflection = mock(Reflection.class);
          when(mockReflection.getMap(any(MapView.class))).thenAnswer(invocation -> {
              MapView view = invocation.getArgument(0);
