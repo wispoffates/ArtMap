@@ -131,8 +131,8 @@ integration:
     # The dind service needs a moment to start.  Poll until the daemon answers.
     - until docker info >/dev/null 2>&1; do echo "Waiting for Docker daemon..."; sleep 2; done
   script:
-    - chmod +x integration/run-integration-test.sh
-    - ./integration/run-integration-test.sh
+    # Invoke with sh explicitly: the docker:latest image is Alpine and has no bash.
+    - sh integration/run-integration-test.sh
   artifacts:
     # Always upload the server log so failed runs can be diagnosed.
     when: always

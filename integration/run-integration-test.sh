@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Integration test for ArtMap plugin.
 #
 # Starts a Paper Minecraft server in Docker, installs the built ArtMap JAR plus
@@ -6,7 +6,8 @@
 # and verifies the plugin enabled successfully.
 #
 # Designed to run inside a GitLab CI job that has a docker:dind service.
-# It also works locally when Docker is available.
+# It also works locally when Docker is available. POSIX sh (not bash) so it runs
+# directly under the Alpine-based docker:latest CI image, which has no bash.
 #
 # Environment variables (all optional – defaults are shown):
 #   MC_VERSION           Minecraft / Paper version  (default: 1.21.1)
@@ -19,12 +20,11 @@
 #   CI_JOB_ID            Set automatically by GitLab; used to make container /
 #                        volume names unique so parallel jobs don't collide.
 
-# -e  : exit on error for setup steps (volume, copy, docker run)
-# -u  : treat unset variables as errors
-# -o pipefail : catch errors inside pipelines
-# NOTE: the polling loop below intentionally avoids relying on set -e so that
-# log capture and the case statement always run even when commands fail.
-set -euo pipefail
+# -e : exit on error for setup steps (volume, copy, docker run)
+# -u : treat unset variables as errors
+# (pipefail is bash-only and not used; the polling loop disables -e on purpose so
+#  log capture and the case statement always run even when commands fail.)
+set -eu
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Configuration
