@@ -103,7 +103,10 @@ publish:jdk21:
     JDK: "JDK21"
 
 ################################################################################################
-# Integration - Start a real Paper server in Docker and verify ArtMap loads cleanly.
+# Integration - Start a real Paper server in Docker.
+#   integration:       verifies ArtMap loads cleanly (every pipeline)
+#   integration:paint  also drives the mineflayer paint bot and checks Art.db
+#                      (manual; the bot in integration/bot/ is still a skeleton)
 ################################################################################################
 
 integration:
@@ -135,6 +138,21 @@ integration:
     when: always
     paths:
       - integration/server.log
+    expire_in: 1 week
+
+integration:paint:
+  extends: integration
+  variables:
+    RUN_PAINT_TEST: "true"
+    # Pinned independently of the load check: mineflayer lags new Minecraft
+    # releases, so this must stay on a version the bot supports.
+    MC_VERSION: "1.21.4"
+  when: manual
+  artifacts:
+    when: always
+    paths:
+      - integration/server.log
+      - integration/Art.db
     expire_in: 1 week
 
 ################################################################################################

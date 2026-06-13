@@ -9,6 +9,7 @@ target/*
 .m2/
 integration/server.log
 *.DS_STORE
+.claude
 
 **/dependency-reduced-pom.xml
 

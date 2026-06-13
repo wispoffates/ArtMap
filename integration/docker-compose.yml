@@ -1,0 +1,30 @@
+# Local convenience equivalent of what run-integration-test.sh sets up in CI:
+# a Paper server with ArtMap + ProtocolLib. Stage the jars first:
+#
+#   mvn -pl plugin -am package
+#   mkdir -p server-data/plugins
+#   cp ../plugin/target/ArtMap-*.jar server-data/plugins/
+#   (download a ProtocolLib build matching VERSION into server-data/plugins/)
+#
+# Then: docker compose up -d && (cd bot && npm install && node paint-bot.js)
+services:
+  mc:
+    image: itzg/minecraft-server
+    environment:
+      EULA: "TRUE"
+      TYPE: PAPER
+      # Must match a version supported by both ArtMap and the mineflayer bot.
+      VERSION: "1.21.4"
+      ONLINE_MODE: "FALSE"   # lets the bot join without auth
+      MEMORY: 2G
+      RCON_PASSWORD: artmap-e2e
+    ports:
+      - "25565:25565"
+      - "25575:25575"   # RCON, used by the bot to give itself items
+    volumes:
+      - ./server-data:/data
+    healthcheck:
+      test: mc-health
+      start_period: 2m
+      interval: 5s
+      retries: 20

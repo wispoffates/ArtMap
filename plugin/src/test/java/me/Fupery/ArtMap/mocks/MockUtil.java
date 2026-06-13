@@ -35,6 +35,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -77,6 +78,9 @@ public class MockUtil {
 
     private static final Map<UUID,Player> mockPlayers = new HashMap<>();
     private static final Map<Integer,Canvas> mockCanvases = new HashMap<>();
+    // Stand-in for the NMS world map storage: map id -> 128x128 colour data.
+    private final Map<Integer,byte[]> worldMapData = new HashMap<>();
+    private final Map<Integer,MapView> mapViews = new HashMap<>();
 
     public MockUtil() {
         //Mock 10 players
@@ -87,6 +91,10 @@ public class MockUtil {
                 Player mockPlayer = mock(Player.class);
                 when(mockPlayer.getName()).thenReturn(name);
                 when(mockPlayer.getUniqueId()).thenReturn(id);
+                // ArtSession.end teleports the player on dismount; a null
+                // location would make that NPE (and get swallowed silently).
+                when(mockPlayer.getLocation()).thenAnswer(inv -> new org.bukkit.Location(null, 0, 64, 0));
+                mockPlayerInventory(mockPlayer);
                 mockPlayers.put(id, mockPlayer);
             }
         }
@@ -100,6 +108,40 @@ public class MockUtil {
         }
         pluginMock = Mockito.mock(ArtMap.class);
     } // Hides constructor
+
+    /**
+     * Builds a MapView mock that remembers its renderers, so Map.setRenderer's
+     * remove-then-add cycle behaves like the real thing.
+     */
+    private MapView buildMapView(int id) {
+        MapView view = mock(MapView.class);
+        when(view.getId()).thenReturn(id);
+        List<org.bukkit.map.MapRenderer> renderers = new ArrayList<>();
+        when(view.getRenderers()).thenAnswer(i -> new ArrayList<>(renderers));
+        Mockito.doAnswer(i -> { renderers.add(i.getArgument(0)); return null; })
+                .when(view).addRenderer(any(org.bukkit.map.MapRenderer.class));
+        when(view.removeRenderer(any(org.bukkit.map.MapRenderer.class)))
+                .thenAnswer(i -> renderers.remove((org.bukkit.map.MapRenderer) i.getArgument(0)));
+        return view;
+    }
+
+    /**
+     * Gives a player mock a working main/off hand so brush and recipe checks can
+     * read what the "client" is holding.
+     */
+    private void mockPlayerInventory(Player player) {
+        PlayerInventory inv = mock(PlayerInventory.class);
+        // Lazily default to AIR: creating an ItemStack requires the Bukkit server
+        // singleton, which is not set yet when the player mocks are built.
+        ItemStack[] hands = new ItemStack[2];
+        when(inv.getItemInMainHand()).thenAnswer(i -> hands[0] != null ? hands[0] : (hands[0] = new ItemStack(Material.AIR)));
+        when(inv.getItemInOffHand()).thenAnswer(i -> hands[1] != null ? hands[1] : (hands[1] = new ItemStack(Material.AIR)));
+        Mockito.doAnswer(i -> { hands[0] = i.getArgument(0); return null; })
+                .when(inv).setItemInMainHand(any(ItemStack.class));
+        Mockito.doAnswer(i -> { hands[1] = i.getArgument(0); return null; })
+                .when(inv).setItemInOffHand(any(ItemStack.class));
+        when(player.getInventory()).thenReturn(inv);
+    }
 
     // Mocks JavaPlugin.getLogger
     public MockUtil mockLogger() {
@@ -207,9 +249,8 @@ public class MockUtil {
         UnsafeValues mockUnsafeValues = mock(UnsafeValues.class);
         when(mockServer.getUnsafe()).thenReturn(mockUnsafeValues);
         when(mockServer.getMap(anyInt())).thenAnswer( invocation-> {
-            MapView mockMapView = mock(MapView.class);
-            when(mockMapView.getId()).thenReturn((Integer) invocation.getArguments()[0]);
-            return mockMapView;
+            int id = (Integer) invocation.getArguments()[0];
+            return mapViews.computeIfAbsent(id, this::buildMapView);
         });
 
         this.mockServer = mockServer;
@@ -318,12 +359,24 @@ public class MockUtil {
             return new InputStreamReader(MockUtil.class.getResourceAsStream((String) invocation.getArguments()[0]));
          });
 
-         //mock Reflection 
+         //mock Reflection with a stateful per-map store, standing in for the NMS
+         //world map data so painted pixels survive setMap -> getMap round trips.
          Reflection mockReflection = mock(Reflection.class);
-         //have get map return an all white map
-         byte[] mapOutput = new byte[Size.MAX.value];
-         Arrays.fill(mapOutput, Byte.valueOf("0"));
-         when(mockReflection.getMap(any(MapView.class))).thenReturn(mapOutput);
+         when(mockReflection.getMap(any(MapView.class))).thenAnswer(invocation -> {
+             MapView view = invocation.getArgument(0);
+             byte[] data = worldMapData.computeIfAbsent(view.getId(), id -> new byte[Size.MAX.value]);
+             return Arrays.copyOf(data, data.length);
+         });
+         try {
+             Mockito.doAnswer(invocation -> {
+                 MapView view = invocation.getArgument(0);
+                 byte[] colors = invocation.getArgument(1);
+                 worldMapData.put(view.getId(), Arrays.copyOf(colors, colors.length));
+                 return null;
+             }).when(mockReflection).setWorldMap(any(MapView.class), any(byte[].class));
+         } catch (NoSuchFieldException | IllegalAccessException e) {
+             throw new IllegalStateException("Stubbing a mock cannot throw", e);
+         }
          when(mockArtmap.getReflection()).thenReturn(mockReflection);
 
          //mock HeadsCahce

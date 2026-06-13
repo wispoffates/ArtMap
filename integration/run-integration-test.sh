@@ -12,6 +12,10 @@
 #   MC_VERSION           Minecraft / Paper version  (default: 1.21.1)
 #   PROTOCOLLIB_VERSION  ProtocolLib release tag     (default: 5.3.0)
 #   TIMEOUT              Seconds to wait for server  (default: 600)
+#   RUN_PAINT_TEST       "true" to also run the mineflayer paint bot against
+#                        the booted server and verify strokes reach Art.db
+#                        (default: false; the bot lives in integration/bot/)
+#   RCON_PASSWORD        RCON password used when the paint test is enabled
 #   CI_JOB_ID            Set automatically by GitLab; used to make container /
 #                        volume names unique so parallel jobs don't collide.
 
@@ -28,6 +32,8 @@ set -euo pipefail
 MC_VERSION="${MC_VERSION:-1.21.11}"
 PROTOCOLLIB_VERSION="${PROTOCOLLIB_VERSION:-dev-build}"
 TIMEOUT="${TIMEOUT:-600}"
+RUN_PAINT_TEST="${RUN_PAINT_TEST:-false}"
+RCON_PASSWORD="${RCON_PASSWORD:-artmap-e2e}"
 
 # Unique suffix so parallel CI jobs don't collide on resource names.
 JOB_SUFFIX="${CI_JOB_ID:-local-$$}"
@@ -35,6 +41,8 @@ JOB_SUFFIX="${CI_JOB_ID:-local-$$}"
 CONTAINER_NAME="artmap-server-${JOB_SUFFIX}"
 COPY_HELPER="artmap-copy-${JOB_SUFFIX}"
 VOLUME_NAME="artmap-plugins-${JOB_SUFFIX}"
+BOT_VOLUME_NAME="artmap-bot-${JOB_SUFFIX}"
+BOT_HELPER="artmap-bot-copy-${JOB_SUFFIX}"
 
 LOG_FILE="integration/server.log"
 
@@ -49,7 +57,9 @@ cleanup() {
     docker stop  "$CONTAINER_NAME" 2>/dev/null || true
     docker rm -f "$CONTAINER_NAME" 2>/dev/null || true
     docker rm -f "$COPY_HELPER"    2>/dev/null || true
+    docker rm -f "$BOT_HELPER"     2>/dev/null || true
     docker volume rm "$VOLUME_NAME" 2>/dev/null || true
+    docker volume rm "$BOT_VOLUME_NAME" 2>/dev/null || true
 }
 trap cleanup EXIT
 
@@ -116,7 +126,8 @@ docker run -d \
     -e VERSION="$MC_VERSION" \
     -e MEMORY=1G \
     -e ONLINE_MODE=FALSE \
-    -e ENABLE_RCON=FALSE \
+    -e ENABLE_RCON="$([ "$RUN_PAINT_TEST" = "true" ] && echo TRUE || echo FALSE)" \
+    -e RCON_PASSWORD="$RCON_PASSWORD" \
     -v "${VOLUME_NAME}:/plugins" \
     itzg/minecraft-server
 
@@ -173,6 +184,61 @@ done
 set -e
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Optional paint test – drive a mineflayer client against the live server and
+# verify the strokes were persisted to ArtMap's database.
+#
+# Same dind constraint as the plugin JAR: bind mounts don't work, so the bot
+# sources are docker-cp'd into a volume and run from a node container that
+# shares the default bridge network with the server.
+# ──────────────────────────────────────────────────────────────────────────────
+if [ "$RUN_PAINT_TEST" = "true" ] && [ "$RESULT" = "success" ]; then
+    echo ""
+    echo "--- Paint test: running mineflayer bot ---"
+    set +e
+
+    SERVER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$CONTAINER_NAME")
+    echo "Server IP: ${SERVER_IP}"
+
+    docker volume create "$BOT_VOLUME_NAME"
+    docker create --name "$BOT_HELPER" -v "${BOT_VOLUME_NAME}:/bot" alpine echo
+    docker cp integration/bot/. "${BOT_HELPER}:/bot/"
+    docker rm "$BOT_HELPER"
+
+    docker run --rm \
+        -v "${BOT_VOLUME_NAME}:/bot" \
+        -w /bot \
+        -e MC_HOST="$SERVER_IP" \
+        -e MC_VERSION="$MC_VERSION" \
+        -e RCON_PASSWORD="$RCON_PASSWORD" \
+        node:20-alpine \
+        sh -c "npm install --no-audit --no-fund --loglevel=error && node paint-bot.js"
+    BOT_EXIT=$?
+
+    if [ "$BOT_EXIT" -ne 0 ]; then
+        RESULT="paint_bot_failed"
+    else
+        echo ""
+        echo "--- Paint test: verifying Art.db ---"
+        docker cp "${CONTAINER_NAME}:/data/plugins/ArtMap/Art.db" integration/Art.db
+        if [ ! -f integration/Art.db ]; then
+            RESULT="paint_verify_failed"
+        else
+            # Painted (or in-progress) maps land in the maps table as blobs.
+            MAPS=$(docker run --rm -i alpine \
+                sh -c 'apk add -q sqlite && cat > /tmp/Art.db && sqlite3 /tmp/Art.db "SELECT count(*) FROM maps WHERE length(map) > 0;"' \
+                < integration/Art.db)
+            echo "Maps with painted data: ${MAPS:-0}"
+            if [ "${MAPS:-0}" -gt 0 ] 2>/dev/null; then
+                RESULT="success"
+            else
+                RESULT="paint_verify_failed"
+            fi
+        fi
+    fi
+    set -e
+fi
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Capture full server log (saved as a CI artifact for debugging)
 # ──────────────────────────────────────────────────────────────────────────────
 echo ""
@@ -191,7 +257,20 @@ echo ""
 case "$RESULT" in
     success)
         echo "PASS: ArtMap loaded and enabled successfully on Paper ${MC_VERSION}."
+        if [ "$RUN_PAINT_TEST" = "true" ]; then
+            echo "PASS: paint bot strokes were persisted to Art.db."
+        fi
         exit 0
+        ;;
+    paint_bot_failed)
+        echo "FAIL: the paint bot exited with an error (see output above)."
+        echo "      Check ${LOG_FILE} for the server side."
+        exit 1
+        ;;
+    paint_verify_failed)
+        echo "FAIL: the paint bot ran but no painted map data was found in Art.db."
+        echo "      Check ${LOG_FILE} for the server side."
+        exit 1
         ;;
     plugin_disabled)
         echo "FAIL: ArtMap was disabled by the server after loading."

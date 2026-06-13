@@ -210,11 +210,17 @@ public class ArtSession implements IArtSession {
     }
 
     public void end(Player player) throws SQLException, IOException {
+        // Dismount housekeeping must not be able to prevent the painting from
+        // being persisted, so it is isolated from the save below.
         try {
             //player.leaveVehicle();
 			player.teleport(player.getLocation().add(0, 0.25, 0 ));
             removeKit(player);
             easel.removeUser();
+        } catch (Exception e) {
+            ArtMap.instance().getLogger().log(Level.SEVERE, "Error dismounting player from easel.", e);
+        }
+        try {
             canvas.stop();
             persistMap(true);
             active = false;
