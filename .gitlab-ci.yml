@@ -104,12 +104,64 @@ publish:jdk21:
 
 ################################################################################################
 # Integration - Start a real Paper server in Docker.
+#   bake-server-image: builds a Paper image with the Mojang jar pre-patched
+#                      (every pipeline; reuses the registry copy when MC_VERSION
+#                      is unchanged) so the runtime boot skips the slow, flaky
+#                      "Downloading mojang_<version>.jar" step that was timing
+#                      the integration job out.
 #   integration:       verifies ArtMap loads cleanly (every pipeline)
 #   integration:paint  also drives the mineflayer paint bot and checks Art.db
-#                      (manual; the bot in integration/bot/ is still a skeleton)
 ################################################################################################
 
+# Shared Minecraft version + the registry ref for the pre-baked server image.
+# The image is tagged by MC_VERSION so an unchanged version reuses the cached
+# build. Keep MC_VERSION in sync between this job and the integration jobs.
+.integration-vars:
+  variables:
+    MC_VERSION: "1.21.11"
+    BAKED_IMAGE: "${CI_REGISTRY_IMAGE}/paper-baked:${MC_VERSION}"
+
+# Build the pre-baked server image and push it to the project's container
+# registry. Built with Kaniko, NOT docker:dind: the bake's RUN step downloads
+# the ~56MB Mojang server jar, and large transfers hang indefinitely through
+# the dind nested network (egress to Mojang is otherwise fine, and --mtu=1400
+# didn't help). Kaniko runs the build on the normal runner network, where the
+# download works.
+#
+# Only runs when the bake inputs change (the image definition), so unchanged
+# pipelines reuse the already-pushed tag. Bump the image build or MC_VERSION to
+# force a rebuild. Kaniko's --cache reuses unchanged layers across runs.
+bake-server-image:
+  extends: .integration-vars
+  stage: integration
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]
+  needs: []
+  rules:
+    - changes:
+        - integration/server-image/**/*
+        - .gitlab-ci.yml
+    # Always allow a manual run (e.g. to seed the registry the first time, or
+    # after the image is garbage-collected).
+    - when: manual
+      allow_failure: true
+  script:
+    # Kaniko reads registry credentials from /kaniko/.docker/config.json.
+    - |
+      AUTH=$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | /busybox/base64 | tr -d '\n')
+      mkdir -p /kaniko/.docker
+      printf '{"auths":{"%s":{"auth":"%s"}}}\n' "$CI_REGISTRY" "$AUTH" > /kaniko/.docker/config.json
+    - /kaniko/executor
+        --context "${CI_PROJECT_DIR}/integration/server-image"
+        --dockerfile "${CI_PROJECT_DIR}/integration/server-image/Dockerfile"
+        --build-arg "MC_VERSION=${MC_VERSION}"
+        --destination "$BAKED_IMAGE"
+        --cache=true
+        --cache-repo "${CI_REGISTRY_IMAGE}/paper-baked-cache"
+
 integration:
+  extends: .integration-vars
   stage: integration
   image: docker:latest
   # docker:dind provides the Docker daemon.  TLS is disabled so the Docker CLI
@@ -120,15 +172,23 @@ integration:
   variables:
     DOCKER_TLS_CERTDIR: ""
     DOCKER_HOST: "tcp://docker:2375"
-    # Minecraft / ProtocolLib versions used for the integration test.
-    # Override these in the GitLab project variables to test a different version.
-    MC_VERSION: "1.21.11"
+    # Use the pre-baked server image so the runtime boot skips the Mojang jar
+    # download. ProtocolLib version can be overridden in project variables.
+    SERVER_IMAGE: "${BAKED_IMAGE}"
     PROTOCOLLIB_VERSION: "dev-build"
     TIMEOUT: "600"
-  needs: ["build:jdk21"]
+  # bake-server-image is optional: it only runs when the image definition
+  # changes, so most pipelines reuse the already-pushed tag and integration
+  # just pulls it. optional:true keeps integration runnable when the bake is
+  # skipped this pipeline.
+  needs:
+    - "build:jdk21"
+    - job: "bake-server-image"
+      optional: true
   before_script:
     # The dind service needs a moment to start.  Poll until the daemon answers.
     - until docker info >/dev/null 2>&1; do echo "Waiting for Docker daemon..."; sleep 2; done
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     # Invoke with sh explicitly: the docker:latest image is Alpine and has no bash.
     - sh integration/run-integration-test.sh
@@ -143,9 +203,6 @@ integration:paint:
   extends: integration
   variables:
     RUN_PAINT_TEST: "true"
-    # Pinned independently of the load check: mineflayer lags new Minecraft
-    # releases, so this must stay on a version the bot supports.
-    MC_VERSION: "1.21.11"
   artifacts:
     when: always
     paths:

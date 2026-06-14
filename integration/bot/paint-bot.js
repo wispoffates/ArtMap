@@ -141,25 +141,31 @@ async function paint() {
   // a monotonically incrementing sequence makes the server register a real
   // right-click on the UP face, which ArtMap then turns into an easel.
   //
-  // The very first block_place after the RCON teleport is dropped by the server
-  // (position desync — the client hasn't reconciled the tp yet), so send a
-  // throwaway warm-up interaction first, then the real placement.
-  await placeOnUpFace(referenceBlock.position); // warm-up (discarded by server)
-  await sleep(300);
-  await placeOnUpFace(referenceBlock.position); // real placement
-  await sleep(1500);
-
-  // The easel armor stand spawns ~2 blocks above the clicked floor block.
-  // ArtMap spawns several armor stands per easel (visible STAND + invisible
-  // SEAT + invisible small MARKER); only the *visible* one is the clickable
-  // STAND part — ArtMap's getPartType returns SEAT/MARKER (and bails) for the
-  // invisible ones. So select the visible armor stand near the target.
+  // The first block_place after the RCON teleport is dropped by the server
+  // (position desync — the client hasn't reconciled the tp yet). The length of
+  // that window depends on round-trip latency, which is far higher in CI than
+  // locally, so a single fixed-delay warm-up isn't reliable. Instead, re-send
+  // the placement click and poll for the visible easel STAND to appear, until
+  // it does or we exhaust the attempts.
   const easelTarget = floorPos.offset(0.5, 2.0, 0.5);
-  const easel = await waitForEntity(
-    (e) => e.name === 'armor_stand' && isVisibleEntity(e)
-      && e.position.distanceTo(easelTarget) < 3,
-    'visible easel stand',
-  );
+  const isEaselStand = (e) => e.name === 'armor_stand' && isVisibleEntity(e)
+    && e.position.distanceTo(easelTarget) < 3;
+
+  let easel = null;
+  for (let attempt = 1; attempt <= 10 && !easel; attempt++) {
+    await placeOnUpFace(referenceBlock.position);
+    // Poll briefly for the spawn before re-clicking; the easel appears within a
+    // few hundred ms once a click actually registers.
+    for (let i = 0; i < 10 && !easel; i++) {
+      await sleep(250);
+      easel = Object.values(bot.entities).find(isEaselStand) || null;
+    }
+    if (!easel) console.log(`easel not up after attempt ${attempt}; retrying click`);
+  }
+  if (!easel) throw new Error('timed out waiting for visible easel stand');
+  // ArtMap spawns several armor stands per easel (visible STAND + invisible
+  // SEAT + invisible small MARKER); only the visible one is the clickable STAND
+  // part — getPartType returns SEAT/MARKER (and bails) for the invisible ones.
   console.log('easel (visible STAND) at', easel.position);
 
   // 2. Mount a canvas: right-click the easel holding the canvas item.
@@ -172,13 +178,14 @@ async function paint() {
   await sleep(1000);
 
   // 3. Ride the easel: right-click it again (now holding the dye) to start the
-  // painting session. ArtMap seats the player on a hidden armor stand.
+  // painting session. ArtMap seats the player on a hidden armor stand. As with
+  // placement, re-click and poll for bot.vehicle rather than trusting a fixed
+  // delay, so CI latency doesn't make this flaky.
   await bot.equip(dyeItem, 'hand');
-  await interactAtEasel(easel);
-  await sleep(1000);
-  if (!bot.vehicle) {
+  for (let attempt = 1; attempt <= 10 && !bot.vehicle; attempt++) {
     await interactAtEasel(easel);
-    await sleep(1000);
+    for (let i = 0; i < 10 && !bot.vehicle; i++) await sleep(250);
+    if (!bot.vehicle) console.log(`not seated after attempt ${attempt}; retrying`);
   }
   if (!bot.vehicle) throw new Error('bot failed to mount the easel');
   console.log('mounted easel, painting...');
