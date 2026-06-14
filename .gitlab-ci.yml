@@ -110,7 +110,6 @@ publish:jdk21:
 ################################################################################################
 
 integration:
-  allow_failure: true
   stage: integration
   image: docker:latest
   # docker:dind provides the Docker daemon.  TLS is disabled so the Docker CLI
@@ -146,8 +145,7 @@ integration:paint:
     RUN_PAINT_TEST: "true"
     # Pinned independently of the load check: mineflayer lags new Minecraft
     # releases, so this must stay on a version the bot supports.
-    MC_VERSION: "1.21.4"
-  when: manual
+    MC_VERSION: "1.21.11"
   artifacts:
     when: always
     paths:

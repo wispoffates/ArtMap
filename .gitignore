@@ -8,6 +8,8 @@ target/*
 *.iml
 .m2/
 integration/server.log
+integration/Art.db
+integration/run.log
 *.DS_STORE
 .claude
 

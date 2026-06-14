@@ -4,7 +4,8 @@
   "description": "Mineflayer client that paints on an ArtMap easel for the e2e smoke test",
   "type": "module",
   "dependencies": {
-    "mineflayer": "^4.20.0",
-    "rcon-client": "^4.2.4"
+    "mineflayer": "^4.35.0",
+    "rcon-client": "^4.2.4",
+    "vec3": "^0.1.10"
   }
 }

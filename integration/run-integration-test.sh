@@ -10,7 +10,7 @@
 # directly under the Alpine-based docker:latest CI image, which has no bash.
 #
 # Environment variables (all optional – defaults are shown):
-#   MC_VERSION           Minecraft / Paper version  (default: 1.21.1)
+#   MC_VERSION           Minecraft / Paper version  (default: 1.21.11)
 #   PROTOCOLLIB_VERSION  ProtocolLib release tag     (default: 5.3.0)
 #   TIMEOUT              Seconds to wait for server  (default: 600)
 #   RUN_PAINT_TEST       "true" to also run the mineflayer paint bot against
@@ -30,6 +30,10 @@ set -eu
 # Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 MC_VERSION="${MC_VERSION:-1.21.11}"
+# The itzg image tag selects the server's Java runtime. AnvilGUI's 1.26 NMS
+# wrapper (and the ProtocolLib dev-build) ship Java 25 bytecode, which Paper's
+# plugin remapper must be able to read, so run on a Java 25 JRE.
+SERVER_IMAGE="${SERVER_IMAGE:-itzg/minecraft-server:java25}"
 PROTOCOLLIB_VERSION="${PROTOCOLLIB_VERSION:-dev-build}"
 TIMEOUT="${TIMEOUT:-600}"
 RUN_PAINT_TEST="${RUN_PAINT_TEST:-false}"
@@ -129,7 +133,7 @@ docker run -d \
     -e ENABLE_RCON="$([ "$RUN_PAINT_TEST" = "true" ] && echo TRUE || echo FALSE)" \
     -e RCON_PASSWORD="$RCON_PASSWORD" \
     -v "${VOLUME_NAME}:/plugins" \
-    itzg/minecraft-server
+    "$SERVER_IMAGE"
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Poll the container logs until the server finishes loading or the timeout fires.
