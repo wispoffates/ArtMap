@@ -68,6 +68,13 @@ public class VersionHandlerTest {
     }
 
     @Test
+    public void test_checkVersion() {
+        // exercises the live path: Bukkit.getBukkitVersion() parse + "Running on:" log
+        BukkitVersion version = VersionHandler.checkVersion();
+        assertTrue(version.isEqualTo(BukkitVersion.v1_14), "Mock server is 1.14.4 :: " + version.toString());
+    }
+
+    @Test
     public void test_latest() {
         BukkitVersion version = VersionHandler.getLatest();
         assertTrue(version.isGreaterThan(BukkitVersion.v1_15), "Should be greater than 1.15 :: " + version.toString());

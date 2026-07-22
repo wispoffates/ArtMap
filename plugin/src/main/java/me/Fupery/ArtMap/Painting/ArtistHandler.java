@@ -55,9 +55,19 @@ public class ArtistHandler implements IArtistHandler {
 				session.updatePosition(packetLook.getYaw(), packetLook.getPitch());
 				return true;
 				// Handle Save brush
-			} else if (type == PacketType.INTERACT && ArtMaterial
+			} else if ((type == PacketType.INTERACT || type == PacketType.ARM_ANIMATION) && ArtMaterial
 					.getCraftItemType(sender.getInventory().getItemInMainHand()) == ArtMaterial.PAINT_BRUSH) {
 				return this.handlePaintBrush(sender, session);
+			} else if (type == PacketType.ARM_ANIMATION) {
+				// Through MC 1.21.11 the client sent USE_ENTITY ATTACK when left-clicking the
+				// canvas from the easel seat. Starting with MC 26.1 (undocumented client change,
+				// likely the mounted-combat/input rework) it only sends the arm swing - so treat
+				// the swing as a left click. See gitlab.com/BlockStack/ArtMap issue #373.
+				// A swing that trails an interact or attack packet (older clients send both) is
+				// swallowed by the brush cooldown in ArtSession.paint().
+				session.paint(sender.getInventory().getItemInMainHand(), BrushAction.LEFT_CLICK);
+				session.sendMap(sender);
+				return true;
 			} else if (type == PacketType.INTERACT) {
 				InteractType click = ((ArtistPacket.PacketInteract) packet).getInteraction();
 				session.paint(sender.getInventory().getItemInMainHand(),

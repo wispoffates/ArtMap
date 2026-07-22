@@ -1,0 +1,6 @@
+2026-07-21 21:55:19,171 - proxmox-mcp.proxmox - INFO - Connecting to Proxmox host: 192.168.1.192
+2026-07-21 21:55:19,242 - proxmox-mcp.proxmox - INFO - Successfully connected to Proxmox API
+2026-07-21 21:55:19,248 - proxmox-mcp - INFO - Starting MCP server...
+2026-07-21 21:55:19,257 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-07-21 21:55:19,257 - mcp.server.lowlevel.server - INFO - Processing request of type ListPromptsRequest
+2026-07-21 21:55:19,258 - mcp.server.lowlevel.server - INFO - Processing request of type ListResourcesRequest

@@ -1,5 +1,6 @@
 package me.Fupery.ArtMap.Utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -99,6 +100,25 @@ public class VersionTest {
         // no -R0.1-SNAPSHOT suffix
         Version version = Version.getBukkitVersion("26.1");
         assertTrue(version.isEqualTo(26,1), "Suffix-less 26.1 should parse but was " + version.toString());
+    }
+
+    @Test
+    public void test_v26_paperBuildFormat() {
+        // Paper's newer format embeds ".build.NN" with no dash before it
+        Version version = Version.getBukkitVersion("26.1.2.build.72-stable");
+        assertTrue(version.isEqualTo(26,1,2), "26.1.2.build.72-stable should parse as 26.1.2 but was " + version.toString());
+    }
+
+    @Test
+    public void test_v26_paperBuildFormatNoSuffix() {
+        Version version = Version.getBukkitVersion("26.1.2.build.72");
+        assertTrue(version.isEqualTo(26,1,2), "26.1.2.build.72 should parse as 26.1.2 but was " + version.toString());
+    }
+
+    @Test
+    public void test_bukkitVersion_garbageDoesNotThrow() {
+        Version version = Version.getBukkitVersion("build");
+        assertEquals("0", version.toString(), "Fully non-numeric version should parse as empty");
     }
 
     @Test

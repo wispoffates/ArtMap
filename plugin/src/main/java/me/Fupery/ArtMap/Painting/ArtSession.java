@@ -111,8 +111,8 @@ public class ArtSession implements IArtSession {
         long strokeTime = currentTime - lastStroke;
         if (strokeTime > currentBrush.getCooldown()) {
             currentBrush.paint(action, brush, strokeTime);
+            lastStroke = currentTime;
         }
-        lastStroke = System.currentTimeMillis();
     }
 
     private Brush getBrushType(ItemStack item) {

@@ -166,6 +166,7 @@ public class ArtMap extends JavaPlugin implements IArtMap {
 			Lang.load(this, config);
 			reflection = new Reflection();
 			scheduler = new Scheduler(this);
+			this.getLogger().info(() -> "Running on: " + Bukkit.getServer().getBukkitVersion());
 			bukkitVersion = new VersionHandler(this);
 			compatManager = new CompatibilityManager(this);
 			protocolHandler = new ProtocolHandler();
